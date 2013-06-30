@@ -1,5 +1,12 @@
 MetalIsX
 
+The projects are created to:
+ - create reusable projects for JPA and REST
+ - create a reusable structure for REST applications
+   A CRUD and a request and logging monitor application 
+   are used as use case.
+ - test frameworks, java and javascript/css frameworks
+
 MetalIsX contains the following sections:
  - MetalIsX common
  - MetalIsX CRUD
@@ -16,7 +23,7 @@ backend:
      - Apache HttpComponents
      - Tika
      - Tagsoup
-	 - Liquibase
+     - Liquibase
      - JUnit
      - JBoss Arquillian
 
