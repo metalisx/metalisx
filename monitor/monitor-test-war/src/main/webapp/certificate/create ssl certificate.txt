@@ -1,0 +1,83 @@
+Make sure you run the command in a cmd-window started with 'Run as administrator'.
+
+Use as pass phrase and password changeit
+Use as organizationName for server and client certificate(this seems important): server
+Use as Common Name for the server certificate: server.monitor.nl
+Use as Common Name for the client certificate: client.monitor.nl
+
+The first section will add ssl security
+
+You can change the above settings to your liking, but make sure you keep using the
+same settings.
+
+Generate private key for the server: 
+  openssl genrsa -des3 -out server.key 1024
+
+Remove Passphrase from Key:
+  openssl rsa -in server.key -out server.key
+
+Generating a Self-Signed Certificate, valid for 365 days:
+  openssl req -new -x509 -days 365 -key server.key -out server.crt
+
+Generate the PKCS12 Keystore (.p12):
+  openssl pkcs12 -name server -export -in server.crt -inkey server.key -out server.keystore
+
+Generate the Java jks keystore with the keytool located in the java bin directory:
+  keytool -importkeystore -srckeystore server.keystore -destkeystore server.jks -srcstoretype pkcs12  
+
+To enable ssl in JBoss 7:
+Copy server.jks to the <JBoss home>/standalone/configuration directory.
+Add to the <JBoss home>/standalone/configuration/standalone.xml file below the 
+connector for http:
+            <connector name="https" protocol="HTTP/1.1" socket-binding="https" scheme="https" secure="true">
+                <ssl name="https" password="changeit" certificate-key-file="../standalone/configuration/server.jks" protocol="TLSv1"/>
+
+            </connector>
+
+Note: It seems the PKCS12 keystores can not contain trusted certificates and therefore can not be used for authentication with client
+      certificates. To use trusted certificates we need to convert the PKCS12 to a JKS keystore.
+      If you are not interested in client certifcates and you want to use the server.keystore(PKCS12) you have to add 
+      the keystore-type attribute to the ssl-tag: keystore-type="PKCS12".
+
+Now the server is secured with ssl.
+
+The second section enables client side authentication with client certificates
+
+We need to create some directories and files:
+ - create directory demoCA/newcerts
+ - create empty file demoCA/index.txt
+ - create empty file demoCA/serial
+   open the file
+   insert the value: 01
+   save the file
+
+Generate private key for the client:
+  openssl genrsa -des3 -out client.key 1024
+
+Generate the CSR for the client:
+  openssl req -new -key client.key -out client.csr
+
+Generate the Client Certificate:
+  openssl ca -days 365 -in client.csr -cert server.crt -keyfile server.key -out client.crt
+
+Convert the client certificate into a format a browser can import:
+  openssl pkcs12 -export -in client.crt -inkey client.key -certfile server.crt -out client.p12
+
+Open your browser and import the client.p12.
+
+Add name to the windows hosts file:
+Open notepad with 'Run as administrator'
+Open the file C:\Windows\System32\drivers\etc\hosts
+Add the line(if you have changed the Common Name for the server then use that name): 
+  127.0.0.1 server.monitor.nl
+
+To enable authentication with client certificates in JBoss 7:
+Add to the ssl section the attribute: verify-client="true"
+Add to the ssl section the attribute: ca-certificate-file=<same as certificate-key-file
+Resulting connector: 
+            <connector name="https" protocol="HTTP/1.1" socket-binding="https" scheme="https" secure="true">
+                <ssl name="https" password="changeit" certificate-key-file="../standalone/configuration/server.jks" protocol="TLSv1" verify-client="true" ca-certificate-file="../standalone/configuration/server.jks"/>
+            </connector>
+
+Open de browser and open the url to the server, make sure you are using the hostname 
+of the server in the url and not localhost or 127.0.0.1.

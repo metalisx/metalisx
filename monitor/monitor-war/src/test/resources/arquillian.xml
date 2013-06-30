@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://jboss.org/schema/arquillian"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <!-- Uncomment to have test archives exported to the file system for inspection -->
+    <!-- 
+    <engine>
+        <property name="deploymentExportPath">target/</property>
+    </engine>
+     -->
+     
+    <container qualifier="jboss7" default="true">
+        <configuration>
+            <property name="jbossHome">target/jboss-as-7.1.1.Final</property>
+			<property name="managementPort">10099</property>
+			<!--
+				 For debugging you can use the settings below, 
+				 the suspend must be set on y so you have time to connect. 
+			 -->
+			<!-- 
+            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m
+                -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y
+            </property>
+            -->
+        </configuration>
+    </container>
+
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">phantomjs</property>
+		<property name="phantomjs.binary.path">/selenium-webdriver/phantomjs.exe</property>
+	</extension>
+
+	<!-- 
+	HtmlUnit does not work because of an error with java.lang.NoSuchFieldError: FIREFOX_10
+	Switched to headless PhantomJS, donwside it requires a installation of the Web Driver binary
+	and HtmlUnit does not.
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">phantomjs</property>
+		<property name="phantomjs.binary.path">/selenium-webdriver/phantomjs.exe</property>
+	</extension>
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">htmlUnit</property>
+	</extension>
+	-->
+</arquillian>

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.metalisx</groupId>
+		<artifactId>metalisx</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>monitor-war</artifactId>
+	<packaging>war</packaging>
+	<name>Monitor war</name>
+
+	<description>
+		Monitor war
+	</description>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>once</forkMode>
+					<systemPropertyVariables>
+						<!-- Silencing the broken code in getActiveConfiguration(), see
+						     https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java
+						 -->
+						<arquillian.launch>jboss7</arquillian.launch>
+					</systemPropertyVariables>
+					<excludes>
+						<exclude>**/ApplicationTest*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/ApplicationTest*</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss.as</groupId>
+									<artifactId>jboss-as-dist</artifactId>
+									<version>${version.org.jboss.as.arquillian}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<excludes>**/docs/**</excludes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${basedir}/target/jboss-as-${version.org.jboss.as.arquillian}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										src/test/resources/jboss-as-${version.org.jboss.as.arquillian}
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>common-web-resources</artifactId>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-context-slf4j-mdc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-domain</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>common-domain</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>common-gson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>common-rest</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-profiler-slf4j-cdi-interceptor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-profiler-slf4j-servlet-filter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>monitor-request-servlet-filter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.servlet</groupId>
+			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ccil.cowan.tagsoup</groupId>
+			<artifactId>tagsoup</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-drone-webdriver-depchain</artifactId>
+			<type>pom</type>
+		</dependency>
+ 		
+		<dependency>
+			<groupId>org.jboss.arquillian.graphene</groupId>
+			<artifactId>arquillian-graphene</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-managed</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>phantomjs</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>phantomjs</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<phase>integration-test</phase>
+								<configuration>
+									<systemPropertyVariables>
+										<arquillian.xml>arquillian-phantomjs.xml</arquillian.xml>
+									</systemPropertyVariables>
+									<reportNameSuffix>phantomjs</reportNameSuffix>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>firefox</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>firefox</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<phase>integration-test</phase>
+								<configuration>
+									<systemPropertyVariables>
+										<arquillian.xml>arquillian-firefox.xml</arquillian.xml>
+									</systemPropertyVariables>
+									<reportNameSuffix>firefox</reportNameSuffix>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>chrome</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>chrome</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<phase>integration-test</phase>
+								<configuration>
+									<systemPropertyVariables>
+										<arquillian.xml>arquillian-chrome.xml</arquillian.xml>
+									</systemPropertyVariables>
+									<reportNameSuffix>chrome</reportNameSuffix>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>internet-explorer</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>internet-explorer</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<phase>integration-test</phase>
+								<configuration>
+									<systemPropertyVariables>
+										<!-- 
+											Required because webdirver.ie.driver in the arquillium.xml is not picked up anymore.
+											Check it later because Drone 1.2.0.Alpha2 and Graphene 2.0.0.Alpha4 are used, not final releases.
+										 -->
+										<webdriver.ie.driver>d:/selenium-webdriver/IEDriverServer.exe</webdriver.ie.driver>
+										<arquillian.xml>arquillian-internet-explorer.xml</arquillian.xml>
+									</systemPropertyVariables>
+									<reportNameSuffix>internet-explorer</reportNameSuffix>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.metalisx</groupId>
+		<artifactId>metalisx</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>common-domain</artifactId>
+	<packaging>jar</packaging>
+	<name>Common domain</name>
+
+	<description>
+		Common domain
+	</description>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>once</forkMode>
+					<argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
+					<systemPropertyVariables>
+						<!-- Silencing the broken code in getActiveConfiguration(), see
+						     https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java
+						 -->
+						<arquillian.launch>jboss7</arquillian.launch>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss.as</groupId>
+									<artifactId>jboss-as-dist</artifactId>
+									<version>${version.org.jboss.as.arquillian}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<excludes>**/docs/**</excludes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${basedir}/target/jboss-as-${version.org.jboss.as.arquillian}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										src/test/resources/jboss-as-${version.org.jboss.as.arquillian}
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.metalisx</groupId>
+			<artifactId>common-domain-test</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-managed</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+	</dependencies>
+
+</project>

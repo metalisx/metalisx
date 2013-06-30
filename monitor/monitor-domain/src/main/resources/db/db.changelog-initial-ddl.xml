@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="metalisx"  id="MONITORLOG">
+        <createTable tableName="MONITORLOG">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORLOG_PK"/>
+            </column>
+            <column name="DEPTH" type="INT"/>
+            <column name="DURATION" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LOGCLASS" type="VARCHAR(255)"/>
+            <column name="LOGDATE" type="TIMESTAMP"/>
+            <column name="LOGLEVEL" type="VARCHAR(255)"/>
+            <column name="MESSAGE" type="LONGVARCHAR"/>
+            <column name="ORGANIZATION" type="VARCHAR(255)"/>
+            <column name="PARENTREQUESTID" type="VARCHAR(255)"/>
+            <column name="REQUESTID" type="VARCHAR(255)"/>
+            <column name="SESSIONID" type="VARCHAR(255)"/>
+            <column name="THREAD" type="VARCHAR(255)"/>
+            <column name="USERNAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST">
+        <createTable tableName="MONITORREQUEST">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUEST_PK"/>
+            </column>
+            <column name="DURATION" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENDTIME" type="TIMESTAMP"/>
+            <column name="ORGANIZATION" type="VARCHAR(255)"/>
+            <column name="REQUESTID" type="VARCHAR(255)"/>
+            <column name="SESSION_ID" type="BIGINT"/>
+            <column name="STARTTIME" type="TIMESTAMP"/>
+            <column name="URL" type="VARCHAR(1000)"/>
+            <column name="USERNAME" type="VARCHAR(255)"/>
+            <column name="ACTUALCONTENTLENGTH" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHARACTERENCODING" type="VARCHAR(255)"/>
+            <column name="CONTENT" type="LONGVARBINARY"/>
+            <column name="CONTENTLENGTH" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENTTYPE" type="VARCHAR(255)"/>
+            <column name="CONTEXTPATH" type="VARCHAR(255)"/>
+            <column name="LOCALE" type="VARCHAR(255)"/>
+            <column name="METHOD" type="VARCHAR(255)"/>
+            <column name="PARENTREQUESTID" type="VARCHAR(255)"/>
+            <column name="PATHINFO" type="VARCHAR(255)"/>
+            <column name="PATHTRANSLATED" type="VARCHAR(255)"/>
+            <column name="PRETTYPRINT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="QUERYSTRING" type="VARCHAR(4000)"/>
+            <column name="SCHEME" type="VARCHAR(255)"/>
+            <column name="SERVERNAME" type="VARCHAR(255)"/>
+            <column name="SERVERPORT" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SERVLETPATH" type="VARCHAR(255)"/>
+            <column name="TEXTCONTENT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="THREAD" type="VARCHAR(255)"/>
+            <column name="RESPONSE_ID" type="BIGINT"/>
+            <column name="SECURITY_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTCERTIFICATE">
+        <createTable tableName="MONITORREQUESTCERTIFICATE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTCERTIFICATE_PK"/>
+            </column>
+            <column name="CONTENT" type="LONGVARBINARY"/>
+            <column name="ISSUERDN" type="VARCHAR(255)"/>
+            <column name="SUBJECTDN" type="VARCHAR(255)"/>
+            <column name="TYPE" type="VARCHAR(255)"/>
+            <column name="VALID" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTCOOKIE">
+        <createTable tableName="MONITORREQUESTCOOKIE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTCOOKIE_PK"/>
+            </column>
+            <column name="DOMAIN" type="VARCHAR(255)"/>
+            <column name="MAXAGE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PATH" type="VARCHAR(255)"/>
+            <column name="SECURE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTFORMPARAMETER">
+        <createTable tableName="MONITORREQUESTFORMPARAMETER">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTFORMPARAMETER_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTFORMPARAMETERVALUE">
+        <createTable tableName="MONITORREQUESTFORMPARAMETERVALUE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTFORMPARAMETERVALUE_PK"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+            <column name="MFE_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTHEADER">
+        <createTable tableName="MONITORREQUESTHEADER">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTHEADER_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="VALUE" type="VARCHAR(4000)"/>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTLOCALE">
+        <createTable tableName="MONITORREQUESTLOCALE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTLOCALE_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTPART">
+        <createTable tableName="MONITORREQUESTPART">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTPART_PK"/>
+            </column>
+            <column name="ACTUALCONTENTLENGTH" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="LONGVARBINARY"/>
+            <column name="CONTENTLENGTH" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENTTYPE" type="VARCHAR(255)"/>
+            <column name="FILENAME" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PRETTYPRINT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TEXTCONTENT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+            <column name="MRT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTPARTHEADER">
+        <createTable tableName="MONITORREQUESTPARTHEADER">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTPARTHEADER_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="VALUE" type="VARCHAR(500)"/>
+            <column name="MPT_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTSECURITY">
+        <createTable tableName="MONITORREQUESTSECURITY">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORREQUESTSECURITY_PK"/>
+            </column>
+            <column name="AUTHTYPE" type="VARCHAR(255)"/>
+            <column name="REMOTEUSER" type="VARCHAR(255)"/>
+            <column name="SECURE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USERPRINCIPAL" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORRESPONSE">
+        <createTable tableName="MONITORRESPONSE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORRESPONSE_PK"/>
+            </column>
+            <column name="CHARACTERENCODING" type="VARCHAR(255)"/>
+            <column name="CONTENT" type="LONGVARBINARY"/>
+            <column name="CONTENTLENGTH" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENTTYPE" type="VARCHAR(255)"/>
+            <column name="LOCALE" type="VARCHAR(255)"/>
+            <column name="PRETTYPRINT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUSDESCRIPTION" type="VARCHAR(255)"/>
+            <column name="TEXTCONTENT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORRESPONSECOOKIE">
+        <createTable tableName="MONITORRESPONSECOOKIE">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORRESPONSECOOKIE_PK"/>
+            </column>
+            <column name="DOMAIN" type="VARCHAR(255)"/>
+            <column name="MAXAGE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PATH" type="VARCHAR(255)"/>
+            <column name="SECURE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MRE_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORRESPONSEHEADER">
+        <createTable tableName="MONITORRESPONSEHEADER">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORRESPONSEHEADER_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="VALUE" type="VARCHAR(4000)"/>
+            <column name="MRE_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORSESSION">
+        <createTable tableName="MONITORSESSION">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORSESSION_PK"/>
+            </column>
+            <column name="REQUESTEDSESSIONID" type="VARCHAR(255)"/>
+            <column name="REQUESTEDSESSIONIDFROMCOOKIE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUESTEDSESSIONIDFROMURL" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUESTEDSESSIONIDVALID" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORSETTING">
+        <createTable tableName="MONITORSETTING">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="MONITORSETTING_PK"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="VALUE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_FK1">
+        <addForeignKeyConstraint baseColumnNames="RESPONSE_ID" baseTableName="MONITORREQUEST" constraintName="MONITORREQUEST_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORRESPONSE" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_FK2">
+        <addForeignKeyConstraint baseColumnNames="SECURITY_ID" baseTableName="MONITORREQUEST" constraintName="MONITORREQUEST_FK2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUESTSECURITY" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_FK3">
+        <addForeignKeyConstraint baseColumnNames="SESSION_ID" baseTableName="MONITORREQUEST" constraintName="MONITORREQUEST_FK3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORSESSION" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTCERTIFICATE_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTCERTIFICATE" constraintName="MONITORREQUESTCERTIFICATE_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTCOOKIE_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTCOOKIE" constraintName="MONITORREQUESTCOOKIE_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTFORMPARAMETER_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTFORMPARAMETER" constraintName="MONITORREQUESTFORMPARAMETER_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTFORMPARAMETERVALUE_FK1">
+        <addForeignKeyConstraint baseColumnNames="MFE_ID" baseTableName="MONITORREQUESTFORMPARAMETERVALUE" constraintName="MONITORREQUESTFORMPARAMETERVALUE_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUESTFORMPARAMETER" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTHEADER_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTHEADER" constraintName="MONITORREQUESTHEADER_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTLOCALE_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTLOCALE" constraintName="MONITORREQUESTLOCALE_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTPART_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRT_ID" baseTableName="MONITORREQUESTPART" constraintName="MONITORREQUESTPART_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUEST" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUESTPARTHEADER_FK1">
+        <addForeignKeyConstraint baseColumnNames="MPT_ID" baseTableName="MONITORREQUESTPARTHEADER" constraintName="MONITORREQUESTPARTHEADER_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORREQUESTPART" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORRESPONSECOOKIE_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRE_ID" baseTableName="MONITORRESPONSECOOKIE" constraintName="MONITORRESPONSECOOKIE_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORRESPONSE" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORRESPONSEHEADER_FK1">
+        <addForeignKeyConstraint baseColumnNames="MRE_ID" baseTableName="MONITORRESPONSEHEADER" constraintName="MONITORRESPONSEHEADER_FK1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MONITORRESPONSE" referencedTableSchemaName="PUBLIC" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORLOG_I1">
+        <createIndex tableName="MONITORLOG" indexName="MONITORLOG_I1">
+            <column name="LOGDATE" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORLOG_I2">
+        <createIndex tableName="MONITORLOG" indexName="MONITORLOG_I2">
+            <column name="REQUESTID" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORLOG_I3">
+        <createIndex tableName="MONITORLOG" indexName="MONITORLOG_I3">
+            <column name="SESSIONID" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORLOG_I4">
+        <createIndex tableName="MONITORLOG" indexName="MONITORLOG_I4">
+            <column name="DURATION" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_I1">
+        <createIndex tableName="MONITORREQUEST" indexName="MONITORREQUEST_I1">
+            <column name="STARTTIME" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_I2">
+        <createIndex tableName="MONITORREQUEST" indexName="MONITORREQUEST_I2">
+            <column name="REQUESTID" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORREQUEST_I3">
+        <createIndex tableName="MONITORREQUEST" indexName="MONITORREQUEST_I3">
+            <column name="DURATION" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORSETTING_I1">
+        <createIndex tableName="MONITORSETTING" indexName="MONITORSETTING_I1">
+            <column name="CODE" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="metalisx" context="initial-ddl" id="MONITORSETTING_I2">
+        <createIndex tableName="MONITORSETTING" indexName="MONITORSETTING_I2">
+            <column name="VALUE" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

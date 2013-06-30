@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="metalisx" context="initial-dml" id="MONITORSETTING-DML">
+		<insert tableName="MONITORSETTING">
+			<column name="id" value="1"></column>
+			<column name="code" value="MONITOR_WEB_APPLICATION_LISTENER_LOG_FILE"></column>
+			<column name="value" value=""></column>
+		</insert>
+		<insert tableName="MONITORSETTING">
+			<column name="id" value="2"></column>
+			<column name="code" value="MONITOR_WEB_APPLICATION_LOAD_LOG_FILE"></column>
+			<column name="value"></column>
+		</insert>
+		<insert tableName="MONITORSETTING">
+			<column name="id" value="3"></column>
+			<column name="code" value="MONITOR_WEB_APPLICATION_DISABLE_PROFILER_FILTER"></column>
+			<column name="value" value="true"></column>
+		</insert>
+		<insert tableName="MONITORSETTING">
+			<column name="id" value="4"></column>
+			<column name="code" value="MONITOR_WEB_APPLICATION_DISABLE_PROFILER_INTERCEPTOR"></column>
+			<column name="value" value="true"></column>
+		</insert>
+		<insert tableName="MONITORSETTING">
+			<column name="id" value="5"></column>
+			<column name="code" value="MONITOR_WEB_APPLICATION_DISABLE_REQUEST_FILTER"></column>
+			<column name="value" value="true"></column>
+		</insert>
+    </changeSet>
+</databaseChangeLog>

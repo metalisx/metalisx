@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
+	<link href="../css/main.css" rel="stylesheet" type="text/css"></link> 
+	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
+	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/bootstrap.js" type="text/javascript"></script>
+	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
+	
+	<script src="../js/module/application.js" type="text/javascript"></script>
+	<script src="../js/module/navbar.js" type="text/javascript"></script>
+	<script src="../js/module/log.file.listeners.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="container" ng-app="application">
+
+	<div class="navbarContainer" ngc-navbar="navbarItemFileListeners"></div>
+
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+
+				<div id="alertContainer" class="alertContainer"></div>
+				
+			 	<div class="contentContainer" ng-controller="LogFileListenersController">
+			 		<div id="fileListener" class="fileListener">
+				 		<label id="filenameLabel">Filename</label>
+				 		<input id="filename" class="filename" type="text" ng-model="model.filename" ngc-focus title="Specify the location of the monitor log file on the server."></input>
+				 		<br/>
+				 		<div id="buttonContainer" class="buttonContainer">
+					 		<a href="#" id="startListener" class="btn btn-primary" ng-click="start()">Start listener</a>
+				 		</div>
+			 		</div>
+					<div id="fileListeners" class="fileListeners">
+						<div class='listener header'>
+							<div class='filename'>Filename</div>
+							<div class='stop'>Listener</div>
+						</div>
+						<div class='listener listenerRow' data-ng-repeat="item in items">
+							<div class='filename'>{{item}}</div>
+							<div class='stopListener'>
+								<a href="#" ng-click="stop($index)">Stop</a>
+							</div>
+						</div>
+					</div>
+			 	</div>
+
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+</body>
+</html>

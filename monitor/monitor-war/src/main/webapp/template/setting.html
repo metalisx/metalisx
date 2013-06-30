@@ -1,0 +1,16 @@
+<div id="detail{{iDataIndex}}">
+	<label>ID</label>
+	<label>{{aData.id}}</label>
+	<br/>
+	<label>Code</label>
+	<label>{{aData.code}}</label>
+	<br/>
+	<label>Value</label>
+	<input id="value{{iDataIndex}}" type="text" ng-show="aData.value != 'true' && aData.value != 'false'" ng-model="aData.value"/>
+	<input id="value{{iDataIndex}}" type="checkbox" ng-show="aData.value == 'true' || aData.value == 'false'" ng-checked="aData.value == 'true'" data-ng-true-value="true" data-ng-false-value="false" ng-model="aData.value"/>
+	<br/>
+	<div class="buttonContainer">
+		<a href="#" id="saveButton{{iDataIndex}}" class="btn btn-primary" ng-click="save()">Save</a>
+		<a href="#" id="cancelButton{{iDataIndex}}" class="btn btn-primary" ng-click="cancel()">Cancel</a>
+	</div>
+</div>

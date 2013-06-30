@@ -1,0 +1,14 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+    <deployment>
+        <dependencies>
+            <system>
+                <paths>
+                	<path name="sun/security/x509"/>
+                </paths>
+            </system>
+        </dependencies>
+		<exclusions>
+			<module name="org.jboss.resteasy.resteasy-jackson-provider" />
+		</exclusions>
+    </deployment>
+</jboss-deployment-structure>

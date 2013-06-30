@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+        version="2.0">
+
+	<persistence-unit name="monitorPU" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jdbc/monitorDS</jta-data-source>
+
+		<class>org.metalisx.monitor.domain.model.list.MonitorRequestList</class>
+		<class>org.metalisx.monitor.domain.model.MonitorLog</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequest</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestCertificate</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestCookie</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestFormParameter</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestFormParameterValue</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestHeader</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestLocale</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestPart</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestPartHeader</class>
+		<class>org.metalisx.monitor.domain.model.MonitorRequestSecurity</class>
+		<class>org.metalisx.monitor.domain.model.MonitorResponse</class>
+		<class>org.metalisx.monitor.domain.model.MonitorResponseCookie</class>
+		<class>org.metalisx.monitor.domain.model.MonitorResponseHeader</class>
+		<class>org.metalisx.monitor.domain.model.MonitorSession</class>
+		<class>org.metalisx.monitor.domain.model.MonitorSetting</class>
+		
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+	</persistence-unit>
+
+</persistence>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://jboss.org/schema/arquillian"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <!-- Uncomment to have test archives exported to the file system for inspection -->
+    <!-- 
+    <engine>
+        <property name="deploymentExportPath">target/</property>
+    </engine>
+     -->
+     
+    <container qualifier="jboss7" default="true">
+        <configuration>
+            <property name="jbossHome">target/jboss-as-7.1.1.Final</property>
+			<property name="managementPort">10099</property>
+			<!--
+				 For debugging you can use the settings below, 
+				 the suspend must be set on y so you have time to connect. 
+			 -->
+			<!-- 
+            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m
+                -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y
+            </property>
+            -->
+        </configuration>
+    </container>
+ 
+ 	<!-- 
+		The property webdriver.ie.driver is ignored with this the used releases Drone 1.2.0.Alpha2 and
+		Graphene 2.0.0.Alpha4. Check later if it works with the final releases. 
+		For now you can add -Dwebdriver.ie.driver=D:/selenium-webdriver/IEDriverServer.exe to JUnit start 
+		configuration if you want to run it in Eclipse.
+ 	 -->
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">internetExplorer</property>
+		<property name="webdriver.ie.driver">/selenium-webdriver/IEDriverServer.exe</property>
+		<property name="ignoreProtectedModeSettings">true</property>
+	</extension>
+
+</arquillian>

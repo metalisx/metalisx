@@ -1,0 +1,60 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=nl, ST=noord-holland, L=hilversum, O=server, CN=server.monitor.nl
+        Validity
+            Not Before: Oct 14 16:59:20 2012 GMT
+            Not After : Oct 14 16:59:20 2013 GMT
+        Subject: C=nl, ST=noord-holland, O=server, CN=client.monitor.nl
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:ea:a3:d7:5c:4f:1c:f5:1e:75:0b:e4:dc:b4:37:
+                    66:fa:8b:a6:1f:d3:e6:d3:5e:1c:58:82:5a:9d:e2:
+                    18:8e:46:eb:6d:49:ca:c9:b6:94:90:6a:9b:4c:83:
+                    e9:c3:bd:4c:0e:61:4c:52:4d:a6:99:00:88:d9:22:
+                    5d:82:7a:c8:f0:91:ac:d8:5b:00:c7:7a:33:d9:ce:
+                    48:c8:11:29:02:b1:24:11:6d:d4:e7:64:b6:bd:73:
+                    24:19:a2:0c:94:da:9f:b0:43:2f:10:66:7a:06:eb:
+                    c1:74:4c:23:fd:58:f9:5e:7e:a7:e0:6b:25:5f:81:
+                    cf:da:e4:c3:20:8e:3d:70:a7
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                81:C5:1A:F7:4C:7E:22:5F:06:D6:90:26:57:4D:A3:5D:88:B0:46:84
+            X509v3 Authority Key Identifier: 
+                keyid:8C:A4:14:14:E2:E7:F8:84:00:CD:BA:16:DF:41:0A:2F:A7:F7:56:EB
+
+    Signature Algorithm: sha1WithRSAEncryption
+         b1:7d:fb:fe:c5:f4:dd:3c:9b:77:7a:7e:5d:c5:e4:30:cc:14:
+         84:62:f4:6f:16:9d:29:2f:41:60:71:8d:7b:4f:7c:1f:7e:88:
+         ea:be:cb:97:a6:df:08:bd:1c:d4:7d:f8:cd:b1:5a:c7:32:26:
+         c5:ba:cb:67:27:ee:ac:d8:f5:b4:b5:bc:67:08:6a:bf:02:d2:
+         17:f1:71:92:60:6b:fc:2c:ef:d6:6c:cd:1e:3b:bc:d2:a0:b3:
+         23:20:6b:b0:21:2a:43:cf:12:7a:ab:99:d5:f5:cb:e4:f9:4d:
+         b5:46:75:71:6f:2d:2e:78:b4:c6:3d:db:b9:de:04:6e:3c:1b:
+         a8:ba
+-----BEGIN CERTIFICATE-----
+MIICqTCCAhKgAwIBAgIBATANBgkqhkiG9w0BAQUFADBmMQswCQYDVQQGEwJubDEW
+MBQGA1UECAwNbm9vcmQtaG9sbGFuZDESMBAGA1UEBwwJaGlsdmVyc3VtMQ8wDQYD
+VQQKDAZzZXJ2ZXIxGjAYBgNVBAMMEXNlcnZlci5tb25pdG9yLm5sMB4XDTEyMTAx
+NDE2NTkyMFoXDTEzMTAxNDE2NTkyMFowUjELMAkGA1UEBhMCbmwxFjAUBgNVBAgM
+DW5vb3JkLWhvbGxhbmQxDzANBgNVBAoMBnNlcnZlcjEaMBgGA1UEAwwRY2xpZW50
+Lm1vbml0b3IubmwwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOqj11xPHPUe
+dQvk3LQ3ZvqLph/T5tNeHFiCWp3iGI5G621Jysm2lJBqm0yD6cO9TA5hTFJNppkA
+iNkiXYJ6yPCRrNhbAMd6M9nOSMgRKQKxJBFt1Odktr1zJBmiDJTan7BDLxBmegbr
+wXRMI/1Y+V5+p+BrJV+Bz9rkwyCOPXCnAgMBAAGjezB5MAkGA1UdEwQCMAAwLAYJ
+YIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1Ud
+DgQWBBSBxRr3TH4iXwbWkCZXTaNdiLBGhDAfBgNVHSMEGDAWgBSMpBQU4uf4hADN
+uhbfQQovp/dW6zANBgkqhkiG9w0BAQUFAAOBgQCxffv+xfTdPJt3en5dxeQwzBSE
+YvRvFp0pL0FgcY17T3wffojqvsuXpt8IvRzUffjNsVrHMibFustnJ+6s2PW0tbxn
+CGq/AtIX8XGSYGv8LO/WbM0eO7zSoLMjIGuwISpDzxJ6q5nV9cvk+U21RnVxby0u
+eLTGPdu53gRuPBuoug==
+-----END CERTIFICATE-----

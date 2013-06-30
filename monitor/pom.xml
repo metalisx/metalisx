@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.metalisx</groupId>
+		<artifactId>metalisx</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>monitor</artifactId>
+	<packaging>pom</packaging>
+
+	<name>MetalIsX Monitor</name>
+
+	<modules>
+		<module>monitor-domain</module>
+		<module>monitor-context</module>
+		<module>monitor-context-slf4j-mdc</module>
+		<module>monitor-context-request</module>
+		<module>monitor-profiler-slf4j-cdi-interceptor</module>
+		<module>monitor-profiler-slf4j-servlet-filter</module>
+		<module>monitor-request-servlet-filter</module>
+		<module>monitor-test-war</module>
+		<module>monitor-war</module>
+	</modules>
+
+</project>

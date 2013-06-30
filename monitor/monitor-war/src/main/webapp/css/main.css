@@ -1,0 +1,160 @@
+.width-200px {
+	width: 200px;
+}
+.dateRanges {
+	float: left;
+	margin: 3px;
+	padding: 1px 5px 2px 0px;
+	width: 220px;
+}
+.dateRanges.btn-group {
+	white-space: normal;
+}
+input[type="text"].realtimeInterval {
+	width: 50px;
+}
+.filename {
+	width: 400px;
+} 
+.lineChartContainer {
+	display: none;
+	float:left;
+	width: 100%;
+	margin: 2px;
+}
+.requests .tree .content pre,
+.requests .tree .content iframe {
+	width: 1110px;
+	max-height: 400px;
+	margin-left: 40px;
+}
+.requests .tree .content iframe {
+	height: 400px;
+}
+.requests .tree .content.partContent pre,
+.requests .tree .content.partContent iframe {
+	width: 1080px;
+}
+.requests .tree .content.certificate pre {
+	width: 1070px;
+}
+.requests .tree .content pre {
+	border: 1px solid #DDD;
+	white-space: no-wrap;
+	overflow: scroll;
+}
+.requestDetail {
+	float: left;
+	width: 100%;
+}
+.requestDetail .tree {
+	width: 1206px;
+}
+.requestDetail .tree .message {
+	float: left;
+}
+.requestDetail .tree .duration {
+	float: left;
+	min-width: 60px;
+	text-align: right;
+	padding-right: 10px;
+}
+.summaryDetail {
+	float: left;
+	width: 100%;
+}
+.summaryDetail .summaryTableLink {
+	float: left;
+	width: 100%;
+	padding: 0px 0px 15px 0px;
+}
+.fileListener {
+	float: left;
+	width: 100%;
+}
+.fileListeners {
+	float: left;
+	width: 100%;
+}
+.fileListeners .listener {
+	float: left;
+	width: 100%;
+}
+.fileListeners .listener.header {
+	float: left;
+	font-weight: bold;
+}
+.fileListeners .listener .filename {
+	float: left;
+	width: 400px;
+	overflow: auto;
+	margin: 2px;
+}
+.fileListeners .listener .stopListener {
+	float: left;
+	width: 100px;
+	margin: 2px;
+}
+/* 
+	dataTable
+	predefined widths:
+		table -> width = 1209px + right-border = 1px
+		th -> left-border = 1px + left-padding = 8px + column width + righ-padding = 8px
+*/
+.requests table {
+	width: 1209px;
+}
+.requests .startTime {
+	width: 140px;
+}
+.requests .requestId {
+	width: 150px;
+}
+.requests .duration {
+	width: 80px;
+}
+.requests .url {
+	width: 770px;
+}
+.requests .tree {
+	width: 1190px;
+}
+.logs table {
+	width: 100%
+}
+.logs .date {
+	width: 13%
+}
+.logs .organization {
+	width: 15%
+}
+.logs .username {
+	width: 15%
+}
+.logs .message {
+	width: 50%
+}
+.logs .duration {
+	width: 7%
+}
+.summary table {
+	width: 100%;
+}
+.summary .message {
+	width: 58%;
+}
+.summary .count {
+	width: 5%;
+}
+.summary .minDuration {
+	width: 8%;
+}
+.summary .maxDuration {
+	width: 9%;
+}
+.summary .averageDuration {
+	width: 11%;
+}
+.summary .totalDuration {
+	width: 9%;
+}

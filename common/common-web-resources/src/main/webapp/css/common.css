@@ -1,0 +1,264 @@
+html {
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+br {
+	clear: both;
+}
+a {
+	color: #08C;
+	text-decoration: none;
+}
+a:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+label {
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 3px 14px 3px 8px;
+	width: 100px;
+	color: #666;
+}
+label.checkbox {
+	width: 130px;
+}
+input[type="text"], input[type="password"] {
+	float: left;
+	margin: 3px;
+	padding: 1px 5px 2px 5px;
+	width: 220px;
+	border: 1px solid #999;
+}
+input[type="checkbox"] {
+	float: left;
+	margin: 3px;
+	padding: 1px 5px 2px 5px;
+	width: 20px;
+	border: 1px solid #999;
+}
+
+/* Common styles */
+.title {
+	float: left;
+	width: 100%;
+}
+.overflowHidden {
+	white-space: nowrap;
+	text-overflow:ellipsis;
+	overflow: hidden;
+}
+.wordwrap {
+	white-space: pre-wrap;      /* CSS3 */   
+	white-space: -moz-pre-wrap; /* Firefox */    
+	white-space: -pre-wrap;     /* Opera <7 */   
+	white-space: -o-pre-wrap;   /* Opera 7 */    
+	word-wrap: break-word;      /* IE, Chrome, Firefox */
+	word-break: break-all;		/* IE, Chrome, Firefox */
+}
+
+/* Common containers */
+body > .container {
+}
+.navbarContainer {
+}
+.alertContainer {
+	display: none;
+	width: 100%;
+}
+.contentContainer {
+	width: 100%;
+	height: 100%;
+}
+.filterContainer {
+}
+.filterResultContainer {
+	float: left;
+	width: 100%;
+	height: 100%;
+}
+.buttonContainer {
+	/* float: left; disabled as bootstrap can not handle it. */
+	padding-left: 130px;
+	margin: 4px 0px 4px 0px;
+}
+
+/* Block input */
+.block
+{
+	display: none;
+	z-index: 10000;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	position: fixed;
+	background: url('../img/loading.gif') no-repeat center center;
+}
+
+/* File upload */
+.fileUploadContainer {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+}
+.fileUploadContainer .fileChooserContainer {
+	float: left;
+}
+.fileUploadContainer .fileChooserFilename {
+	float: left;
+	padding: 7px;
+}
+.fileUploadContainer .fileChooserContainer input[type="file"] {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	position: absolute;
+	top: 0px;
+	left: 0px; /* right: 0px; for jQuery UI button */
+	margin: 0px;
+	cursor: pointer;
+}
+.fileUploadContainer .fileUploadInfo table {
+	width: 100%;
+	border: 0px;
+	padding: 4px;
+	margin: 0px;
+}
+.fileUploadContainer .fileUploadInfo .filename {
+	text-align: left;
+}
+.fileUploadContainer .fileUploadInfo .contentType {
+	text-align: left;
+}
+.fileUploadContainer .fileUploadInfo .size {
+	text-align: right;
+} 
+
+/* Flot */
+.lineChart {
+	position: relative;
+	width: 1200px;
+	height: 300px;
+	margin: 10px 2px 10px 2px;
+}
+.lineChart .flot-overlay {
+	background: none;
+}
+.lineChart .flot-buttonGroup {
+	float: right;
+	margin-right: 40px;
+}
+.lineChart .flot-zoomOutButton {
+	position: absolute;
+	cursor: pointer;
+	right: 48px;
+	top: 20px;
+	font-size: smaller;
+	color: #999;
+	background-color: #eee;
+	padding: 2px;
+}
+.lineChart .flot-panButton {
+	position: absolute;
+	cursor: pointer;
+}
+.flot-tooltip {
+	position: absolute;
+	display: none;
+	border: 1px solid #fdd;
+	padding: 2px;
+	background-color: #fee;
+}
+.lineChart .ui-menu { 
+	position: absolute; 
+	width: 100px;
+}
+.lineChartOverview {
+	position: relative;
+	width: 600px;
+	height: 50px;
+	margin: 15px 0px 20px 25px;
+}
+
+/* CRUD */
+.newEntityButton {
+}
+
+/* Sidenav (see Bootstrap docs.css) */
+.sidenav {
+  margin: 30px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+.sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+.sidenav > .active > a {
+  position: relative;
+  z-index: 2;
+  padding: 9px 15px;
+  border: 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+     -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+          box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+.sidenav .icon-chevron-right {
+  float: right;
+  margin-top: 2px;
+  margin-right: -6px;
+  opacity: .25;
+}
+.sidenav > li > a:hover {
+  background-color: #f5f5f5;
+}
+.sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.sidenav .active .icon-chevron-right,
+.sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.sidenav.affix {
+  top: 40px;
+}
+.sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 270px;
+}
