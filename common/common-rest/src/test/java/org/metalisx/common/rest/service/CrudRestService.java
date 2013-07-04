@@ -1,4 +1,4 @@
-package org.metalisx.crud.rest.service;
+package org.metalisx.common.rest.service;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;

@@ -108,13 +108,13 @@
 
 		<dependency>
 			<groupId>org.metalisx</groupId>
-			<artifactId>common-web-resources</artifactId>
-			<type>war</type>
+			<artifactId>common-rest</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.metalisx</groupId>
-			<artifactId>crud-rest</artifactId>
+			<artifactId>common-web-resources</artifactId>
+			<type>war</type>
 		</dependency>
 
 		<dependency>

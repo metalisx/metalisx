@@ -17,7 +17,6 @@
 	<name>MetalIsX CRUD</name>
 
 	<modules>
-		<module>crud-rest</module>
 		<module>crud-rest-test-war</module>
 	</modules>
 

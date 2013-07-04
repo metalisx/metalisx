@@ -15,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.MessagesDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.service.MonitorLogService;
 import org.metalisx.monitor.file.parser.FileParser;
 import org.metalisx.monitor.profiler.interceptor.Profile;
@@ -30,7 +29,7 @@ import org.metalisx.monitor.web.service.dto.FilenameDto;
  */
 @Profile
 @Path("/load")
-public class LogFileLoadRestService extends AbstractRestService {
+public class LogFileLoadRestService {
 
 	@Inject
 	@Value("MONITOR_WEB_APPLICATION_LOAD_LOG_FILE")

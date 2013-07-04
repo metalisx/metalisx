@@ -1,4 +1,4 @@
-package org.metalisx.crud.rest.service;
+package org.metalisx.common.rest.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,7 +29,6 @@ import org.metalisx.common.rest.client.AbstractRestClient;
 import org.metalisx.common.rest.dto.entity.EntitiesDto;
 import org.metalisx.common.rest.dto.entity.EntityDto;
 import org.metalisx.common.rest.dto.entity.EntityFieldDto;
-import org.metalisx.common.rest.service.Deployments;
 
 @RunAsClient
 @RunWith(Arquillian.class)

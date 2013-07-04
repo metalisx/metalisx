@@ -21,7 +21,6 @@ import org.metalisx.common.domain.dto.PageDto;
 import org.metalisx.common.domain.utils.DateUtils;
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.MessagesDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.filter.MonitorRequestFilter;
 import org.metalisx.monitor.domain.model.MonitorRequest;
 import org.metalisx.monitor.domain.model.MonitorRequestCertificate;
@@ -45,7 +44,7 @@ import sun.security.x509.X509CertImpl;
 @SuppressWarnings("restriction")
 @Profile
 @Path("/requests")
-public class RequestRestService extends AbstractRestService {
+public class RequestRestService {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestRestService.class);
 

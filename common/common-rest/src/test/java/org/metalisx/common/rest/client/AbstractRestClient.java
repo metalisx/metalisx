@@ -1,4 +1,4 @@
-package org.metalisx.crud.rest.client;
+package org.metalisx.common.rest.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;

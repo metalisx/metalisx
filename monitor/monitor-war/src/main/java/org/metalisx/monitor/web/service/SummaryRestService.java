@@ -11,7 +11,6 @@ import org.metalisx.common.domain.dto.PageContextDto;
 import org.metalisx.common.domain.dto.PageDto;
 import org.metalisx.common.domain.utils.DateUtils;
 import org.metalisx.common.rest.dto.ItemDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.dto.MonitorSummary;
 import org.metalisx.monitor.domain.filter.MonitorLogFilter;
 import org.metalisx.monitor.domain.service.MonitorLogService;
@@ -24,7 +23,7 @@ import org.metalisx.monitor.profiler.interceptor.Profile;
  */
 @Profile
 @Path("/summary")
-public class SummaryRestService extends AbstractRestService {
+public class SummaryRestService {
 
     @EJB
 	private MonitorLogService monitorLogService;

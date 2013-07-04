@@ -14,13 +14,12 @@ import javax.ws.rs.core.MediaType;
 
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.ItemsDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.model.User;
 import org.metalisx.monitor.domain.service.UserService;
 
 
 @Path("/test")
-public class TestLoggingRestService extends AbstractRestService {
+public class TestLoggingRestService {
 
     @Inject
     private TestLoggingHierarchy1 testLoggingHierarchy1;

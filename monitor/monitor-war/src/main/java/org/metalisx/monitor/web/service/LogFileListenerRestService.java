@@ -14,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.ItemsDto;
 import org.metalisx.common.rest.dto.MessagesDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.service.MonitorLogService;
 import org.metalisx.monitor.file.listener.FileListeners;
 import org.metalisx.monitor.file.parser.LineParser;
@@ -29,7 +28,7 @@ import org.metalisx.monitor.web.service.dto.FilenameDto;
  */
 @Profile
 @Path("/listener")
-public class LogFileListenerRestService extends AbstractRestService {
+public class LogFileListenerRestService {
 
 	private static FileListeners fileListeners = new FileListeners();
 

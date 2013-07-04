@@ -6,10 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Path;
 
+import org.metalisx.common.rest.service.AbstractRestService;
+
 
 @Stateless
 @Path("/crud")
-public class CrudRestService extends AbstractCrudRestService {
+public class CrudRestService extends AbstractRestService {
 
     @PersistenceContext(unitName="crudPU")
 	private EntityManager entityManager;

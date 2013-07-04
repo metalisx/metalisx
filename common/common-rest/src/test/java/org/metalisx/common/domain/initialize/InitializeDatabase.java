@@ -1,4 +1,4 @@
-package org.metalisx.crud.domain.initialize;
+package org.metalisx.common.domain.initialize;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;

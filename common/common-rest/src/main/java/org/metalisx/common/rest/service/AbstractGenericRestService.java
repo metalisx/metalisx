@@ -1,5 +1,6 @@
 package org.metalisx.common.rest.service;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +17,6 @@ import javax.ws.rs.Produces;
 import org.metalisx.common.domain.dao.AbstractDao;
 import org.metalisx.common.domain.dto.ContextDto;
 import org.metalisx.common.domain.dto.PageDto;
-import org.metalisx.common.domain.utils.JpaUtils;
 import org.metalisx.common.gson.RestGsonConverter;
 import org.metalisx.common.rest.dto.entity.EntitiesDto;
 import org.metalisx.common.rest.dto.entity.EntityDto;
@@ -28,11 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract rest service.
+ * Abstract generic rest service.
  * 
  * Simple use case of this class:
  * <ul>
  * <li>create a sub class for this class</li>
+ * <li>set the generic type</li>
  * <li>annotate it with @Stateless</li>
  * <li>annotate it with @path("/crud"), replace crud if you need</li>
  * <li>inject the correct entity manager with @PersistenceContext</li>
@@ -42,9 +43,9 @@ import org.slf4j.LoggerFactory;
  * <li>annotate it with @ApplicationPath("/rest") and replace rest if you need</li>
  * <ul>
  */
-public abstract class AbstractRestService {
+public abstract class AbstractGenericRestService<T> {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractRestService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractGenericRestService.class);
 
 	@Inject
 	private MetadataProvider metadataProvider;
@@ -52,92 +53,94 @@ public abstract class AbstractRestService {
 	@Inject
 	private RestGsonConverter restGsonConverter;
 
+	private Class<T> entityClass;
+
 	private AbstractDao abstractDao = new AbstractDao() {
 	};
 
-	public AbstractRestService() {
-		logger.debug("Initalized rest service " + this.getClass().getName());
+	@SuppressWarnings("unchecked")
+	public AbstractGenericRestService() {
+		logger.debug("Initalized generic rest service " + this.getClass().getName());
+		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
 	@GET
-	@Path("/{entityClass}/metadata")
+	@Path("/metadata")
 	@Produces("application/json")
-	public List<EntityFieldDto> metadata(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
+	public List<EntityFieldDto> metadata() throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
 		return metadataProvider.getEntityMetadata(entityClass);
 	}
 
 	@GET
-	@Path("/{entityClass}/page/metadata")
+	@Path("/page/metadata")
 	@Produces("application/json")
-	public PageMetadataDto pageMetadata(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
+	public PageMetadataDto pageMetadata() throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
 		return metadataProvider.getPageMetadata(entityClass);
 	}
 
 	@POST
-	@Path("/{entityClass}/page")
+	@Path("/page")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public PageDto<?> getPage(@PathParam("entityClass") String entityClass, ContextDto contextDto)
+	public PageDto<?> getPage(ContextDto contextDto)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		return abstractDao.findAll(JpaUtils.toClass(entityClass), contextDto);
+		return abstractDao.findAll(entityClass, contextDto);
 	}
 
 	@GET
-	@Path("/{entityClass}")
+	@Path("/")
 	@Produces("application/json")
-	public EntitiesDto get(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
+	public EntitiesDto get() throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
-		List<?> list = abstractDao.findAll(JpaUtils.toClass(entityClass));
+		List<?> list = abstractDao.findAll(entityClass);
 		return new EntitiesDto(list, new EntityMetadataDto(metadataProvider.getEntityMetadata(entityClass)));
 	}
 
 	@GET
-	@Path("/{entityClass}/new-entity")
+	@Path("/new-entity")
 	@Produces("application/json")
-	public EntityDto getNewEntity(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
+	public EntityDto getNewEntity() throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
-		Object entity = JpaUtils.toClass(entityClass).newInstance();
+		Object entity = entityClass.newInstance();
 		return new EntityDto(entity, new EntityMetadataDto(metadataProvider.getNewEntityMetadata(entityClass)));
 	}
 
 	@GET
-	@Path("/{entityClass}/{id}")
+	@Path("/{id}")
 	@Produces("application/json")
-	public EntityDto get(@PathParam("entityClass") String entityClass, @PathParam("id") Long id)
+	public EntityDto get(@PathParam("id") Long id)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		return new EntityDto(abstractDao.findById(JpaUtils.toClass(entityClass), id), new EntityMetadataDto(
+		return new EntityDto(abstractDao.findById(entityClass, id), new EntityMetadataDto(
 				metadataProvider.getEntityMetadata(entityClass)));
 	}
 
 	@DELETE
-	@Path("/{entityClass}/{id}")
+	@Path("/{id}")
 	@Produces("application/json")
-	public Long delete(@PathParam("entityClass") String entityClass, @PathParam("id") Long id)
+	public Long delete(@PathParam("id") Long id)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		abstractDao.remove(JpaUtils.toClass(entityClass), id);
+		abstractDao.remove(entityClass, id);
 		return id;
 	}
 
 	@PUT
-	@Path("/{entityClass}")
+	@Path("/")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Object put(@PathParam("entityClass") String entityClass, String body) throws ClassNotFoundException,
+	public Object put(String body) throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
-		Class<?> clazz = JpaUtils.toClass(entityClass);
-		return abstractDao.persist(clazz, restGsonConverter.fromJson(body, clazz));
+		return abstractDao.persist(entityClass, restGsonConverter.fromJson(body, entityClass));
 	}
 
 	@POST
-	@Path("/{entityClass}")
+	@Path("/")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Object post(@PathParam("entityClass") String entityClass, String body) throws ClassNotFoundException,
+	public Object post(String body) throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
-		Class<?> clazz = JpaUtils.toClass(entityClass);
-		return abstractDao.persist(clazz, restGsonConverter.fromJson(body, clazz));
+		return abstractDao.persist(entityClass, restGsonConverter.fromJson(body, entityClass));
 	}
 
 	public void setEntityManager(EntityManager entityManager) {

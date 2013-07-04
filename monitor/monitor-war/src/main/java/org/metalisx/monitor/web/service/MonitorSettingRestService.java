@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import org.metalisx.common.domain.dto.ContextDto;
 import org.metalisx.common.domain.dto.PageDto;
 import org.metalisx.common.rest.dto.MessagesDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.enumeration.MonitorSettingCode;
 import org.metalisx.monitor.domain.model.MonitorSetting;
 import org.metalisx.monitor.domain.service.MonitorSettingService;
@@ -29,7 +28,7 @@ import org.metalisx.monitor.web.startup.MonitorStartup;
  */
 @Profile
 @Path("/settings")
-public class MonitorSettingRestService extends AbstractRestService {
+public class MonitorSettingRestService {
 
     @Inject
     private MonitorStartup monitorApplicationContext;

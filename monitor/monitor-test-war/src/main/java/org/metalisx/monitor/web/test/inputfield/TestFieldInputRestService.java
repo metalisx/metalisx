@@ -20,11 +20,10 @@ import javax.ws.rs.core.Response;
 
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.parameter.DateParameter;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.model.User;
 
 @Path("/test")
-public class TestFieldInputRestService extends AbstractRestService {
+public class TestFieldInputRestService {
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 

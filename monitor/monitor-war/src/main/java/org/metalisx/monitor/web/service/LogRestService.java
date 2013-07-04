@@ -21,7 +21,6 @@ import org.metalisx.common.domain.utils.DateUtils;
 import org.metalisx.common.gson.annotation.GsonTransient;
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.ItemsDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.common.rest.service.RestException;
 import org.metalisx.monitor.domain.dto.MonitorOverviewItem;
 import org.metalisx.monitor.domain.dto.MonitorSummary;
@@ -42,7 +41,7 @@ import org.metalisx.monitor.web.service.dto.OverviewSettingsDto;
  */
 @Profile
 @Path("/logs")
-public class LogRestService extends AbstractRestService {
+public class LogRestService {
 
     @EJB
     private MonitorLogService monitorLogService;

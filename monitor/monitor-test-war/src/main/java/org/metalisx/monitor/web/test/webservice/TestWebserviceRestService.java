@@ -11,12 +11,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.metalisx.common.rest.dto.ItemDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.model.User;
 
-
 @Path("/test")
-public class TestWebserviceRestService extends AbstractRestService {
+public class TestWebserviceRestService {
 
     @POST
     @Path("/testWebservice")

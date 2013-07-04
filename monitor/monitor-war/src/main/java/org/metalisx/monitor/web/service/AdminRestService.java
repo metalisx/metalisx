@@ -7,7 +7,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.metalisx.common.rest.dto.MessagesDto;
-import org.metalisx.common.rest.service.AbstractRestService;
 import org.metalisx.monitor.domain.service.AdminService;
 import org.metalisx.monitor.profiler.interceptor.Profile;
 
@@ -19,7 +18,7 @@ import org.metalisx.monitor.profiler.interceptor.Profile;
  */
 @Profile
 @Path("/admin")
-public class AdminRestService extends AbstractRestService {
+public class AdminRestService {
 
     @EJB
     private AdminService adminService;
