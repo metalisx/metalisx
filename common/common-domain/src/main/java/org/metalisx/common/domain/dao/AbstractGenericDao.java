@@ -2,6 +2,7 @@ package org.metalisx.common.domain.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -44,7 +45,12 @@ public abstract class AbstractGenericDao<T, I extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public AbstractGenericDao() {
 		logger.debug("Initalized generic DAO " + this.getClass().getName());
-		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		if (type instanceof Class) {
+			this.entityClass = (Class<T>) type;
+		} else if (type instanceof ParameterizedType) {
+			this.entityClass = (Class<T>) ((ParameterizedType) type).getRawType();
+		}
 	}
 
 	// Convenience methods
