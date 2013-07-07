@@ -76,6 +76,44 @@ function TemplateProvider(templateService, templateCompile) {
 	};
 }
 
+/*
+ * To make rest calls uniform across applications a pattern
+ * is developed. The re-occurring rest calls are combined 
+ * in this AngularJS service.
+ * 
+ * A base url is provided as parameter for the method and
+ * depending on the call the url path is extended according
+ * to the Json object requested from the server.
+ * 
+ * Protocol - Path - Information
+ *  GET  - /metatdata     - returns metadata JSON object of an entity
+ *  POST - /page/metadata - returns metadata JSON object for a page containing entities
+ *  POST - /inital/data   - returns a JSON object containing all information
+ *                          needed to display an entity.
+ *                          Useful when retrieving an entity, and showing
+ *                          a property of the entity as a listbox.
+ *                          To display the options in the listbox, we can use this
+ *                          call to retrieve these list. Multiple if required.
+ *                          This is done to prevent the entity to clutter with 
+ *                          secondary information.
+ *  POST - /page          - returns a JSON object containing a page with entities
+ *  GET  - /new-entity    - returns a new entity JSON object of a server side entity.
+ *                          This way the entity can be build on the server, so no
+ *                          hacks or weird JavaScript is required.
+ *  POST - /list          - returns a JSON object containing a list of entities
+ *  GET  - /              - returns an entity
+ *  POST - /              - update an entity
+ *  PUT  - /              - insert an entity 
+ *  DEL  - /              - deletes an entity
+ *  
+ *  The getPageEndpoint is a helper function to build the correct
+ *  rest url for retrieving a page. This was required to include the jQuery
+ *  DataTable in this pattern.
+ *  
+ *  The server side needs to implement the code handling the protocol and
+ *  path. To use this service does not mean all needs to be implemented, only
+ *  implement the one you need.
+ */
 function CrudService() {
 
 	var restMetadataEndpoint = '/metadata';
@@ -83,6 +121,7 @@ function CrudService() {
 	var restPageEndpoint = '/page';
 	var restNewEntityEndpoint = '/new-entity';
 	var restListEndpoint = '/list';
+	var restInitialDataEndpoint = '/initial/data';
 
 	function dataToUrlPath(data) {
 		var value = '';
@@ -94,6 +133,7 @@ function CrudService() {
 		return value;
 	}
 
+	/* Returns the rest page endpoint, so it can be used by jQuery DataTable. */ 
 	this.getPageEndpoint = function(url) {
 		return url + restPageEndpoint;
 	};
@@ -101,9 +141,13 @@ function CrudService() {
 	this.metadata = function(url,  options) {
 		$.metalisxDataProvider.get(url + restMetadataEndpoint, null, options);
 	};
-	
+
 	this.pageMetadata = function(url, options) {
 		$.metalisxDataProvider.get(url + restPageMetadataEndpoint, null, options);
+	};
+	
+	this.getInitialData = function(url, data, options) {
+		$.metalisxDataProvider.post(url + restInitialDataEndpoint, data, options);
 	};
 	
 	this.getNewEntity = function(url, options) {
@@ -315,7 +359,6 @@ application.directive('ngcTypeahead', function () {
 				scope.$apply();
 			}
 			
-			var currentData = null;
 			var $typeahead = null;
 			function createTypeahead() {
 				$typeahead = element.typeahead('destroy').typeahead({
