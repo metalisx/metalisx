@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 
 import org.metalisx.common.domain.dao.AbstractDao;
 import org.metalisx.common.domain.dto.ContextDto;
+import org.metalisx.common.domain.dto.OrderBy;
 import org.metalisx.common.domain.dto.PageDto;
 import org.metalisx.common.domain.utils.JpaUtils;
 import org.metalisx.common.gson.RestGsonConverter;
@@ -82,6 +83,15 @@ public abstract class AbstractRestService {
 	public PageDto<?> getPage(@PathParam("entityClass") String entityClass, ContextDto contextDto)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		return abstractDao.findAll(JpaUtils.toClass(entityClass), contextDto);
+	}
+
+	@POST
+	@Path("/{entityClass}/list")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public List<?> getList(@PathParam("entityClass") String entityClass, OrderBy orderBy)
+	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		return abstractDao.findAll(JpaUtils.toClass(entityClass), orderBy, null);
 	}
 
 	@GET
