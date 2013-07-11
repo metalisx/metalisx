@@ -23,13 +23,28 @@ public class MessagesDto {
 		return this;
 	}
 
+	public MessagesDto addSuccess(String message, String detail) {
+		messages.add(new MessageDto(message, detail, MessageLevel.SUCCESS_LEVEL));
+		return this;
+	}
+
 	public MessagesDto addInfo(String message) {
 		messages.add(new MessageDto(message, MessageLevel.INFO_LEVEL));
 		return this;
 	}
 
+	public MessagesDto addInfo(String message, String detail) {
+		messages.add(new MessageDto(message, detail, MessageLevel.INFO_LEVEL));
+		return this;
+	}
+
 	public MessagesDto addError(String message) {
 		messages.add(new MessageDto(message, MessageLevel.ERROR_LEVEL));
+		return this;
+	}
+
+	public MessagesDto addError(String message, String detail) {
+		messages.add(new MessageDto(message, detail, MessageLevel.ERROR_LEVEL));
 		return this;
 	}
 

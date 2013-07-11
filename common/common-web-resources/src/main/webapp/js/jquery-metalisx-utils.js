@@ -81,7 +81,7 @@
  * jQuery plugin to render alerts.
  * Contains two methods:
  *  - metalisxAjaxAlert to render an error returned by an Ajax call
- *  - metalisxAlert to render a text 
+ *  - metalisxAlert to render a text and if provided a detail
  * Requires:
  *  - the Twitter Bootstrap alert styles.
  * The properties for the options argument are:
@@ -99,10 +99,29 @@
  */
 (function($){
 
-	$.fn.metalisxAjaxAlert = function(jqXHR, textStatus, errorThrown, options) {
+	$.fn.metalisxAjaxAlert = function(jqXHR, textStatus, errorThrown) {
 		
+		var $this = $(this);
+		if (errorThrown) {
+			var message = {};
+			message.error = $('<div class="' + settings.alertInnerContainerClass + '" width="100%"/>')
+				.append('Request failed: ' + textStatus + ' ' + errorThrown + '&nbsp;&nbsp;');
+			if (jqXHR.responseText.indexOf('body') > 0) {
+				message.detail = jqXHR.responseText;
+			}
+			message.level = 'error';
+			$this.metalisxAlert(message);
+		}
+	};
+
+	/**
+	 * The first parameter can contain a text or an object containing the properties text, detail
+	 * and level. The level in the object takes precedence over the level in the options. 
+	 */
+	$.fn.metalisxAlert = function(value, options) {
+
 		var settings = $.extend(true, {
-			type: 'info',
+			level: 'info',
 			clean: true,
 			location: 'first',
 			alertInnerContainerClass: 'alertInnerContainer',
@@ -111,40 +130,29 @@
 			alertInnerContainerHeight: '400px'
 		}, options || {});
 		
-		var $this = $(this);
-		if (errorThrown) {
-			var $error = $('<div class="' + settings.alertInnerContainerClass + '" width="100%"/>')
-				.append('Request failed: ' + textStatus + ' ' + errorThrown + '&nbsp;&nbsp;');
-			if (jqXHR.responseText.indexOf('body') > 0) {
-				$errorDetail = $('<a class="' + settings.alertDetailClass + '" href="#">Detail</a>')
-					.click(function() {
-						if ($('.' + settings.alertIframeClass, $this).size() == 0) {
-							$('.' + settings.alertInnerContainerClass, $this).append('<br/>');
-							$('.' + settings.alertInnerContainerClass, $this)
-								.append('<iframe width="100%" height="' + settings.alertInnerContainerHeight + 
-										'" class="' + settings.alertIframeClass + '"/>');
-							$('.' + settings.alertIframeClass, $this).contents().find('html').html(jqXHR.responseText);
-						} else {
-							$('.' + settings.alertInnerContainerClass + ' br', $this).remove();
-							$('.' + settings.alertIframeClass, $this).remove();
-						}
-					});
-				$error.append($errorDetail);
-			}
-			$this.metalisxAlert($error, {type: 'error'});
-		}
-	};
-	
-	$.fn.metalisxAlert = function(text, options) {
-
-		var settings = $.extend(true, {
-			level: 'info',
-			clean: true,
-			location: 'first'
-		}, options || {});
-		
 		var $this = this;
 
+		var text = null;
+		var detail = null;
+		var level = null;
+		
+		if (value instanceof Object) {
+			if (value.message) {
+				text = value.message;
+				if (text.detail) {
+					detail = value.detail;
+				}
+				if (value.level) {
+					level = value.level;
+				} else {
+					level = settings.level;
+				}
+			}
+		} else {
+			text = value;
+			level = settings.level;
+		}
+		
 		if (settings.clean) {
 			$this.empty();
 		}
@@ -161,15 +169,31 @@
 		$alert.removeClass('alert-error');
 		$alert.removeClass('alert-info');
 		
-		if (settings.level.toLowerCase() == 'success') {
+		if (level.toLowerCase() == 'success') {
 			$alert.addClass('alert-success');
-		} else if (settings.level.toLowerCase() == 'error') {
+		} else if (level.toLowerCase() == 'error') {
 			$alert.addClass('alert-error');
-		} else if (settings.level.toLowerCase() == 'info') {
+		} else if (level.toLowerCase() == 'info') {
 			$alert.addClass('alert-info');
 		}
 
 		$alert.append(text);
+		if (detail) {
+			$detail = $('<a class="' + settings.alertDetailClass + '" href="#">Detail</a>')
+				.click(function() {
+					if ($('.' + settings.alertIframeClass, $this).size() == 0) {
+						$('.' + settings.alertInnerContainerClass, $this).append('<br/>');
+						$('.' + settings.alertInnerContainerClass, $this)
+							.append('<iframe width="100%" height="' + settings.alertInnerContainerHeight + 
+									'" class="' + settings.alertIframeClass + '"/>');
+						$('.' + settings.alertIframeClass, $this).contents().find('html').html(jqXHR.responseText);
+					} else {
+						$('.' + settings.alertInnerContainerClass + ' br', $this).remove();
+						$('.' + settings.alertIframeClass, $this).remove();
+					}
+				});
+			$alert.append($detail);
+		}
 		$this.show();
 
 		return this;
@@ -471,7 +495,7 @@
 							$.each(result.messages, function(index, message) {
 								if (message.message) {
 									var messageLevel = message.level ? message.level : 'error';
-									alertContainer.metalisxAlert(message.message, {level: messageLevel, clean: false});
+									alertContainer.metalisxAlert(message, {level: messageLevel, clean: false});
 								}
 							});
 						} else {
