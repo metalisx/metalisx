@@ -104,7 +104,7 @@ public abstract class AbstractGenericRestService<T> {
 	}
 
 	@POST
-	@Path("/{entityClass}/list")
+	@Path("/list")
 	@Consumes("application/json")
 	@Produces("application/json")
 	public List<T> getList(OrderBy orderBy)
