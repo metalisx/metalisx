@@ -2,6 +2,8 @@ package org.metalisx.common.rest.dto;
 
 public class MessageDto {
 
+	private String id;
+	
 	private String message;
 	
 	private String level;
@@ -9,15 +11,24 @@ public class MessageDto {
 	private String detail;
 	
 	public MessageDto(String message, String level) {
-		this(message, null, level);
+		this(null, message, null, level);
 	}
 
 	public MessageDto(String message, String detail, String level) {
+		this(null, message, detail, level);
+	}
+
+	public MessageDto(String id, String message, String detail, String level) {
+		this.id = id;
 		this.message = message;
 		this.detail = detail;
 		this.level = level;
 	}
-
+	
+	public String getId() {
+		return id;
+	}
+	
 	public String getMessage() {
 		return message;
 	}

@@ -17,7 +17,7 @@ function RequestsService(crudService) {
 
 }
 
-function RequestsRenderer(requestsService, alertProvider) {
+function RequestsRenderer(requestsService) {
 	
 	this.renderDataTable = function($scope) {
 		

@@ -15,7 +15,7 @@ function LogFileListenersService(crudService) {
 	};
 
 	this.getList = function(onsuccess) {
-		crudService.get(listRestEndpoint, null, {onsuccess: onsuccess, cleanAlertContainer: false});
+		crudService.get(listRestEndpoint, null, {onsuccess: onsuccess, cleanMessagesContainer: false});
 	};
 
 	this.start = function(model, onsuccess) {
@@ -28,13 +28,13 @@ function LogFileListenersService(crudService) {
 
 }
 
-function LogFileListenersModelValidator(alertProvider) {
+function LogFileListenersModelValidator(messagesProvider) {
 	
 	this.validate = function(model) {
 		var isValid = true;
 		if (model.filename == null || model.filename == '') {
-			alertProvider.alert('Filename is required, please enter the location of the file on ' +
-				'the application server. For example: c:/monitor/log4j/log4j.log.', {type: 'error'});
+			messagesProvider.message({message: 'Filename is required, please enter the location of the file on ' +
+				'the application server. For example: c:/monitor/log4j/log4j.log.', level: 'error'});
 			$('#filenameId').focus();
 			isValid = false;
 		}
@@ -43,7 +43,7 @@ function LogFileListenersModelValidator(alertProvider) {
 	
 }
 
-function LogFileListenersController($scope, alertProvider, templateProvider, logFileListenersService, logFileListenersModelValidator) {
+function LogFileListenersController($scope, templateProvider, logFileListenersService, logFileListenersModelValidator) {
 
 	function init() {
 		logFileListenersService.getModel(function(result) {

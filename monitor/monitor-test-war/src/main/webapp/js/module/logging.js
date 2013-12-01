@@ -1,10 +1,10 @@
 function HierarchyLoggingController($scope, crudService) {
 
-	var $resultContainer = $('#resultContainer', $scope.$element);
+	var resultContainerId = 'resultContainer';
 	
 	$scope.run = function() {
 		crudService.get('../rest/test/testLoggingHierarchy', null, {onsuccess: function(data) {
-			$resultContainer.metalisxAlert(data.item, {clean: false}); 
+			$.metalisxMessages({id: resultContainerId, message: data.item}, {clean : false});
 		}});
 	};
 

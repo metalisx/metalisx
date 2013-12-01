@@ -71,7 +71,7 @@ body > .container {
 }
 .navbarContainer {
 }
-.alertContainer {
+.messagesContainer {
 	display: none;
 	width: 100%;
 }

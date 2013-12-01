@@ -1,6 +1,6 @@
 function WebserviceController($scope, crudService) {
 
-	var $resultContainer = $('#resultContainer', $scope.$element);
+	var resultContainerId = 'resultContainer';
 	
 	$scope.model = {
 		date: '2012-11-28T04:12:32.000',
@@ -9,7 +9,7 @@ function WebserviceController($scope, crudService) {
 
 	$scope.run = function() {
 		crudService.post('../rest/test/testWebservice', $scope.model, {onsuccess: function(data) {
-			$resultContainer.metalisxAlert(data.item, {clean: false}); 
+			$.metalisxMessages({id: resultContainerId, message: data.item}, {clean : false});
 		}});
 	};
 

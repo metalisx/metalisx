@@ -1,6 +1,6 @@
 var application = angular.module('application', []);
 
-application.service('alertProvider', AlertProvider);
+application.service('messagesProvider', MessagesProvider);
 
 application.service('templateService', TemplateService);
 
@@ -10,34 +10,16 @@ application.service('templateCompile', TemplateCompile);
 
 application.service('crudService', CrudService);
 
-function AlertProvider() {
+function MessagesProvider() {
 	
-	var $alertContainer = $('#alertContainer');
-	
-	this.alert = function(alert, options) {
-		$alertContainer.metalisxAlert(alert, options);
+	this.message = function(message, options) {
+		$.metalisxMessages(message, options);
 	};
 	
-	this.messages = function(messages) {
-		$.each(messages, function(item, message) {
-			if (message.message && message.level) {
-				$alertContainer.metalisxAlert(message.message, {level: message.level});
-			}
-		});
+	this.messages = function(messages, options) {
+		$.metalisxMessages(messages, options);
 	};
 	
-	this.containsLevel = function(messages, level) {
-		$.each(messages, function(item, message) {
-			if (message.message && message.level && message.level.toLowerCase() == level) {
-				$alertContainer.metalisxAlert(message.message, {level: message.level});
-			}
-		});
-	};
-
-	this.containsError = function(messages) {
-		return this.containsLevel(messages, 'error');
-	};
-
 }
 
 function TemplateService($http) {

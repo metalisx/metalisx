@@ -78,123 +78,152 @@
 })(jQuery);
 
 /**
- * jQuery plugin to render alerts.
- * Contains two methods:
- *  - metalisxAjaxAlert to render an error returned by an Ajax call
- *  - metalisxAlert to render a text and if provided a detail
- * Requires:
- *  - the Twitter Bootstrap alert styles.
- * The properties for the options argument are:
- *  - level
- *  - clean
- *  - location
- * type Will set the level of alert. Possible values for type are success, error, 
- * info and any other value will use the default styling.
- * clean Will keep or remove previous alerts. If true it will remove all previous
- * alerts, if false it will keep the previous alerts.
- * location Will tell if the text should be placed as first or last element in the
- * container. Possible values are first and last. If first then the text is 
- * added as first element. If last then the text is added as last element. Only
- * useful if the clean is set to false to keep previous alerts. 
+ * jQuery plugin to render messages.
  */
 (function($){
 
-	$.fn.metalisxAjaxAlert = function(jqXHR, textStatus, errorThrown) {
-		
-		var $this = $(this);
-		if (errorThrown) {
-			var message = {};
-			message.error = $('<div class="' + settings.alertInnerContainerClass + '" width="100%"/>')
-				.append('Request failed: ' + textStatus + ' ' + errorThrown + '&nbsp;&nbsp;');
-			if (jqXHR.responseText.indexOf('body') > 0) {
-				message.detail = jqXHR.responseText;
-			}
-			message.level = 'error';
-			$this.metalisxAlert(message);
-		}
-	};
-
 	/**
-	 * The first parameter can contain a text or an object containing the properties text, detail
-	 * and level. The level in the object takes precedence over the level in the options. 
+	 * The first parameter can contain a text, a message object containing the properties text, detail
+	 * and level or a list of message objects. 
+	 * The level in the object takes precedence over the level in the options. 
+	 * 
+	 * The second parameter contians options. The properties for the options argument are:
+	 *  - level
+	 *  - clean
+	 *  - location
+	 *  - containerId
+	 * level Will set the style of the messages. Possible values for level are success, error, 
+	 * info and any other value will use the default styling.
+	 * clean Will keep or remove previous messages. If true it will remove all previous
+	 * messages, if false it will keep the previous messages.
+	 * location Will tell if the text should be placed as first or last element in the
+	 * container. Possible values are first and last. If first then the text is 
+	 * added as first element. If last then the text is added as last element. Only
+	 * useful if the clean is set to false to keep previous messages.
+	 * containerId Contains the id of the HTML object in which the message should be placed
+	 * if the message does not contain an id. 
+	 * 
+	 * Requires the Twitter Bootstrap styles alert-success, alert-error and alert-info or you
+	 * need to define them yourself.
 	 */
-	$.fn.metalisxAlert = function(value, options) {
+	$.metalisxMessages = function(value, options) {
 
 		var settings = $.extend(true, {
 			level: 'info',
 			clean: true,
 			location: 'first',
-			alertInnerContainerClass: 'alertInnerContainer',
-			alertDetailClass: 'alertDetail',
-			alertIframeClass: 'alertIframe',
-			alertInnerContainerHeight: '400px'
+			messageInnerContainerClass: 'messageInnerContainer',
+			messageDetailClass: 'messageDetail',
+			messageIframeClass: 'messageIframe',
+			messageInnerContainerHeight: '400px',
+			messagesContainerId: 'messagesContainer'
 		}, options || {});
 		
-		var $this = this;
-
 		var text = null;
 		var detail = null;
 		var level = null;
-		
-		if (value instanceof Object) {
-			if (value.message) {
-				text = value.message;
-				if (text.detail) {
-					detail = value.detail;
-				}
-				if (value.level) {
-					level = value.level;
-				} else {
-					level = settings.level;
+		// List to keep track of already cleaned containers.
+		var processedContainers = new Array();
+
+		function render(message) {
+			if (message.message == null || message.message == '') {
+				return;
+			}
+
+			var containerId = null;
+			if (message.id != null) {
+				containerId = message.id;
+			} else {
+				containerId = settings.messagesContainerId;
+			}
+			var text = message.message;
+			var detail = null;
+			if (text.detail != null) {
+				detail = message.detail;
+			}
+			var level = null;
+			if (message.level != null) {
+				level = message.level;
+			} else {
+				level = settings.level;
+			}
+
+			$container = $('#' + containerId);
+			if ($container.size() == 0) {
+				if (console.log) {
+					console.log('There is no HTML object container containing the id attribute with value ' + 
+							containerId + ".");
+					console.log(message);
 				}
 			}
-		} else {
-			text = value;
-			level = settings.level;
-		}
-		
-		if (settings.clean) {
-			$this.empty();
-		}
-		
-		$alert = $('<div/>').addClass('alert');
-		if (settings.location == 'first') {
-			$this.prepend($alert);
-		} else if (settings.location == 'last') {
-			$this.append($alert);
-		} else {
-			alert('Unknown location ' + settings.location);
-		}
-		$alert.removeClass('alert-success');
-		$alert.removeClass('alert-error');
-		$alert.removeClass('alert-info');
-		
-		if (level.toLowerCase() == 'success') {
-			$alert.addClass('alert-success');
-		} else if (level.toLowerCase() == 'error') {
-			$alert.addClass('alert-error');
-		} else if (level.toLowerCase() == 'info') {
-			$alert.addClass('alert-info');
-		}
-
-		$alert.append(text);
-		if (detail) {
-			$detail = $('<a class="' + settings.alertDetailClass + '" href="#">Detail</a>')
-				.click(function() {
-					if ($('.' + settings.alertIframeClass, $this).size() == 0) {
-						$('.' + settings.alertInnerContainerClass, $this).append('<br/>');
-						$('.' + settings.alertInnerContainerClass, $this)
-							.append('<iframe width="100%" height="' + settings.alertInnerContainerHeight + 
-									'" class="' + settings.alertIframeClass + '"/>');
-						$('.' + settings.alertIframeClass, $this).contents().find('html').html(jqXHR.responseText);
-					} else {
-						$('.' + settings.alertInnerContainerClass + ' br', $this).remove();
-						$('.' + settings.alertIframeClass, $this).remove();
+			
+			if (settings.clean) {
+				var processed = false;
+				$.each(processedContainers, function(index, item) {
+					if (item == containerId) {
+						processed = true;
 					}
 				});
-			$alert.append($detail);
+				if (!processed) {
+					$container.empty();
+					processedContainers.push(containerId);
+				}
+			}
+			
+			var $message = $('<div/>').addClass('alert');
+			if (settings.location == 'first') {
+				$container.prepend($message);
+			} else if (settings.location == 'last') {
+				$container.append($message);
+			} else {
+				alert('Unknown location ' + settings.location);
+			}
+			$message.removeClass('alert-success');
+			$message.removeClass('alert-error');
+			$message.removeClass('alert-info');
+			
+			if (level.toLowerCase() == 'success') {
+				$message.addClass('alert-success');
+			} else if (level.toLowerCase() == 'error') {
+				$message.addClass('alert-error');
+			} else if (level.toLowerCase() == 'info') {
+				$message.addClass('alert-info');
+			}
+
+			$message.append(text);
+			if (detail) {
+				$detail = $('<a class="' + settings.messageDetailClass + '" href="#">Detail</a>')
+					.click(function() {
+						if ($('.' + settings.messageIframeClass, $container).size() == 0) {
+							$('.' + settings.messageInnerContainerClass, $container).append('<br/>');
+							$('.' + settings.messageInnerContainerClass, $container)
+								.append('<iframe width="100%" height="' + settings.messageInnerContainerHeight + 
+										'" class="' + settings.messageIframeClass + '"/>');
+							$('.' + settings.messageIframeClass, $container).contents().find('html').html(jqXHR.responseText);
+						} else {
+							$('.' + settings.messageInnerContainerClass + ' br', $container).remove();
+							$('.' + settings.messageIframeClass, $container).remove();
+						}
+					});
+				$message.append($detail);
+			}
+			$container.show();
+			
 		}
-		$this.show();
+		
+		if (value instanceof Array) {
+			$.each(value, function(index, message) {
+				render(message);
+			});
+		} else if (value instanceof Object) {
+			render(value);
+		} else {
+			var message = {};
+			message.id = settings.id;
+			message.message = value;
+			message.level = settings.level;
+			render(message);
+		}
 
 		return this;
 		
@@ -243,7 +272,7 @@
 			fileUploadButtonClass: 'fileUploadButton',
 			noFileSeletedMessage: 'Select a file',
 			chooseAFileMessage: 'Choose a file...',
-			alertContainerId: 'alertContainer',
+			messagesContainerId: 'messagesContainer',
 			renderRow: function(item) {
 				return '<tr><td class="filename">' + item.filename + '</td>' + 
 					'<td class="contentType">' + item.contentType + '</td>' +
@@ -266,10 +295,10 @@
 		var $form = $this.closest('form');
 		var target = settings.iframeId + (this.id ? '_' + this.id : '');
 
-		var alertContainer = $('#' + settings.alertContainerId);
-		if (alertContainer.size() == 1) {
-			alertContainer.hide();
-			alertContainer.empty();
+		var messagesContainer = $('#' + settings.messagesContainerId);
+		if (messagesContainer.size() == 1) {
+			messagesContainer.hide();
+			messagesContainer.empty();
 		}
 
 		function upload() {
@@ -298,12 +327,7 @@
 						var data = $.parseJSON(body);
 						settings.onsuccess(data);
 					} catch (error) {
-						if (alertContainer.size() == 1) {
-				        	alertContainer.show();
-				        	alertContainer.metalisxAlert('Parsing the body failed. ' + body, {level: 'error'});
-						} else {
-							alert('Parsing the body failed. ' + body);
-						}
+			        	$.metalisxMessages({id: settings.messagesContainerId, message: 'Parsing the body failed. ' + body, level: 'error'});
 					}
 				}
 				$div.remove();
@@ -362,17 +386,17 @@
  * 
  * Retrieves data through AJAX calls from a backend service.
  * 
- * The options parameter contains a property alertContainer. The value 
- * is an id of an HTML object like a DIV. The value is by default alertContainer. 
- * This means a container(DIV) with id alertContainer should be included in 
+ * The options parameter contains a property messagesContainer. The value 
+ * is an id of an HTML object like a DIV. The value is by default messagesContainer. 
+ * This means a container(DIV) with id messagesContainer should be included in 
  * the HTML page. A JSON messages or JSON exception object produces by the
  * Ajax call are rendered in this container. If the container can not be 
  * found alerts are shown with the javascript alert function.
  * 
- * The options parameter contains a property cleanAlertContainer. If true
- * the alertContainer will be hidden and the content will be removed. If 
- * false the alertContainer will be kept visible if it is already visible 
- * and the content remains in the alertContainer. The default value is true.
+ * The options parameter contains a property cleanMessagesContainer. If true
+ * the messagesContainer will be hidden and the content will be removed. If 
+ * false the messagesContainer will be kept visible if it is already visible 
+ * and the content remains in the messagesContainer. The default value is true.
  * 
  * The JSON structure for messages is, multiple message object are possible: 
  *  {"messages":[{"message":"The message.","level":"error"}]}
@@ -449,26 +473,21 @@
 			dataType: null,
 			cache: false,
 			onsuccess: function(result) {},
-			alertContainerId: 'alertContainer',
-			cleanAlertContainer: true,
+			messagesContainerId: 'messagesContainer',
+			cleanMessagesContainer: true,
 			handleResponseMessages: true
 		}, options || {});
 
-		var alertContainer = $('#' + settings.alertContainerId);
-		if (alertContainer.size() == 1) {
-			if (settings.cleanAlertContainer) {
-				alertContainer.hide();
-				alertContainer.empty();
+		var messagesContainer = $('#' + settings.messagesContainerId);
+		if (messagesContainer.size() == 1) {
+			if (settings.cleanMessagesContainer) {
+				messagesContainer.hide();
+				messagesContainer.empty();
 			}
 		}
 
 		if (!url || url == null || url == '') {
-			if (alertContainer.size() == 1) {
-				alertContainer.show();
-				alertContainer.metalisxAlert('Url for the data source is not set.', {level: 'error'});
-			} else {
-				alert('Url for the data source is not set.');
-			}
+			$.metalisxMessages({id: settings.messagesContainerId, message: 'Url for the data source is not set.', level: 'error'});
 			return this;
 		}
 
@@ -483,28 +502,8 @@
 			success: function(result) {
 				var executeOnsuccess = true;
 				if (result) {
-					if (result.exception) {
-						if (alertContainer.size() == 1) {
-							alertContainer.show();
-							alertContainer.metalisxAlert(result.exception, {level: 'error', clean: false});
-						} else {
-							alert(result.exception);
-						}
-					} else if (settings.handleResponseMessages && result.messages && result.messages.length > 0) {
-						if (alertContainer.size() == 1) {
-							$.each(result.messages, function(index, message) {
-								if (message.message) {
-									var messageLevel = message.level ? message.level : 'error';
-									alertContainer.metalisxAlert(message, {level: messageLevel, clean: false});
-								}
-							});
-						} else {
-							$.each(result.messages, function(item, message) {
-								if (message.message) {
-									alert(message.message);
-								}
-							});
-						}
+					if (settings.handleResponseMessages && result.messages && result.messages.length > 0) {
+						$.metalisxMessages(result.messages);
 						$.each(result.messages, function(index, message) {
 							if (message.message && message.level && message.level.toLowerCase() == 'error') {
 								executeOnsuccess = false;
@@ -522,13 +521,14 @@
 			contentType: settings.contentType,
 			dataType: settings.dataType
 		}).fail(function(jqXHR, textStatus, errorThrown) {
-			if (alertContainer.size() == 1) {
-	        	alertContainer.show();
-	        	alertContainer.metalisxAjaxAlert(jqXHR, textStatus, errorThrown);
-			} else {
-				var error = "Request failed: " + textStatus + " " + errorThrown;
-				alert(error);
+			var message = {};
+			message.id = settings.messagesContainerId;
+			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
+			if (jqXHR.responseText.indexOf('body') > 0) {
+				message.detail = jqXHR.responseText;
 			}
+			message.level = 'error';
+			$.metalisxMessages(message);
 			$.metalisxUnblock();
 		});
 		

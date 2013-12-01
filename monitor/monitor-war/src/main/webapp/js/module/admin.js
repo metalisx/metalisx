@@ -1,4 +1,4 @@
-function AdminController($scope, alertProvider, crudService) {
+function AdminController($scope, crudService) {
 
 	var clearMonitorRequestsUrl = '../rest/admin/requests/clean';
 	var clearMonitorLogsUrl = '../rest/admin/logs/clean';

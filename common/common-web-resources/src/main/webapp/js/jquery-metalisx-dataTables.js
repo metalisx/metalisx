@@ -59,7 +59,7 @@
 	$.fn.metalisxDataTable = function(filter, options) {
 		var runOnsuccess = true;
 		var settings = $.extend(true, {
-			alertContainerId: 'alertContainer',
+			messagesContainerId: 'messagesContainer',
 			onsuccess: null,
 			onsuccessRow: null,
 			renderDetail: null, 
@@ -100,21 +100,13 @@
 		        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 		        	
 		        	// An interceptor function will show errors gracefully.
-	    			alertContainer.hide();
-	    			alertContainer.empty();
+	    			messagesContainer.hide();
+	    			messagesContainer.empty();
 
 		        	var innerFnCallback = function(result) {
-						if (result.exception) {
-							alertContainer.show();
-							alertContainer.metalisxAlert(result.exception, {level: 'error'});
-							$('#dataTable_processing', $this.parent()).hide();
-						} else if (result.messages) {
-							alertContainer.show();
-							$.each(result.messages, function(item, message) {
-								if (message.message && message.level) {
-									alertContainer.metalisxAlert(message.message, {level: message.level});
-								}
-							});
+		        		if (result.messages) {
+		        			$.metalisxMessages(result.messages, {messagesContainerId: settings.messagesContainerId});
+							$('#' + id + '_processing', $this.parent()).hide();
 						} else {
 							var dataTableResult = pageToDataTableResult(result);
 							fnCallback(dataTableResult);
@@ -135,9 +127,15 @@
 							"data": JSON.stringify(pageContext),
 							"success": innerFnCallback}
 		            ).fail(function(jqXHR, textStatus, errorThrown) {
-		            	alertContainer.show();
-		            	alertContainer.metalisxAjaxAlert(jqXHR, textStatus, errorThrown);
-						$('#dataTable_processing', $this.parent()).hide();
+		    			var message = {};
+		    			message.id = settings.messagesContainerId;
+		    			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
+		    			if (jqXHR.responseText.indexOf('body') > 0) {
+		    				message.detail = jqXHR.responseText;
+		    			}
+		    			message.level = 'error';
+		    			$.metalisxMessages(message);
+		            	$('#' + id + '_processing', $this.parent()).hide();
 		    		});
 		        }
 			}
@@ -196,15 +194,16 @@
 			alert('Property dataTableSettings.sAjaxSource must be set in the options parameter.');
 		}
 		
-		var alertContainer = $('#' + settings.alertContainerId);
-		if (alertContainer.size() == 1) {
-			alertContainer.hide();
-			alertContainer.empty();
+		var messagesContainer = $('#' + settings.messagesContainerId);
+		if (messagesContainer.size() == 1) {
+			messagesContainer.hide();
+			messagesContainer.empty();
 		} else {
-			alert('Missing html container to place alerts. Please specify a div withd id alertConatiner(this is the default but is configurable).');
+			alert('Missing html container to place alerts. Please specify a div with id alertConatiner(this is the default but is configurable).');
 		}
 
 		var $this = this;
+		var id = $this.attr('id');
 		
 		var dataTable = $this.dataTable(settings.dataTableSettings);
 

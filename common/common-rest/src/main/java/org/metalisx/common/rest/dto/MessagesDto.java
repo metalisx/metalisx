@@ -14,6 +14,10 @@ public class MessagesDto {
         this.messages.add(messageDto);
     }
 
+    public void add(MessageDto messageDto) {
+        this.messages.add(messageDto);
+    }
+
 	public List<MessageDto> getMessages() {
 		return messages;
 	}

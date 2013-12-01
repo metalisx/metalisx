@@ -18,13 +18,13 @@ function LogFileLoadService(crudService) {
 
 }
 
-function LogFileLoadModelValidator(alertProvider) {
+function LogFileLoadModelValidator(messagesProvider) {
 	
 	this.validate = function(model) {
 		var isValid = true;
 		if (model.filename == null || model.filename == '') {
-			alertProvider.alert('Filename is required, please enter the location of the file on ' +
-				'the application server. For example: c:/monitor/log4j/log4j.log.', {type: 'error'});
+			messagesProvider.message({message: 'Filename is required, please enter the location of the file on ' +
+				'the application server. For example: c:/monitor/log4j/log4j.log.', level: 'error'});
 			$('#filenameId').focus();
 			isValid = false;
 		}
@@ -33,7 +33,7 @@ function LogFileLoadModelValidator(alertProvider) {
 	
 }
 
-function LogFileLoadController($scope, alertProvider, templateProvider, logFileLoadService, logFileLoadModelValidator) {
+function LogFileLoadController($scope, templateProvider, logFileLoadService, logFileLoadModelValidator) {
 
 	function init() {
 		logFileLoadService.get(function(result) {
