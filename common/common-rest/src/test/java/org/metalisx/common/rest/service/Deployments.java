@@ -24,13 +24,10 @@ import org.metalisx.common.rest.dto.entity.EntityDto;
 import org.metalisx.common.rest.dto.entity.EntityFieldDto;
 import org.metalisx.common.rest.dto.entity.EntityMetadataDto;
 import org.metalisx.common.rest.dto.entity.PageMetadataDto;
-import org.metalisx.common.rest.exception.mapper.ValidationExceptionMapper;
 import org.metalisx.common.rest.metadata.EntityFieldTypeMapper;
 import org.metalisx.common.rest.metadata.MetadataProvider;
 import org.metalisx.common.rest.parameter.DateParameter;
 import org.metalisx.common.rest.provider.RestJsonProvider;
-import org.metalisx.common.rest.service.AbstractRestService;
-import org.metalisx.common.rest.service.RestException;
 import org.metalisx.common.rest.utils.RestServiceUtils;
 
 public class Deployments {
@@ -51,7 +48,6 @@ public class Deployments {
 		        		MessagesDto.class)
 		        .addClasses(ColumnDto.class, EntitiesDto.class, EntityDto.class, EntityFieldDto.class, 
 		        		EntityMetadataDto.class, PageMetadataDto.class)
-		        .addClasses(ValidationExceptionMapper.class)
 		        .addClasses(EntityFieldTypeMapper.class, MetadataProvider.class)
 		        .addClasses(DateParameter.class)
 		        .addClasses(RestJsonProvider.class)

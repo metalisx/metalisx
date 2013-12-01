@@ -39,7 +39,7 @@ public class RestExceptionProvider implements ExceptionMapper<Exception> {
 		Iterator<ConstraintViolation<?>> iterator = violations.iterator();
 		while (iterator.hasNext()) {
 			ConstraintViolation<?> constraintViolation = iterator.next();
-			messagesDto.addError(constraintViolation.getMessage());
+			messagesDto.addError(constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage());
 		}
 		return messagesDto;
 	}
