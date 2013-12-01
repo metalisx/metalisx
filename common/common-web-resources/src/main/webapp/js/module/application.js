@@ -37,9 +37,8 @@ function TemplateService($http) {
 
 function TemplateCompile($compile, $rootScope) {
 	this.compile = function(html, element, scope) {
-		element.html(
-				$compile($.trim(html))(scope)
-			);
+		element.html($.trim(html)); 
+		$compile(element.contents())(scope);
 		var phase = $rootScope.$$phase;
 		if (phase != '$apply' && phase != '$digest') {
 			scope.$digest();
@@ -292,6 +291,17 @@ application.directive('ngcFocus', function () {
 		restrict: 'A',
         link:function (scope, element, attrs) {
        		element.focus();
+        }
+    };
+});
+
+application.directive('ngcStopPropagation', function () {
+    return {
+		restrict: 'A',
+        link:function (scope, element, attrs) {
+			element.click(function(event) {
+				event.stopPropagation();
+			});
         }
     };
 });
