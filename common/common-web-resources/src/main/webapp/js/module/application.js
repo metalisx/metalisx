@@ -272,7 +272,11 @@ application.directive('ngcEnter', function () {
         		throw new Error('The selector value should resolve to only one child HTML object.');
         	}
     		element.keypress(function(e) {
-    			if ((e.which ? e.which : e.keyCode) == 13) {
+    			var nodeName = null;
+    			if (e && e.target && e.target.nodeName) {
+    				nodeName = e.target.nodeName.toUpperCase();
+    			}
+    			if ((e.which ? e.which : e.keyCode) == 13 && nodeName != 'TEXTAREA') {
     				e.stopPropagation();
     				var currentElement = $(":focus");
     				$enterElement.focus();
