@@ -199,14 +199,31 @@
 			messagesContainer.hide();
 			messagesContainer.empty();
 		} else {
-			alert('Missing html container to place alerts. Please specify a div with id alertConatiner(this is the default but is configurable).');
+			alert('Missing html container to place alerts. Please specify a div with id ' + settings.messagesContainerId);
 		}
 
 		var $this = this;
 		var id = $this.attr('id');
 		
 		var dataTable = $this.dataTable(settings.dataTableSettings);
-
+		
+		// We override the fnClose and fnDraw method on the dataTable.
+		// This is done so the child elements in the open details tr are 
+		// removed to trigger the jQuery remove events attached on these 
+		// elements. This way you have the ability to remove the TinyMCE 
+		// editors if it was bind to an element.
+		// It will run on the entire table.
+		var dataTableFnClose = dataTable.fnClose;
+		dataTable.fnClose = function(nTr) {
+			$('.info_row', $this).children().remove();
+			return dataTableFnClose.call(this, nTr);
+		};
+		var dataTableFnDraw = dataTable.fnDraw;
+		dataTable.fnDraw = function() {
+			$('.info_row', $this).children().remove();
+			return dataTableFnDraw.call(this);
+		};
+		
 		return dataTable;
 	};
 	
