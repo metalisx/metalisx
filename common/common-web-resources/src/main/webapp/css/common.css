@@ -21,6 +21,7 @@ a:hover {
   color: #005580;
   text-decoration: underline;
 }
+/*
 label {
 	display: block;
 	float: left;
@@ -46,7 +47,7 @@ input[type="checkbox"] {
 	width: 20px;
 	border: 1px solid #999;
 }
-
+*/
 /* Common styles */
 .title {
 	float: left;
@@ -74,6 +75,10 @@ body > .container {
 .messagesContainer {
 	display: none;
 	width: 100%;
+}
+.messagesContainer.messagesContainerForElement {
+	width: 220px;
+	margin-top: 4px;
 }
 .contentContainer {
 	width: 100%;

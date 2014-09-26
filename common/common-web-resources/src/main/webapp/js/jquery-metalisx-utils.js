@@ -101,7 +101,17 @@
 	 * added as first element. If last then the text is added as last element. Only
 	 * useful if the clean is set to false to keep previous messages.
 	 * containerId Contains the id of the HTML object in which the message should be placed
-	 * if the message does not contain an id. 
+	 * if the message does not contain an id.
+	 * 
+	 * If the message contains an id and the HTML element does not contain the messagesContainerClass
+	 * the parent of the HTML element is search for an HTML element with the messagesContainerClass.
+	 * If found it will be the HTML element in which the message is placed if it is not found then
+	 * it will be placed in the HTML element with the id.
+	 * When using the id of an INPUT elementd, add a DIV element after it with the class name in 
+	 * the messagesContainerClass setting. As an alternative you could set the id of the DIV element 
+	 * in the message. If you do not, the message is placed in the INPUT element which is not 
+	 * correct and you miss the message. Use this solution if you want a message coupled to another
+	 * element.
 	 * 
 	 * Requires the Twitter Bootstrap styles alert-success, alert-error and alert-info or you
 	 * need to define them yourself.
@@ -112,11 +122,13 @@
 			level: 'info',
 			clean: true,
 			location: 'first',
+			messagesContainerId: 'messagesContainer',
+			messagesContainerClass: 'messagesContainer',
+			messagesContainerForElementClass: 'messagesContainerForElement',
 			messageInnerContainerClass: 'messageInnerContainer',
 			messageDetailClass: 'messageDetail',
 			messageIframeClass: 'messageIframe',
-			messageInnerContainerHeight: '400px',
-			messagesContainerId: 'messagesContainer'
+			messageInnerContainerHeight: '400px'
 		}, options || {});
 		
 		var text = null;
@@ -131,7 +143,8 @@
 			}
 
 			var containerId = null;
-			if (message.id != null) {
+			// If there is an id but not an element with the id then the default is used.
+			if (message.id != null && $('#' + message.id).size() != 0) {
 				containerId = message.id;
 			} else {
 				containerId = settings.messagesContainerId;
@@ -150,11 +163,25 @@
 
 			$container = $('#' + containerId);
 			if ($container.size() == 0) {
-				if (console.log) {
+				if (console.log != undefined) {
 					console.log('There is no HTML object container containing the id attribute with value ' + 
 							containerId + ".");
 					console.log(message);
 				}
+			}
+
+			// If the DOM element does not have the class in messagesContainerClass setting then
+			// the element is search in the parent of the DOM element.
+			// If not found a new container is added with the messagesContainerClass after the container.
+			if (!$container.hasClass(settings.messagesContainerClass)) {
+				var $newContainer = $container.parent().find('.' + settings.messagesContainerClass);
+				if ($newContainer.size() == 0) {
+					$newContainer = $('<div></div>');
+					$newContainer.addClass(settings.messagesContainerClass);
+					$newContainer.addClass(settings.messagesContainerForElementClass);
+					$container.after($newContainer);
+				}
+				$container = $newContainer;
 			}
 			
 			if (settings.clean) {
@@ -178,9 +205,6 @@
 			} else {
 				alert('Unknown location ' + settings.location);
 			}
-			$message.removeClass('alert-success');
-			$message.removeClass('alert-error');
-			$message.removeClass('alert-info');
 			
 			if (level.toLowerCase() == 'success') {
 				$message.addClass('alert-success');
@@ -394,9 +418,11 @@
  * found alerts are shown with the javascript alert function.
  * 
  * The options parameter contains a property cleanMessagesContainer. If true
- * the messagesContainer will be hidden and the content will be removed. If 
- * false the messagesContainer will be kept visible if it is already visible 
- * and the content remains in the messagesContainer. The default value is true.
+ * the messagesContainer will be hidden and the content will be removed. Also
+ * all containers containing the class messagesContainerClass will be hidden and
+ * the content will be removed. If false the messagesContainer and all conatiners
+ * containing the messagesContainerClass will be kept visible if they are already 
+ * visible. The default value is true.
  * 
  * The JSON structure for messages is, multiple message object are possible: 
  *  {"messages":[{"message":"The message.","level":"error"}]}
@@ -474,6 +500,7 @@
 			cache: false,
 			onsuccess: function(result) {},
 			messagesContainerId: 'messagesContainer',
+			messagesContainerClass: 'messagesContainer',
 			cleanMessagesContainer: true,
 			handleResponseMessages: true
 		}, options || {});
@@ -483,6 +510,18 @@
 			if (settings.cleanMessagesContainer) {
 				messagesContainer.hide();
 				messagesContainer.empty();
+				// clean up all messages containers containing the class messageContainerClass
+				var messagesContainers = $('.' + settings.messagesContainerClass);
+				messagesContainers.each(function() {
+					$(this).hide();
+					$(this).empty();
+				});
+			}
+		} else {
+			if (console.log != undefined) {
+				console.log('There is no HTML object container containing the id attribute with value ' + 
+						settings.messagesContainerId + ".");
+				console.log(message);
 			}
 		}
 

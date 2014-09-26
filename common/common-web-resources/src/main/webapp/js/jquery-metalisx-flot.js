@@ -304,7 +304,8 @@
 					show: true,
 					hoverable: true, 
 					clickable: true , 
-					color: "#999"
+					color: "#999",
+					canvasText: {show: true, font: "sans 9px"}
 				}
 			},
 			timeout: null,

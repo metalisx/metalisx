@@ -1,4 +1,4 @@
-var application = angular.module('application', []);
+var application = angular.module('application', ['ngRoute', 'ngCookies']);
 
 application.service('messagesProvider', MessagesProvider);
 
@@ -37,7 +37,7 @@ function TemplateService($http) {
 
 function TemplateCompile($compile, $rootScope) {
 	this.compile = function(html, element, scope) {
-		element.html($.trim(html)); 
+		element.html($.trim(html));
 		$compile(element.contents())(scope);
 		var phase = $rootScope.$$phase;
 		if (phase != '$apply' && phase != '$digest') {
@@ -310,8 +310,11 @@ application.directive('ngcStopPropagation', function () {
     };
 });
 
+
 /**
  * Directive for enabling Twitter typeahead on an HTML input field.
+ * Requires the javascripts files for Twitter typeahead and bloodhound 
+ * version 0.10.2+.
  * The required HTML input attributes are:
  *  - ngc-typeahead
  *  - ngc-typeahead-model
@@ -326,6 +329,14 @@ application.directive('ngcStopPropagation', function () {
  *   REST call containing the value. This value is visible in the suggestions list and
  *   is placed in the input field when a suggestion is selected. If not set the 
  *   fieldname defaults to value.
+ * ngc-typeahead-callback Is the function which is called when the event 
+ *   'typeahead:selected' is triggerd. The directive passes the data of the item
+ *   to the method. The value of the attribute should be like: myFunction(typeahead, datum)
+ * 
+ * When the blur event is triggerd the model is updated and the typeahead field is 
+ * cleared. Clearing the field is done to make the pluging work consistent. You can
+ * use the ngc-typeahead-callback to do something with the selected suggestion before 
+ * the blur event clears it.
  */
 application.directive('ngcTypeahead', function () {
     return {
@@ -333,7 +344,8 @@ application.directive('ngcTypeahead', function () {
 		scope: {
 			ngcTypeahead: '@',
     		ngcTypeaheadModel: '=',
-			ngcTypeaheadValueKey: '@'
+			ngcTypeaheadValueKey: '@',
+			ngcTypeaheadCallback: '&'
 		},
 		transclude: true,
 		link:function (scope, element, attrs) {
@@ -343,6 +355,10 @@ application.directive('ngcTypeahead', function () {
 			
 			if (scope.ngcTypeahead == null || scope.ngcTypeahead == '') {
 				alert('The ngc-typeahead attribute is missing the value of the REST endpoint.');
+			}
+			var callback = null;
+			if (attrs['ngcTypeaheadCallback'] && attrs['ngcTypeaheadCallback'] != '') {
+				callback = scope.ngcTypeaheadCallback;
 			}
 			if (!scope.ngcTypeaheadValueKey) {
 				valueKey = 'value';
@@ -355,26 +371,285 @@ application.directive('ngcTypeahead', function () {
 				scope.$apply();
 			}
 			
+			var engine = new Bloodhound({
+				name: 'products',
+				remote: scope.ngcTypeahead,
+				limit: 10,
+				minLength: 1,
+				datumTokenizer: function(d) { 
+					return Bloodhound.tokenizers.whitespace(d.val); 
+				},
+				queryTokenizer: Bloodhound.tokenizers.whitespace
+			});
+			engine.initialize();
+
 			var $typeahead = null;
+			var datasetName = 'dataset';
 			function createTypeahead() {
-				$typeahead = element.typeahead('destroy').typeahead({
-					remote: scope.ngcTypeahead,
-					cache: false,
-					valueKey: valueKey,
+				$typeahead = element.typeahead('destroy').typeahead(null, {
+					name: datasetName,
+					source: engine.ttAdapter(),
+					displayKey: 'value'
+				}).on('typeahead:selected', function(obj, datum, name) {
+					callback({
+						typeahead: $typeahead,
+						datum: datum
+					});
 				});
+				/* 
+				 * Twitter typeahead has the style vertical-align set to top. When using
+				 * Bootstrap the input is not inline with elements on the same
+				 * line. But because Twitter typeahead has the style directly set on the 
+				 * element, we can not overrule it with css. Therefore it is coded here.
+				 */
+				$typeahead.css('vertical-align', 'middle');
 			}
 			
 			element.on('blur', function(event) {
-				updateModel($(this).val());
+				updateModel($typeahead.typeahead('val'));
 			});
 			
 			scope.$watch('ngcTypeaheadModel', function(newValue, oldValue) {
-				if (newValue == null || newValue == '') {
-					$typeahead.typeahead('setQuery', '');
-				}
+				$typeahead.typeahead('val', newValue);
 			});
 			
 			createTypeahead();
+        }
+    };
+});
+
+/**
+ * Directive to append a color picker to the element.
+ * Requires Spectrum colorpicker javascriptfile spectrum.js.
+ */
+application.directive('ngcColorPicker', function () {
+    return {
+		restrict: 'A',
+		require: 'ngModel',
+        link:function (scope, element, attrs, ngModel) {
+
+			element.spectrum({
+				preferredFormat: "hex",
+				allowEmpty:true
+			});
+
+            scope.$watch('ngModel', function(newValue, oldValue) {
+            	element.spectrum('set', ngModel.$viewValue || '');
+			});
+            
+            element.on('change', function () {
+            	scope.$apply(function () {
+            		ngModel.$setViewValue(element.val());
+            	});
+            });              
+        }
+    };
+});
+
+//(function($){
+//	  $.event.special.destroyed = {
+//	    remove: function(o) {
+//	      if (o.handler) {
+//	        o.handler()
+//	      }
+//	    }
+//	  }
+//})(jQuery)
+
+/**
+ * Directive to append an icon to the field. When clicked a popup window
+ * with a filebrowser is opened. On selecting a filename in the popup the
+ * filename is set in the field an the model.
+ * Set the ngc-filebrowser-url attribute to override the default url:
+ * /v2/console/filebrowser
+ */
+application.directive('ngcFilebrowser', function () {
+	
+    return {
+		restrict: 'A',
+		require: 'ngModel',
+        link:function (scope, element, attrs, ngModel) {
+    		var width = 640;
+    		var height = 480;
+			var left = (screen.width / 2) - (width / 2);
+			var top = (screen.height / 2) - (height / 2);
+    		var config = {
+       			url: '/v2/console/filebrowser/filebrowser.html',
+    			windowName: 'Filebrowser',
+    			windowFeatures: 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top
+    		}
+    		if (attrs['ngcFilebrowserUrl'] && attrs['ngcFilebrowserUrl'] != '') {
+				config.url = attrs['ngcFilebrowserUrl']; 
+			}
+    		config.url = config.url + '?caller=custom&callback=ngcFilebrowserCallback';
+    		$filebrowserButton = $('<i class="icon-search"></i>');
+    		$filebrowserButton.click(function() {
+        		window.ngcFilebrowserCallback = function(filename) {
+        			element.val(filename);
+					ngModel.$setViewValue(filename);
+					scope.$apply();
+        		}
+                window.open(config.url, config.windowName, config.windowFeatures);
+    		});
+    		element.parent().append($filebrowserButton);
+        }
+    };
+});
+	
+/**
+ * Directive to enable CKEditor on a textarea element.
+ * Requires CKEditor 4 javascript files.
+ * Steps:
+ *  - download the CKEditor Javascript files from: http://ckeditor.com/
+ *  - place the files on your server
+ *  - include the Javascript files in your page
+ *  - add the directive as attribute ngc-ckeditor to a textarea element
+ * The <CKEditor directory>/config.js is used by default you can override this
+ * default by adding the ngc-ckeditor-config attribute to the textarea
+ * containing a the custom config file name.
+ * You can set the mode by setting the ngc-ckeditor-mode attribute on the
+ * element. Valid values are source and wysiwyg.
+ * You can set the method to use when the save button is clicked by setting
+ * the ngc-ckeditor-save attribute on the element. If not set the directive
+ * will look for the method editorSave in the parent scope and if found this
+ * method is used otherwise nothing will happen when the save button is 
+ * clicked. The save method does not take any parameters because the value 
+ * is in the model.
+ */
+application.directive('ngcCkeditor', function () {
+	
+    return {
+		restrict: 'A',
+		require: 'ngModel',
+		scope: {saveMethod:'&ngcCkeditorSaveMethod'},
+        link:function (scope, element, attrs, ngModel) {
+    	
+    		function addSourceModeEvent(editor) {
+				// Adding key up event to track changes if the editor in source mode
+    			$('textarea.cke_source', element.parent()).on('keyup', function() {
+					ngModel.$setViewValue(editor.getData());
+					scope.$apply();
+				});
+    		}
+    	
+    		if (typeof CKEDITOR === 'undefined') {
+    			alert('Please include the CKEditor javascript files or remove the AngularJS directive from the element.');
+    		} else {
+    			// a custom event handler is create for the editor so we can listen
+    			// for the remove event when the textarea of the editor is removed from the DOM.
+    			if ($.event && $.event.special && !$.event.special.ngcCkeditorDestroy) {
+	    			(function($){
+	    				  $.event.special.ngcCkeditorDestroy = {
+	    				    remove: function(o) {
+	    				      if (o.handler) {
+	    				        o.handler(this, arguments)
+	    				      }
+	    				    }
+	    				  }
+	    				})(jQuery);
+    			}
+    			var config = null;
+    			if (attrs['ngcCkeditorConfig'] && attrs['ngcCkeditorConfig'] != '') {
+    				config = $.extend(config || {}, {
+    					customConfig: attrs['ngcCkeditorConfig']
+    				});
+    			}
+    			if (attrs['ngcCkeditorMode'] && attrs['ngcCkeditorMode'] != '') {
+    				var mode = attrs['ngcCkeditorMode'];
+    				if (mode != 'source' && mode != 'wysiwyg') {
+    					alert('Unknown mode ' + mode);
+    				} else {
+    					config = $.extend(config || {}, {
+    						startupMode: mode
+    					});
+    				}
+    			}
+    			var saveMethod = null;
+    			if (attrs['ngcCkeditorSaveMethod'] && attrs['ngcCkeditorSaveMethod'] != '') {
+    				saveMethod = scope.saveMethod;
+    			} else if (scope.$parent.editorSave !== undefined) {
+    				saveMethod = scope.$parent.editorSave;
+    			}
+    			
+	    		setTimeout(function(){
+	    			
+	    			element.ckeditor(config, function() {
+	    				
+				    	var editor = element.ckeditorGet();
+				    	
+	    				addSourceModeEvent(editor);
+		    			
+		    			// Adding change event to track changes if the editor in wysiwyg mode
+						editor.on('change', function() {
+							ngModel.$setViewValue(this.getData());
+							scope.$apply();
+		    			});
+						
+		    			// If changes are mode in the source mode they are not pushed to the model.
+		    			// The solution of pushing the changes to the model is by detecting a change
+		    			// in mode and then push the data to the model. This means that if 
+		    			// you do not switch back to the wysiwyg mode your changes are not in de model.
+		    			this.on('mode', function( e ) {
+		    				if (editor.mode == 'source') {
+		    					addSourceModeEvent();
+		    				}
+		    			});
+
+		    			// event to destroy the editor if the textarea is removed from the DOM
+				    	element.on('ngcCkeditorDestroy', function() {
+	    					editor.destroy();
+						});
+				    	
+				    	// Enable the save method if we have a save method
+				    	if (saveMethod != null) {
+							editor.commands.save.enable();
+							editor.addCommand('save', {
+					            modes: {wysiwyg:1, source:1},
+					            exec: function(editor) {
+					                if (editor.checkDirty() && saveMethod != null) {
+				                		saveMethod();
+				                		editor.resetDirty();
+					                }
+					            }
+						    });
+				    	} else {
+				    		editor.commands.save.disable();
+				    	}
+				    	
+	    			});
+	    		});
+	    		
+    		}
+        }
+    };
+});
+
+/**
+ * Directive for DataTables.
+ * Requires jQuery datatables.js 1.9.2 javascript files.
+ */
+application.directive('ngcDataTable', function () {
+	
+    return {
+		restrict: 'A',
+		scope: {dataTableSettings:'=ngcDataTableSettings',
+    			dataTableFilter: '=ngcDataTableFilter'},
+        link:function (scope, element, attrs) {
+    		if ($.fn.dataTable === 'undefined') {
+    			alert('Please include the DataTables javascript files or remove the AngularJS directive from the element.');
+    		} else {
+    			if (scope.dataTableSettings == null || scope.dataTableSettings == '') {
+    				alert('The ngc-data-table-settings attribute is missing.');
+    			} else {
+    				var filter = (scope.dataTableFilter != null ? scope.dataTableFilter : null);
+	    			var datatable = element.metalisxDataTable(filter, scope.dataTableSettings);
+	    			// Destroy the datatable when the element is removed from the DOM.
+	    			// This is required when the ng-view is used.
+	    			element.bind("$destroy", function() {
+	        			datatable.fnDestroy();
+	    	        });
+    			}
+    		}
         }
     };
 });

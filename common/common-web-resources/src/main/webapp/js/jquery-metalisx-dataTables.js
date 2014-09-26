@@ -52,7 +52,11 @@
  * 
  * The options parameter has a property onsuccess. It is default null
  * and can contain a method without parameters. It will run after the
- * first retrieval of data from the server.
+ * first Ajax call to retrieve data from the server.
+ * 
+ * The options parameter has a property onsuccessAjax. It is default null
+ * and can contain a method without parameters. It will run after every
+ * Ajax call to retrieve data from the server.
  */
 (function($){
 
@@ -61,7 +65,9 @@
 		var settings = $.extend(true, {
 			messagesContainerId: 'messagesContainer',
 			onsuccess: null,
+			onsuccessAjax: null,
 			onsuccessRow: null,
+			onRowClick: null,
 			renderDetail: null, 
 			dataTableSettings: {
 				"bAutoWidth": false,
@@ -96,6 +102,11 @@
 					if (settings.onsuccessRow) {
 						settings.onsuccessRow(nRow, aData, iDataIndex);
 					}
+					if (settings.onRowClick) {
+						$(nRow).click(function() {
+							settings.onRowClick(nRow, aData, iDataIndex);
+						});
+					}
 				},
 		        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 		        	
@@ -113,6 +124,9 @@
 							if (settings.onsuccess && runOnsuccess) {
 								runOnsuccess = false;
 								settings.onsuccess();
+							}
+							if (settings.onsuccessAjax) {
+								settings.onsuccessAjax();
 							}
 						}
 		        	};
