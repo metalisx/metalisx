@@ -78,12 +78,12 @@
 						<configuration>
 							<overwrite>true</overwrite>
 							<outputDirectory>
-								${basedir}/target/jboss-as-${version.org.jboss.as.arquillian}
+								${basedir}/target/wildfly-${version.org.wildfly.arquillian}
 							</outputDirectory>
 							<resources>
 								<resource>
 									<directory>
-										src/test/resources/jboss-as-${version.org.jboss.as.arquillian}
+										src/test/resources/wildfly-${version.org.wildfly.arquillian}
 									</directory>
 								</resource>
 							</resources>

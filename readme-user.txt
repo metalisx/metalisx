@@ -113,6 +113,18 @@ Install and configure Wildfly 8.1.0.Final
 
             </logger>
 
+            <logger category="org.hibernate.type" use-parent-handlers="false">
+
+                <level name="DEBUG"/>
+
+                <handlers>
+
+                	<handler name="MONITOR"/>
+
+                </handlers>
+
+            </logger>
+
  - open a browser
  - navigate to:
      localhost:8080\monitor
