@@ -60,10 +60,9 @@ section first.
 0.2 Eclipse
 
 Download and install Eclipse (currently Luna R)
+Luna contains m2e.
 
 Open Eclipse
-
-Install m2e form the Eclipse Market Place
 
 Import the projects as Maven projects by selecting the 
 sub folder of a section. It is not possible to load all 
