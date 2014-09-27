@@ -21,11 +21,13 @@ public class EntityFieldTypeMapper {
 		map.put(Date.class, "date");
 		map.put(Float.class, "integer");
 		map.put(Integer.class, "integer");
+		map.put(Long.class, "integer");
 		map.put(String.class, "string");
 		map.put(Collection.class, "list");
 		map.put(List.class, "list");
 		map.put(Set.class, "list");
 		map.put(Map.class, "list");
+		//map.put(Byte[].class, "file");
 	}
 	
 	public EntityFieldTypeMapper() {
@@ -35,6 +37,7 @@ public class EntityFieldTypeMapper {
 		Class<?> type = field.getType();
 		String guiType = map.get(type);
 		if (guiType == null) {
+			System.out.println(field.getType());
 			guiType = "string";
 		}
 		return guiType;

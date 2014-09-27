@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -52,6 +53,16 @@ public class TeeServletOutputStream extends ServletOutputStream {
     @Override
     public void close() throws IOException {
         teeOutputStream.close();
+    }
+
+    @Override
+    public boolean isReady() {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+        throw new RuntimeException("Not yet implemented");
     }
 
 }

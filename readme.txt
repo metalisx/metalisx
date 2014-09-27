@@ -59,7 +59,7 @@ section first.
 
 0.2 Eclipse
 
-Download and install Eclipse (currently Juno SR2)
+Download and install Eclipse (currently Luna R)
 
 Open Eclipse
 
@@ -69,16 +69,16 @@ Import the projects as Maven projects by selecting the
 sub folder of a section. It is not possible to load all 
 projects at once from the pom in this directory.
 
-0.3 JBoss 7.1.1.Final
+0.3 WildFly 8.1.0
 
-Download JBoss 7.1.1.Final and unzip the file.
+Download WildFly 8.1.0 Final and unzip the file.
 
 Open Eclipse
 
-Install JBoss tools from the Eclipse Market Place
+Install the JBoss Tools (Luna) from the Eclipse Market Place
 
-Create a new Serer, with server type JBoss AS 7.1 and
-point it to the installation directory of JBoss.
+Create a new Serer, with server type WildFly 8.x and
+point it to the installation directory of the unzipped WildFly.
 
 When running the MetalIsX web applications you need to 
 configure the datasource with jndi-name java:jdbc/monitorDS
@@ -137,8 +137,8 @@ Chrome and Internet Explorer 8+.
 
 3.2 Application Server
 
-The monitor web application is developed for the JBoss 
-7.1.1.Final application server.
+The monitor web application is developed for the WildFly 8.1.0.Final
+application server.
 
 The monitor web application uses:
  - Servlet 3.0
@@ -147,7 +147,7 @@ The monitor web application uses:
 
 The monitor web application should run on other application
 servers but in the pom the artifacts which are provided by
-JBoss 7.1.1.Final as modules are marked as provided. They
+WildFly 8.1.0.Final as modules are marked as provided. They
 might not be available on other application servers.
 
 3.3 Datasource
@@ -156,9 +156,9 @@ To use the web application monitor-war and/or servlet filter monitor-request-ser
 datasource has to be configured in the application server. The name of the data 
 source is: jdbc/monitorDataSource.
 
-3.3.1 Jboss 7.1.1.Final
+3.3.1 WildFly 8.1.0.Final
 
-Instructions to configure JBoss 7.1.1.Final standalone 
+Instructions to configure WildFly 8.1.0.Final standalone 
 with the required datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
@@ -234,13 +234,14 @@ To use it in an CDI enabled project add the
 monitor-profiler-slf4j-cdi-interceprtor artifact to your project.
 
 This artifact provides the ProfilerInterceptor class and you can use it:
- - with CDI by adding the interceptor class to the beans.xml and
-   using the annotation @Profile provided by this jar on your class
+ - with CDI by adding the interceptor class to the beans.xml 
+   and adding the annotation @Profile on your class
 
 Alternatively you can use the ProfilerInterceptor class as an 
 EJB interceptor:
- - with the Interceptors annotation
- - as a default interceptor in the ejb-jar.xml
+ - with adding the Interceptors annotation containing the interceptor
+   class to your class
+ - with adding the interceptor class as a default interceptor in the ejb-jar.xml
 
 3.5.1 CDI interceptor
 

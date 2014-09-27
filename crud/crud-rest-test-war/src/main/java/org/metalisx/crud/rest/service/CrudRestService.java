@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 
 import org.metalisx.common.rest.service.AbstractRestService;
 
-
 @Stateless
 @Path("/crud")
 public class CrudRestService extends AbstractRestService {

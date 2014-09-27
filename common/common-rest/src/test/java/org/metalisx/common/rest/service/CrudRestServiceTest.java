@@ -63,8 +63,8 @@ public class CrudRestServiceTest {
 		try {
 	        Thread.sleep(5000);
         } catch (InterruptedException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
+        	e.printStackTrace();
+	        throw new IllegalStateException(e);
         }
 		User user = new User();
 		user.setName("Bruce");

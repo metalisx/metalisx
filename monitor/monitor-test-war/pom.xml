@@ -54,9 +54,9 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.jboss.as</groupId>
-									<artifactId>jboss-as-dist</artifactId>
-									<version>${version.org.jboss.as.arquillian}</version>
+									<groupId>org.wildfly</groupId>
+									<artifactId>wildfly-dist</artifactId>
+									<version>${version.org.wildfly.arquillian}</version>
 									<type>zip</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.build.directory}</outputDirectory>
@@ -100,11 +100,6 @@
 	</build>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>org.metalisx</groupId>
-			<artifactId>monitor-domain</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.metalisx</groupId>
@@ -154,12 +149,12 @@
 
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
 		</dependency>
 
 		<dependency>
@@ -174,7 +169,7 @@
 
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
 		</dependency>
 
 		<dependency>

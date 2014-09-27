@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 import org.metalisx.utils.HttpUtils;
@@ -59,5 +60,21 @@ public class TeeServletInputStream extends ServletInputStream {
             super.close();
         }
     }
+
+    @Override
+    public boolean isFinished() {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    @Override
+    public boolean isReady() {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+        throw new RuntimeException("Not yet implemented");
+    }
+
 
 }

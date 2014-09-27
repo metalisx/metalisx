@@ -42,5 +42,10 @@
 	<extension qualifier="webdriver">
 		<property name="browserCapabilities">htmlUnit</property>
 	</extension>
+	<extension qualifier="webdriver">
+		<property name="browserCapabilities">internetExplorer</property>
+		<property name="webdriver.ie.driver">/selenium-webdriver/IEDriverServer.exe</property>
+		<property name="ignoreProtectedModeSettings">true</property>
+	</extension>
 	-->
 </arquillian>
