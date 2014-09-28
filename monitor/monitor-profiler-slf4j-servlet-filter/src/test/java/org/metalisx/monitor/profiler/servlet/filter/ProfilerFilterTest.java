@@ -68,7 +68,9 @@ public class ProfilerFilterTest {
             String line;
             List<String> lines = new ArrayList<String>();
             while ((line = bufferedReader.readLine()) != null) {
-                lines.add(line);
+            	if (line.contains("/ProfilerFilterTest/test")) {
+            		lines.add(line);
+            	}
             }
             bufferedReader.close();
             Assert.assertEquals(1, lines.size());

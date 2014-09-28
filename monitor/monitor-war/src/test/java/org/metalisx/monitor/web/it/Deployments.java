@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.metalisx.monitor.web.it.database.InitializeTestDatabase;
 
 public class Deployments {
@@ -21,8 +20,8 @@ public class Deployments {
 	}
 	
     public static WebArchive createDeployment() throws ZipException, IOException {
-        MavenResolverSystem resolver = Maven.resolver();
-        File[] file = resolver.resolve("org.metalisx:common-web-resources:war").withoutTransitivity().asFile();
+		PomEquippedResolveStage resolverStage = Maven.resolver().loadPomFromFile("pom.xml");
+        File[] file = resolverStage.resolve("org.metalisx:common-web-resources:war").withoutTransitivity().asFile();
         ZipFile zipFile = new ZipFile(file[0]);
         return ShrinkWrap
                 .create(WebArchive.class, "monitor.war")
@@ -31,26 +30,26 @@ public class Deployments {
                 .merge(ShrinkWrap.create(ZipImporter.class, "common-web-resources.war")
                         .importFrom(zipFile)
                         .as(WebArchive.class), "/")
-                .addAsLibraries(resolver.resolve("org.metalisx:common-domain").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:common-gson").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:common-rest").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-domain").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-context-slf4j-mdc").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:common-domain").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:common-rest").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-domain").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context-slf4j-mdc").withTransitivity().asFile())
                 .addAsLibraries(
-                        resolver.resolve("org.metalisx:monitor-profiler-slf4j-cdi-interceptor")
+                		resolverStage.resolve("org.metalisx:monitor-profiler-slf4j-cdi-interceptor")
                                 .withTransitivity().asFile())
                 .addAsLibraries(
-                        resolver.resolve("org.metalisx:monitor-profiler-slf4j-servlet-filter")
+                		resolverStage.resolve("org.metalisx:monitor-profiler-slf4j-servlet-filter")
                                 .withTransitivity().asFile())
                 .addAsLibraries(
-                        resolver.resolve("org.metalisx:monitor-request-servlet-filter").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("commons-io:commons-io").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("com.google.code.gson:gson").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.apache.tika:tika-core").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.ccil.cowan.tagsoup:tagsoup").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.apache.httpcomponents:httpclient").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.apache.httpcomponents:httpmime").withTransitivity().asFile())
+                		resolverStage.resolve("org.metalisx:monitor-request-servlet-filter").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("commons-io:commons-io").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("com.google.code.gson:gson").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.apache.tika:tika-core").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.ccil.cowan.tagsoup:tagsoup").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.apache.httpcomponents:httpclient").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.apache.httpcomponents:httpmime").withTransitivity().asFile())
                 .addPackages(true, "org.metalisx.monitor.file")
                 .addPackages(true, "org.metalisx.monitor.web.application")
                 .addPackages(true, "org.metalisx.monitor.web.producer")

@@ -4,9 +4,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.metalisx.monitor.profiler.servlet.filter.ProfilerFilter;
-import org.metalisx.monitor.profiler.servlet.filter.ProfilerFilterContext;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
 public class Deployments {
 	
@@ -14,10 +12,10 @@ public class Deployments {
 	}
 	
     public static WebArchive createDeployment() {
-        MavenResolverSystem resolver = Maven.resolver();
+		PomEquippedResolveStage resolverStage = Maven.resolver().loadPomFromFile("pom.xml");
         return ShrinkWrap.create(WebArchive.class, "ProfilerFilterTest.war")
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-context").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-context-request").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context-request").withTransitivity().asFile())
                 .addClasses(ProfilerFilter.class, ProfilerFilterContext.class, ProfilerFilterTest.class, TestServlet.class)
                 .addAsWebInfResource("WEB-INF/test-web.xml", ArchivePaths.create("web.xml"))
                 .addAsWebInfResource("WEB-INF/test-beans.xml", ArchivePaths.create("beans.xml"));

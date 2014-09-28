@@ -7,7 +7,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.metalisx.common.domain.initialize.InitializeDatabase;
 import org.metalisx.common.domain.model.User;
 import org.metalisx.common.rest.application.RestApplication;
@@ -33,16 +33,14 @@ import org.metalisx.common.rest.utils.RestServiceUtils;
 public class Deployments {
 
 	public static WebArchive createDeployment() throws ZipException, IOException {
-//		MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class).loadMetadataFromPom(
-//		        "pom.xml");
-		MavenResolverSystem resolver = Maven.resolver();
+		PomEquippedResolveStage resolverStage = Maven.resolver().loadPomFromFile("pom.xml");
 		return ShrinkWrap
 		        .create(WebArchive.class, "crudRestService.war")
-		        .addAsLibraries(resolver.resolve("org.metalisx:common-domain").withTransitivity().asFile())
-		        .addAsLibraries(resolver.resolve("org.metalisx:common-gson").withTransitivity().asFile())
-		        .addAsLibraries(resolver.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
-		        .addAsLibraries(resolver.resolve("com.google.code.gson:gson").withTransitivity().asFile())
-		        .addAsLibraries(resolver.resolve("org.apache.httpcomponents:httpclient").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("org.metalisx:common-domain").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("com.google.code.gson:gson").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("org.apache.httpcomponents:httpclient").withTransitivity().asFile())
 		        .addClasses(DataTableFilterDtoToQueryLimitConverter.class,
 		        		DataTableFilterDtoToQueryOrderByConverter.class)
 		        .addClasses(ItemDto.class, ItemsDto.class, MessageDto.class, MessageLevel.class,

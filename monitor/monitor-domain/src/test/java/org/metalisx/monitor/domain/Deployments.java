@@ -4,7 +4,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.metalisx.common.test.domain.TransactionRollbackTest;
 import org.metalisx.monitor.domain.dao.MonitorDao;
 import org.metalisx.monitor.domain.dao.MonitorGenericEntityDao;
@@ -55,11 +55,11 @@ public class Deployments {
 	}
 	
     public static WebArchive createDeployment() {
-		MavenResolverSystem resolver = Maven.resolver();
+		PomEquippedResolveStage resolverStage = Maven.resolver().loadPomFromFile("pom.xml");
 		return ShrinkWrap
 		        .create(WebArchive.class, "test.war")
-                .addAsLibraries(resolver.resolve("org.metalisx:common-domain").withTransitivity().asFile())
-		        .addAsLibraries(resolver.resolve("org.liquibase:liquibase-core").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:common-domain").withTransitivity().asFile())
+		        .addAsLibraries(resolverStage.resolve("org.liquibase:liquibase-core").withTransitivity().asFile())
 		        .addClasses(
 		        // Database
 		        MonitorDatabase.class,

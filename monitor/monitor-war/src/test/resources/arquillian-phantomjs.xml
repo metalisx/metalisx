@@ -12,8 +12,8 @@
      
     <container qualifier="jboss7" default="true">
         <configuration>
-            <property name="jbossHome">target/jboss-as-7.1.1.Final</property>
-			<property name="managementPort">10099</property>
+            <property name="jbossHome">target/wildfly-8.1.0.Final</property>
+			<property name="managementPort">10090</property>
 			<!--
 				 For debugging you can use the settings below, 
 				 the suspend must be set on y so you have time to connect. 

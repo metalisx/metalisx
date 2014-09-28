@@ -4,13 +4,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
-import org.metalisx.monitor.request.servlet.filter.RequestFilter;
-import org.metalisx.monitor.request.servlet.filter.RequestFilterContext;
-import org.metalisx.monitor.request.servlet.filter.TeeHttpServletRequestWrapper;
-import org.metalisx.monitor.request.servlet.filter.TeeHttpServletResponseWrapper;
-import org.metalisx.monitor.request.servlet.filter.TeeServletInputStream;
-import org.metalisx.monitor.request.servlet.filter.TeeServletOutputStream;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.metalisx.utils.HttpStatus;
 import org.metalisx.utils.HttpUtils;
 import org.metalisx.utils.PrettyPrintUtils;
@@ -21,16 +15,16 @@ public class Deployments {
 	}
 	
     public static WebArchive createDeployment() {
-        MavenResolverSystem resolver = Maven.resolver();
+		PomEquippedResolveStage resolverStage = Maven.resolver().loadPomFromFile("pom.xml");
         return ShrinkWrap
                 .create(WebArchive.class, "RequestServletFilterTest.war")
-                .addAsLibraries(resolver.resolve("org.metalisx:common-domain").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:common-gson").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-context").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-context-request").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.metalisx:monitor-domain").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("commons-io:commons-io").withTransitivity().asFile())
-                .addAsLibraries(resolver.resolve("org.apache.tika:tika-core").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:common-domain").withTransitivity().asFile())
+                //.addAsLibraries(resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context-request").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-domain").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("commons-io:commons-io").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.apache.tika:tika-core").withTransitivity().asFile())
                 .addClasses(RequestFilter.class, RequestFilterContext.class, TeeHttpServletRequestWrapper.class,
                         TeeHttpServletResponseWrapper.class, TeeServletInputStream.class, TeeServletOutputStream.class,
                         HttpStatus.class, HttpUtils.class, PrettyPrintUtils.class, RequestFilterTest.class,

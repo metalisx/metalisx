@@ -62,7 +62,8 @@ public class RequestFilterTest {
     @InSequence(2)
     @Test
     public void testRequestFilter() throws IOException {
-        String queryString = "select o from " + MonitorRequest.class.getSimpleName() + " o";
+        String queryString = "select o from " + MonitorRequest.class.getSimpleName() + " o " +
+        		" where  url like '%/RequestServletFilterTest/test%'";
         TypedQuery<MonitorRequest> typedQuery = entityManager.createQuery(queryString, MonitorRequest.class);
         List<MonitorRequest> monitorRequestList = typedQuery.getResultList();
         Assert.assertEquals(1, monitorRequestList.size());
