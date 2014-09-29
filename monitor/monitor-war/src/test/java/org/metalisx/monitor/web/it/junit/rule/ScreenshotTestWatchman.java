@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
  * 
  * Usage.
  * 
- * First create a class property, initialize is with a new instance of this class
+ * First create a class property, initialize it with a new instance of this class
  * and annotate it with @Rule
  * 
  * Then set the web driver in a method annotated with @Before.

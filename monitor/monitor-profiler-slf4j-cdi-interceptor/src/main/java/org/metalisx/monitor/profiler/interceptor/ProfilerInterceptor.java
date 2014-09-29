@@ -37,7 +37,7 @@ public class ProfilerInterceptor implements Serializable {
     ProfilerInterceptorContext profilerInterceptorContext;
 
     @PostConstruct
-    public void profilePostconstruct(InvocationContext ctx) throws Throwable {
+    public void profilePostConstruct(InvocationContext ctx) throws Throwable {
         if (!profilerInterceptorContext.isDisableInterceptor()) {
             Date startDate = null;
             InterfaceMonitorContext monitorContext = MonitorContextFactory.getCurrentInstance();
