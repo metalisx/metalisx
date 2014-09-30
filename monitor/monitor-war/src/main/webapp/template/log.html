@@ -1,6 +1,51 @@
-<label>Id</label><div>{{aData.id}}</div><br></br>
-<label>Log level</label><div>{{aData.logLevel}}</div><br></br>
-<label>Log class</label><div>{{aData.logClass}}</div><br></br>
-<label>Thread</label><div>{{aData.thread}}</div><br></br>
-<label>Session id</label><div><a href="logs.html?showList=true&immediate=true&sessionId={{aData.sessionId}}">{{aData.sessionId}}</a></div><br></br>
-<label>Request id</label><div><a href="request.html?requestId={{aData.requestId}}">{{aData.requestId}}</a></div><br></br>
+<div class="form-horizontal">
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-id">Id</label>
+		<div class="col-sm-10">
+			<input id="detail-id" class="form-control" type="text" ng-disabled="true" ng-model="aData.id"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-log-level">Log level</label>
+		<div class="col-sm-10">
+			<input id="detail-log-level" class="form-control" type="text" ng-disabled="true" ng-model="aData.logLevel"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-log-class">Log class</label>
+		<div class="col-sm-10">
+			<input id="detail-log-class" class="form-control" type="text" ng-disabled="true" ng-model="aData.logClass"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-thread">Thread</label>
+		<div class="col-sm-10">
+			<input id="detail-thread" class="form-control" type="text" ng-disabled="true" ng-model="aData.thread"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Session id</label>
+		<div class="col-sm-10">
+			<div class="form-control-static">
+				<a href="logs.html?showList=true&immediate=true&sessionId={{aData.sessionId}}">{{aData.sessionId}}</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Request id</label>
+		<div class="col-sm-10">
+			<div class="form-control-static">
+				<a href="request.html?requestId={{aData.requestId}}">{{aData.requestId}}</a>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+

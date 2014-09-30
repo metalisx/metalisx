@@ -328,7 +328,7 @@
 			    	return false;
 			    });
 		    $buttonGroup.append($saveButton);
-		    var $dropdownButton = $('<button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>');
+		    var $dropdownButton = $('<button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>');
 		    $buttonGroup.append($dropdownButton);
 		    var $dropdownGroup = $('<ul class="dropdown-menu"/>');
 		    var $savePNG = $('<li><a href="#">Save as PNG</a></li>').

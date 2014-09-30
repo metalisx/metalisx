@@ -13,9 +13,11 @@
 input[type="text"].realtimeInterval {
 	width: 50px;
 }
+/*
 .filename {
 	width: 400px;
 } 
+*/
 .lineChartContainer {
 	display: none;
 	float:left;

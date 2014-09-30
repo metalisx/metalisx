@@ -21,6 +21,9 @@
  *			count: <count>
  *		}
  * }
+ * Note: if in the options.dataTableSettings.bPaginate is set to false
+ * the limit.count will be set to -1. Indicating no paging is used. 
+ * 
  * The returned object structure is:
  * {
  * 		items: <list of objects>,
@@ -76,6 +79,7 @@
 				"bServerSide": true,
 				"bFilter": false,
 				"bSortClasses": false,
+				"bPaginate": true,
 				"sPaginationType": "full_numbers", 
 				"sPaginationType": "bootstrap", // Bootstrap
 				"fnCreatedRow" : function(nRow, aData, iDataIndex) {
@@ -126,13 +130,12 @@
 								settings.onsuccess();
 							}
 							if (settings.onsuccessAjax) {
-								settings.onsuccessAjax();
+								settings.onsuccessAjax($this);
 							}
 						}
 		        	};
 
 		        	var pageContext = dataTableContextToPageContext(aoData, filter);
-		        	
 		        	oSettings.jqXHR = $.ajax({
 							"type": "POST",
 							"contentType": "application/json",
@@ -141,15 +144,21 @@
 							"data": JSON.stringify(pageContext),
 							"success": innerFnCallback}
 		            ).fail(function(jqXHR, textStatus, errorThrown) {
-		    			var message = {};
-		    			message.id = settings.messagesContainerId;
-		    			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
-		    			if (jqXHR.responseText.indexOf('body') > 0) {
-		    				message.detail = jqXHR.responseText;
-		    			}
-		    			message.level = 'error';
-		    			$.metalisxMessages(message);
-		            	$('#' + id + '_processing', $this.parent()).hide();
+		            	if (jqXHR.status != 0) { // Canceled requests are not processed. 
+				        	if ($.metalisxMessages === undefined) {
+				        		alert(textStatus + (errorThrown ? ': ' + errorThrown : ''));
+				        	} else {
+				    			var message = {};
+				    			message.id = settings.messagesContainerId;
+				    			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
+				    			if (jqXHR.responseText.indexOf('body') > 0) {
+				    				message.detail = jqXHR.responseText;
+				    			}
+				    			message.level = 'error';
+				    			$.metalisxMessages(message);
+				            	$('#' + id + '_processing', $this.parent()).hide();
+				        	}
+		            	}
 		    		});
 		        }
 			}
@@ -168,7 +177,6 @@
         			columnNames = sColumns.split(',');
         		}
         	}
-
         	for (var i=0; i < aoData.length; i++) {
         		if (aoData[i].name == 'iDisplayStart') {
         			limit.start = aoData[i].value;
@@ -220,6 +228,9 @@
 		var id = $this.attr('id');
 		
 		var dataTable = $this.dataTable(settings.dataTableSettings);
+		if (settings.onCreation) {
+			settings.onCreation(dataTable);
+		}
 		
 		// We override the fnClose and fnDraw method on the dataTable.
 		// This is done so the child elements in the open details tr are 

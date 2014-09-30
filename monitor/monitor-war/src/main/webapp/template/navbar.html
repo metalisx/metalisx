@@ -1,13 +1,16 @@
-<div class="navbar">
-	<div class="navbar-inner">
-		<a href="index.html" class="brand">Monitor</a>
-		<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</a>
-		<div class="nav-collapse collapse">
-			<ul class="nav">
+<div class="navbar navbar-default" ng-controller="NavbarController">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="index.html" class="navbar-brand">Monitor</a>
+		</div>
+		<div class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
 				<li id="navbarItemRequests" ng-class="{active: 'navbarItemRequests' == navbarActiveItem}"><a href="requests.html">Requests</a></li>
 				<li id="navbarItemLogs" ng-class="{active: 'navbarItemLogs' == navbarActiveItem}"><a href="logs.html">Logs</a></li>
 				<li id="navbarItemSummary" ng-class="{active: 'navbarItemSummary' == navbarActiveItem}"><a href="summary.html">Logs Summary</a></li>

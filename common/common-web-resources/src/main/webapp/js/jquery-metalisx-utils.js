@@ -83,8 +83,11 @@
 (function($){
 
 	/**
-	 * The first parameter can contain a text, a message object containing the properties text, detail
-	 * and level or a list of message objects. 
+	 * The first parameter can contain:
+	 *  - a text
+	 *  - a message object containing properties id, text, detail and level
+	 *  - a list of message objects. 
+	 * The id in the object should be the id of an existing HTML element.
 	 * The level in the object takes precedence over the level in the options. 
 	 * 
 	 * The second parameter contians options. The properties for the options argument are:
@@ -103,17 +106,17 @@
 	 * containerId Contains the id of the HTML object in which the message should be placed
 	 * if the message does not contain an id.
 	 * 
-	 * If the message contains an id and the HTML element does not contain the messagesContainerClass
-	 * the parent of the HTML element is search for an HTML element with the messagesContainerClass.
-	 * If found it will be the HTML element in which the message is placed if it is not found then
-	 * it will be placed in the HTML element with the id.
+	 * If the message contains an id of an HTML element and the HTML element does not contain 
+	 * the messagesContainerClass, the parent of the HTML element is search for an HTML element 
+	 * with the messagesContainerClass. If found it will be the HTML element in which the
+	 * message is placed if it is not found then it will be placed in the HTML element with the id.
 	 * When using the id of an INPUT elementd, add a DIV element after it with the class name in 
 	 * the messagesContainerClass setting. As an alternative you could set the id of the DIV element 
 	 * in the message. If you do not, the message is placed in the INPUT element which is not 
 	 * correct and you miss the message. Use this solution if you want a message coupled to another
 	 * element.
 	 * 
-	 * Requires the Twitter Bootstrap styles alert-success, alert-error and alert-info or you
+	 * Requires the Twitter Bootstrap styles alert-success, alert-danger and alert-info or you
 	 * need to define them yourself.
 	 */
 	$.metalisxMessages = function(value, options) {
@@ -151,7 +154,7 @@
 			}
 			var text = message.message;
 			var detail = null;
-			if (text.detail != null) {
+			if (message.detail != null) {
 				detail = message.detail;
 			}
 			var level = null;
@@ -209,7 +212,7 @@
 			if (level.toLowerCase() == 'success') {
 				$message.addClass('alert-success');
 			} else if (level.toLowerCase() == 'error') {
-				$message.addClass('alert-error');
+				$message.addClass('alert-danger');
 			} else if (level.toLowerCase() == 'info') {
 				$message.addClass('alert-info');
 			}
@@ -219,14 +222,11 @@
 				$detail = $('<a class="' + settings.messageDetailClass + '" href="#">Detail</a>')
 					.click(function() {
 						if ($('.' + settings.messageIframeClass, $container).size() == 0) {
-							$('.' + settings.messageInnerContainerClass, $container).append('<br/>');
-							$('.' + settings.messageInnerContainerClass, $container)
-								.append('<iframe width="100%" height="' + settings.messageInnerContainerHeight + 
+							$message.append('<iframe width="100%" height="' + settings.messageInnerContainerHeight + 
 										'" class="' + settings.messageIframeClass + '"/>');
-							$('.' + settings.messageIframeClass, $container).contents().find('html').html(jqXHR.responseText);
+							$('.' + settings.messageIframeClass, $message).contents().find('html').html(detail);
 						} else {
-							$('.' + settings.messageInnerContainerClass + ' br', $container).remove();
-							$('.' + settings.messageIframeClass, $container).remove();
+							$('.' + settings.messageIframeClass, $message).remove();
 						}
 					});
 				$message.append($detail);
@@ -560,15 +560,17 @@
 			contentType: settings.contentType,
 			dataType: settings.dataType
 		}).fail(function(jqXHR, textStatus, errorThrown) {
-			var message = {};
-			message.id = settings.messagesContainerId;
-			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
-			if (jqXHR.responseText.indexOf('body') > 0) {
-				message.detail = jqXHR.responseText;
-			}
-			message.level = 'error';
-			$.metalisxMessages(message);
-			$.metalisxUnblock();
+        	if (jqXHR.status != 0) { // Canceled requests are not processed.
+				var message = {};
+				message.id = settings.messagesContainerId;
+				message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
+				if (jqXHR.responseText.indexOf('body') > 0) {
+					message.detail = jqXHR.responseText;
+				}
+				message.level = 'error';
+				$.metalisxMessages(message);
+				$.metalisxUnblock();
+        	}
 		});
 		
 		return this;

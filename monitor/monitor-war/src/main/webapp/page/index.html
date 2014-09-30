@@ -8,27 +8,36 @@
 	<link href="../css/main.css" rel="stylesheet" type="text/css"></link> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/angular-route.js" type="text/javascript"></script>
+	<script src="../js/angular-cookies.js" type="text/javascript"></script>
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
+	<script>
+	(function($){
+		$.contextPath = '';
+		application.run(function(applicationContext) {
+			applicationContext.contextPath = $.contextPath;
+		});
+		$.ajaxSetup({cache: false});
+	}) (jQuery);
+	</script>
 </head>
 <body>
 
-<div class="container" ng-app="application">
+<div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ngc-navbar></div>
+	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item="navbarItemPages"></div>
 
-	<div class="row-fluid">
-		<div class="row-fluid">
-			<div class="span12">
+	<div class="row">
+		<div class="col-sm-12">
 
-				<div id="messagesContainer" class="messagesContainer"></div>
-			
-			 	<div class="contentContainer"></div>
+			<div id="messagesContainer" class="messagesContainer"></div>
+		
+		 	<div class="contentContainer"></div>
 
-			</div>
 		</div>
 	</div>
 

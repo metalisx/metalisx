@@ -1,6 +1,29 @@
 /* See: http://datatables.net/blog/Twitter_Bootstrap_2 */
 /* CSS styles for using DataTables with the styling for table and pagination from Twitter Bootstrap */
 
+/* Modified to use with Bootstrap 3 */
+div.dataTables_length select {
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
+	width: 75px;
+	line-height: 30px;
+	padding: 4px 6px;
+	font-size: 14px;
+	font-weight: normal;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	vertical-align: middle;
+}
+div.dataTables_length label {
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+}
+table.dataTable > tbody > tr > td {
+	vertical-align: middle;
+}
+
 /* Begin additional styles - These styles are added to the styles in the blog. */
 div.dataTables_length label {
 	float: left;
@@ -16,7 +39,7 @@ div.dataTables_length label {
 	top: 50%;
 	left: 50%;
 	width: 250px;
-	height: 30px;
+	height: 50px; /* Modified from 30px to 40px to use with Bootstrap 3 */
 	margin-left: -125px;
 	margin-top: -15px;
 	padding: 14px 0 2px 0;

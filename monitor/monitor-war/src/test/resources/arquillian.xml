@@ -4,16 +4,17 @@
     xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
     <!-- Uncomment to have test archives exported to the file system for inspection -->
-    <!-- 
     <engine>
         <property name="deploymentExportPath">target/</property>
     </engine>
-     -->
      
     <container qualifier="jboss7" default="true">
         <configuration>
             <property name="jbossHome">target/wildfly-8.1.0.Final</property>
 			<property name="managementPort">10090</property>
+			<!--
+			<property name="serverConfig">standalone.xml</property> 
+			 -->
 			<!--
 				 For debugging you can use the settings below, 
 				 the suspend must be set on y so you have time to connect. 
