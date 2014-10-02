@@ -236,7 +236,9 @@ function LogsController($scope, $compile, $http, templateProvider, logsService, 
 	
 	function realtimeUpdate() {
 		renderAll(function() {
+			alert('a' + $scope.filter.realtime);
 			if ($scope.filter.realtime) {
+				alert('x');
 				$scope.timer = setTimeout(realtimeUpdate, $scope.filter.realtimeInterval);
 			}
 		});
@@ -305,8 +307,12 @@ function LogsController($scope, $compile, $http, templateProvider, logsService, 
 		} else if ($scope.filter.showChart) {
 			renderDataTable();
 			renderCharts(onsuccess);
-		} else if (onsuccess) {
-			onsuccess();
+		} else {
+			renderDataTable();
+			renderCharts();
+			if (onsuccess) {
+				onsuccess();
+			}
 		}
 	};
 	
@@ -327,11 +333,10 @@ function LogsController($scope, $compile, $http, templateProvider, logsService, 
 		}
 	};
 	
-	$scope.changeRange = function(range) {
+	$scope.changeRange = function() {
 		$scope.filter.startDate = null;
 		$scope.filter.endDate = null;
-		$scope.filter.range = range;
-		if (range == 'custom') {
+		if ($scope.filter.range == 'custom') {
 			$scope.filter.realtime = false;
 			$scope.removeRealtimeUpdateTimer();
 		}

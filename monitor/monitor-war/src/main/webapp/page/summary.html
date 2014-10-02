@@ -6,7 +6,7 @@
 	<link href="../css/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet" type="text/css"></link> 
 	<link href="../css/jquery-ui-timepicker-addon.css" rel="stylesheet" type="text/css"></link> 
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
- 	<link href="../css/jquery.dataTables.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
  	<link href="../css/jquery.dataTables.bootstrap.css" rel="stylesheet" type="text/css"></link>
 	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
 	<link href="../css/main.css" rel="stylesheet" type="text/css"></link> 
@@ -58,20 +58,20 @@
 					</div>
 
 					<div class="form-group">
-						<label id="dateRangeLabel" class="col-sm-2 control-label">Date range</label>
+						<label id="dateRangeLabel" class="col-sm-2 control-label" for="range">Date range</label>
 						<div class="col-sm-10">
-							<div id="dateRanges" class="btn-group" data-toggle="buttons-radio">
-								<button class="btn btn-default" ng-class="{active: filter.range == 'custom'}" ng-click="changeRange('custom')">Custom</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1m'}" ng-click="changeRange('1m')">1m</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1H'}" ng-click="changeRange('1H')">1H</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1D'}" ng-click="changeRange('1D')">1D</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1W'}" ng-click="changeRange('1W')">1W</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1M'}" ng-click="changeRange('1M')">1M</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '3M'}" ng-click="changeRange('3M')">3M</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '6M'}" ng-click="changeRange('6M')">6M</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == '1Y'}" ng-click="changeRange('1Y')">1Y</button>
-								<button class="btn btn-default" ng-class="{active: filter.range == 'MAX'}" ng-click="changeRange('MAX')">Max</button>
-							</div>
+							<select id="range" class="form-control" ng-model="filter.range" ng-click="changeRange()">
+								<option value="custom">Custom</option>
+								<option value="1m">1 minute</option>
+								<option value="1H">1 hour</option>
+								<option value="1D">1 day</option>
+								<option value="1W">1 week</option>
+								<option value="1M">1 month</option>
+								<option value="3M">3 months</option>
+								<option value="6M">6 months</option>
+								<option value="1Y">1 year</option>
+								<option value="MAX">Max</option>
+							</select>
 						</div>
 					</div>
 

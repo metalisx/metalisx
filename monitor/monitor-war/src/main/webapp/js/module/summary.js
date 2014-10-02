@@ -61,10 +61,9 @@ function SummaryController($scope, templateProvider, summaryService, summaryRend
 		});
 	}
 
-	$scope.changeRange = function(range) {
+	$scope.changeRange = function() {
 		$scope.filter.startDate = null;
 		$scope.filter.endDate = null;
-		$scope.filter.range = range;
 	};
 
 	$scope.search = function() {
