@@ -4,23 +4,35 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
 	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/angular-route.js" type="text/javascript"></script>
+	<script src="../js/angular-cookies.js" type="text/javascript"></script>
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 	
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
+	<script>
+	(function($){
+		$.contextPath = '';
+		application.run(function(applicationContext) {
+			applicationContext.contextPath = $.contextPath;
+		});
+		$.ajaxSetup({cache: false});
+	}) (jQuery);
+	</script>
 </head>
 <body>
 
-<div class="container" ng-app="application">
+<div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ngc-navbar="navbarItemCertificate"></div>
+	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item="navbarItemCertificate"></div>
 
-	<div class="row-fluid">
-		<div class="span12">
+	<div class="row">
+		<div class="col-sm-12">
 
 			<div id="messagesContainer" class="messagesContainer"></div>
 		

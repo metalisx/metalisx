@@ -4,45 +4,67 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
 	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/angular-route.js" type="text/javascript"></script>
+	<script src="../js/angular-cookies.js" type="text/javascript"></script>
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 	
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
 	<script src="../js/module/webservice.js" type="text/javascript"></script>
+	<script>
+	(function($){
+		$.contextPath = '';
+		application.run(function(applicationContext) {
+			applicationContext.contextPath = $.contextPath;
+		});
+		$.ajaxSetup({cache: false});
+	}) (jQuery);
+	</script>
 </head>
 <body>
 
-<div class="container" ng-app="application">
+<div class="container-fluid" ng-app="application">
 
-	<div id="navbarContainer" class="navbarContainer" ngc-navbar="navbarItemWebservice"></div>
+	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item="navbarItemWebservice"></div>
 
-	<div class="row-fluid">
-		<div class="span12">
+	<div class="row">
+		<div class="col-sm-12">
 
 			<div id="messagesContainer" class="messagesContainer"></div>
 		
 		 	<div id="contentContainer" class="contentContainer">
 		
-				<div class="row-fluid">
-					<div class="span6" ng-controller="WebserviceController" ngc-enter="#webserviceButton">
+				<div class="row">
+					<div class="col-sm-6" ng-controller="WebserviceController" ngc-enter="#webserviceButton">
 						<h2>Test webservice</h2>
 						<p>Activating the button will call a test webservice running in this application
 						and logs a request with the SOAP request. 
 						The request can be found in the requests page, use the text 'TestService/Test' in
 						the Url field.</p>
-						<label>Who are you?</label>
-						<input id="name" type="text" name="name" ng-model="model.name" ngc-focus/>
-						<br/>
-						<label>Date</label>
-						<input id="date" type="text" name="date" ng-model="model.date"/>
-						<br/>
-				 		<div id="buttonContainer" class="buttonContainer">
-							<a href="#" id="webserviceButton" class="btn btn-primary" ng-click="run()">Test</a>
-				 		</div>
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="name">Who are you?</label>
+								<div class="col-sm-8">
+									<input id="name" class="form-control" type="text" name="name" ng-model="model.name" ngc-focus/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="date">Date</label>
+								<div class="col-sm-8">
+									<input id="date" class="form-control" type="text" name="date" ng-model="model.date"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-4 col-sm-8">
+									<a href="#" id="webserviceButton" class="btn btn-primary" ng-click="run()">Test</a>
+							 	</div>
+							</div>
+						</div>
 						<div id="resultContainer" class="messagesContainer"></div>
 					</div>
 				</div>

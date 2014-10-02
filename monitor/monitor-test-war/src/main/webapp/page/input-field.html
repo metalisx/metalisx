@@ -4,31 +4,43 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
 	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/angular-route.js" type="text/javascript"></script>
+	<script src="../js/angular-cookies.js" type="text/javascript"></script>
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
 	<script src="../js/module/input-field.js" type="text/javascript"></script>
+	<script>
+	(function($){
+		$.contextPath = '';
+		application.run(function(applicationContext) {
+			applicationContext.contextPath = $.contextPath;
+		});
+		$.ajaxSetup({cache: false});
+	}) (jQuery);
+	</script>
 </head>
 <body>
 
-<div class="container" ng-app="application">
+<div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ngc-navbar="navbarItemInputField"></div>
+	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item="navbarItemInputField"></div>
 
-	<div class="row-fluid">
-		<div class="span12">
+	<div class="row">
+		<div class="col-sm-12">
 		
 			<div id="messagesContainer" class="messagesContainer"></div>
 		
 		 	<div class="contentContainer">
 		
-				<div class="row-fluid" ng-controller="InputFieldController" ngc-enter="#getButton">
-					<div class="span6">
+				<div class="row" ng-controller="InputFieldController" ngc-enter="#getButton">
+					<div class="col-sm-6">
 						<h2>Test input field</h2>
 						<p>Activating the buttons will log a request with the input field values. 
 						The buttons are sending requests with the HTTP method equal to the buttons label.
@@ -39,19 +51,29 @@
 						for the 'Head'-button, use the text 'test/post' 
 						for the 'Post JSON'-button and use the text 'test/form' for the
 						'Test Post Form'-button in the Url field.</p>
-						<label>Who are you?</label>
-						<input id="name" type="text" name="name" ng-model="model.name" ngc-focus/>
-						<br/>
-						<label>Date</label>
-						<input id="date" type="text" name="date" ng-model="model.date"/>
-						<br/>
-				 		<div id="buttonContainer" class="buttonContainer">
-							<a href="#" id="getButton" class="btn btn-primary" ng-click="get()">Get</a>
-							<a href="#" id="getButton" class="btn btn-primary" ng-click="put()">Put</a>
-							<a href="#" id="getButton" class="btn btn-primary" ng-click="del()">Delete</a>
-							<a href="#" id="getButton" class="btn btn-primary" ng-click="head()">Head</a>
-							<a href="#" id="postButton" class="btn btn-primary" ng-click="post()">Post JSON</a>
-							<a href="#" id="formButton" class="btn btn-primary" ng-click="form()">Post Form</a>
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="name">Who are you?</label>
+								<div class="col-sm-8">
+									<input id="name" class="form-control" type="text" name="name" ng-model="model.name" ngc-focus/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="name">Date</label>
+								<div class="col-sm-8">
+									<input id="date" class="form-control" type="text" name="date" ng-model="model.date"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-4 col-sm-8">
+									<a href="#" id="getButton" class="btn btn-primary" ng-click="get()">Get</a>
+									<a href="#" id="getButton" class="btn btn-primary" ng-click="put()">Put</a>
+									<a href="#" id="getButton" class="btn btn-primary" ng-click="del()">Delete</a>
+									<a href="#" id="getButton" class="btn btn-primary" ng-click="head()">Head</a>
+									<a href="#" id="postButton" class="btn btn-primary" ng-click="post()">Post JSON</a>
+									<a href="#" id="formButton" class="btn btn-primary" ng-click="form()">Post Form</a>
+								</div>
+							</div>
 				 		</div>
 						<div id="resultContainer" class="messagesContainer"></div>
 					</div>

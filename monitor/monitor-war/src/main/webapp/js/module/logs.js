@@ -236,9 +236,7 @@ function LogsController($scope, $compile, $http, templateProvider, logsService, 
 	
 	function realtimeUpdate() {
 		renderAll(function() {
-			alert('a' + $scope.filter.realtime);
 			if ($scope.filter.realtime) {
-				alert('x');
 				$scope.timer = setTimeout(realtimeUpdate, $scope.filter.realtimeInterval);
 			}
 		});

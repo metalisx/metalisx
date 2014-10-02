@@ -4,9 +4,12 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
 	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
+	<script src="../js/angular-route.js" type="text/javascript"></script>
+	<script src="../js/angular-cookies.js" type="text/javascript"></script>
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 	
@@ -14,6 +17,14 @@
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
+		(function($){
+			$.contextPath = '';
+			application.run(function(applicationContext) {
+				applicationContext.contextPath = $.contextPath;
+			});
+			$.ajaxSetup({cache: false});
+		}) (jQuery);
+		
 		$(document).ready(function() {
 			$('#fileUploadContainer').metalisxFileupload({
 				action: '../fileUpload'
@@ -24,63 +35,73 @@
 </head>
 <body>
 
-<div class="container" ng-app="application">
+<div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ngc-navbar="navbarItemFileUpload"></div>
+	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item="navbarItemFileUpload"></div>
 
-	<div class="row-fluid">
-		<div class="span12">
+	<div class="row">
+		<div class="col-sm-12">
 
 			<div id="messagesContainer" class="messagesContainer"></div>
 		
 		 	<div class="contentContainer">
-		
-				<div class="row-fluid">
-					<div class="span6">
+				<div class="row">
+					<div class="col-sm-6">
 						<h2>Test file upload</h2>
 						<p>Activating the upload button will log a request with the upload file attached. 
 						The request can be found in the requests page, use the text 'fileUpload' in
 						the Url field.</p>
-						<form>
-							<label>Who are you?</label>
-							<input id="name" type="text" name="name" value="Enter your name here..."/>
-							<br/>
-							<label>Date</label>
-							<input id="date" type="text" name="date" value="2012-11-28T04:12:32.000"/>
-							<br/>
+						<form class="form-horizontal">
 							<div id="fileUploadContainer" class="fileUploadContainer">
-						 		<label id="filenameLabel">Filename</label>
-								<div>
-									<div id="fileChooserContainer" class="fileChooserContainer">
-										<div class="btn btn-primary">Select file...</div>
-										<input id="file" type="file" name="uploadFile" />
+								<div class="form-group">
+									<label class="col-sm-4 control-label" for="name">Who are you?</label>
+									<div class="col-sm-8">
+										<input id="name" class="form-control" type="text" name="name" value="Enter your name here..."/>
 									</div>
-									<div id="fileChooserFilename" class="fileChooserFilename"></div>
 								</div>
-								<br/>
-						 		<div id="buttonContainer" class="buttonContainer">
-							 		<a href="#" id="fileUploadButton" class="fileUploadButton btn btn-primary">Upload</a>
+								<div class="form-group">
+									<label class="col-sm-4 control-label" for="name">Date</label>
+									<div class="col-sm-8">
+										<input id="date" class="form-control" type="text" name="date" value="2012-11-28T04:12:32.000"/>
+									</div>
 								</div>
-						 		<br/>
-						 		<div id="fileUploadInfo" class="fileUploadInfo">
-						 			<h4>Upload info</h4>
-						 			<table>
-										<thead>
-											<tr>
-												<th class="filename">Filename</th>
-												<th class="contentType">Content type</th>
-												<th class="size">Size (bytes)</th>
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
-						 		</div>
+								<div class="form-group">
+							 		<label id="filenameLabel" class="col-sm-4 control-label">Filename</label>
+									<div class="col-sm-8">
+										<div id="fileChooserContainer" class="fileChooserContainer">
+											<div class="btn btn-primary">Select file...</div>
+											<input id="file" type="file" name="uploadFile" />
+										</div>
+										<div id="fileChooserFilename" class="fileChooserFilename"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+								 		<a href="#" id="fileUploadButton" class="fileUploadButton btn btn-primary">Upload</a>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-8">
+								 		<div id="fileUploadInfo" class="fileUploadInfo">
+								 			<h4>Upload info</h4>
+								 			<table>
+												<thead>
+													<tr>
+														<th class="filename">Filename</th>
+														<th class="contentType">Content type</th>
+														<th class="size">Size (bytes)</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+								 		</div>
+									</div>
+								</div>
 							</div>
 						</form>
 					</div>
 				</div>
-				<div class="span6"></div>
 		 	</div>
 
 		</div>
