@@ -4,7 +4,7 @@ application.service('dynamicControlTemplateLoaderService', DynamicControlTemplat
 /**
  * By default the templates for the dynamic controls are loaded from: 
  *  ../js/module/metalisx-dynamic-control.tpl
- * This is not allways the right URL. So after the application is created you
+ * This is not always the right URL. So after the application is created you
  * can override this default by setting the $rootScope.metalisxDynamicControlTemplateUrl.
  * For example with:
  *   application.run(function($rootScope) {

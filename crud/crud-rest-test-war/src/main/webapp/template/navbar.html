@@ -1,15 +1,18 @@
-<div class="navbar">
-	<div class="navbar-inner">
-		<a href="index.html" class="brand">CRUD test</a>
-		<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</a>
-		<div class="nav-collapse collapse">
-			<ul class="nav">
-				<li id="navbarItemUsers" ng-class="{active: 'navbarItemUsers' == navbarActiveItem}"><a href="crud.html?entityClass=org.metalisx.crud.domain.model.User">Users</a></li>
-				<li id="navbarItemUsers" ng-class="{active: 'navbarItemCompanies' == navbarActiveItem}"><a href="crud.html?entityClass=org.metalisx.crud.domain.model.Company">Companies</a></li>
+<div class="navbar navbar-default" ng-controller="NavbarController">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">CRUD test<</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="index.html" class="navbar-brand">Monitor test</a>
+		</div>
+		<div class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li id="navbarItemUsers" ng-class="{active: 'navbarItemUsers' == ngcNavbarActiveItem}"><a href="crud.html?entityClass=org.metalisx.crud.domain.model.User">Users</a></li>
+				<li id="navbarItemUsers" ng-class="{active: 'navbarItemCompanies' == ngcNavbarActiveItem}"><a href="crud.html?entityClass=org.metalisx.crud.domain.model.Company">Companies</a></li>
 			</ul>
 		</div>
 	</div>
