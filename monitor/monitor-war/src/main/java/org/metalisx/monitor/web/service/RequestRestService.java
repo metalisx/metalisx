@@ -54,12 +54,11 @@ public class RequestRestService {
     public RequestRestService() {
     }
 
-    @POST
+    @GET
     @Path("/filter")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ItemDto filter(MonitorRequestFilter monitorRequestFilter) {
-        return new ItemDto(monitorRequestFilter);
+    public ItemDto filter() {
+        return new ItemDto(new MonitorRequestFilter());
     }
 
     @POST
