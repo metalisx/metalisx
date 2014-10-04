@@ -2,7 +2,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 			crudService, utilsService, applicationContext) {
 
 	var logUrl = '/log/';
-	var logsUrl = 'logs.html?showList=true&immediate=true';
+	var logsUrl = 'logs.html#/?showList=true&immediate=true';
 	var logJsonEndpoint = applicationContext.contextPath + '/rest/logs';
 	var dataTableSelector = '#dataTable';
 
@@ -107,8 +107,8 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 
 	function initDataTableFilter() {
 		$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
-		if (!utilsService.isUrlParamEmpty($routeParams.url)) {
-			$scope.dataTableFilter.url = $routeParams.url;
+		if (!utilsService.isUrlParamEmpty($routeParams.message)) {
+			$scope.dataTableFilter.message = $routeParams.message;
 		}
 		if (!utilsService.isUrlParamEmpty($routeParams.range)) {
 			$scope.dataTableFilter.range = $routeParams.range;
