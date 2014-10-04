@@ -46,12 +46,11 @@ public class LogRestService {
     @EJB
     private MonitorLogService monitorLogService;
 
-    @POST
+    @GET
     @Path("/filter")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ItemDto filter(MonitorLogFilter monitorLogFilter) {
-        ItemDto itemDto = new ItemDto(monitorLogFilter);
+    public ItemDto filter() {
+        ItemDto itemDto = new ItemDto(new MonitorLogFilter());
         return itemDto;
     }
 
@@ -203,6 +202,13 @@ public class LogRestService {
     public PageDto<MonitorLog> getLogsPage(PageContextDto<MonitorLogFilter> pageContextDto) {
         DateUtils.processDateRange(pageContextDto.getFilter());
         return monitorLogService.findPage(pageContextDto);
+    }
+
+    @GET
+    @Path("/list-item/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ItemDto getListItemContent(@PathParam("id") Long id) {
+        return new ItemDto(monitorLogService.findById(id));
     }
 
     @GET

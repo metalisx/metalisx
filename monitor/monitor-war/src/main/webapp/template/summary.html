@@ -14,7 +14,7 @@
 			<div class="form-group">
 				<label id="dateRangeLabel" class="col-sm-4 control-label" for="range">Date range</label>
 				<div class="col-sm-8">
-					<select id="range" class="form-control" ng-model="dataTableFilter.range" ng-click="changeRange()">
+					<select id="range" class="form-control" ng-model="dataTableFilter.range" ng-change="changeRange()">
 						<option value="custom">Custom</option>
 						<option value="1m">1 minute</option>
 						<option value="1H">1 hour</option>

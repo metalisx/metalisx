@@ -43,7 +43,7 @@ application.directive('ngcRequestDynatree', function(applicationContext) {
 		require: 'ngModel',
 		link: function(scope, element, attrs, ngModel) {
 			
-			var requestDynaTree = function($element, entity) {
+			var renderDynatree = function($element, entity) {
 
 				var urls = $.extend(true, {
 					requestsPageUrl: applicationContext.contextPath + '/page/requests.html?requestId=',
@@ -507,7 +507,7 @@ application.directive('ngcRequestDynatree', function(applicationContext) {
 				return ngModel.$modelValue;
 			}, function(newValue) {
 				if (newValue != null && newValue != '') {
-					requestDynaTree($(element), newValue);
+					renderDynatree($(element), newValue);
 				}
 			});
 

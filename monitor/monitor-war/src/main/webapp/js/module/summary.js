@@ -72,6 +72,13 @@ function SummaryController($scope, $compile, $http, $location, $routeParams,
 		$scope.refreshDataTable();
 	}
 	
+	$scope.changeRange = function() {
+		if ($scope.dataTableFilter.range != 'custom') {
+			$scope.dataTableFilter.startDate = null;
+			$scope.dataTableFilter.endDate = null;
+		}
+	};
+
 	// Helpers
 	
 	$scope.refreshDataTable = function() {
