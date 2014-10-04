@@ -1,7 +1,7 @@
 function SummaryController($scope, $compile, $http, $location, $routeParams, 
 			crudService, utilsService, applicationContext) {
 
-	var logsUrl = applicationContext.contextPath + '/logs.html?showList=false&showChart=true&immediate=true';
+	var logsUrl = applicationContext.contextPath + '/page/logs.html?showList=false&showChart=true&immediate=true';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/summary';
 	var dataTableSelector = '#dataTable';
 
