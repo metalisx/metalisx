@@ -1,7 +1,6 @@
 function RequestsController($scope, $compile, $http, $location, $routeParams, 
 			crudService, utilsService, applicationContext) {
 
-	//var requestUrl = applicationContext.contextPath + '/page/requests.jsp/request/';
 	var requestUrl = '/request/';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/requests';
 	var dataTableSelector = '#dataTable';

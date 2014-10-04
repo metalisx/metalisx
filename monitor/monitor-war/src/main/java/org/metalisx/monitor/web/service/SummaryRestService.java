@@ -2,6 +2,7 @@ package org.metalisx.monitor.web.service;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -28,12 +29,11 @@ public class SummaryRestService {
     @EJB
 	private MonitorLogService monitorLogService;
 
-	@POST
+	@GET
 	@Path("/filter")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ItemDto filter(MonitorLogFilter monitorLogFilter) {
-		ItemDto itemDto = new ItemDto(monitorLogFilter);
+	public ItemDto filter() {
+		ItemDto itemDto = new ItemDto(new MonitorLogFilter());
 		return itemDto;
 	}
 

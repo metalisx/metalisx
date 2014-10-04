@@ -1,28 +1,28 @@
-application.service('summaryService', SummaryService);
+function SummaryController($scope, $compile, $http, $location, $routeParams, 
+			crudService, utilsService, applicationContext) {
 
-application.service('summaryRenderer', SummaryRenderer);
+	var logsUrl = applicationContext.contextPath + 'logs.html?showList=false&showChart=true&immediate=true';
+	var requestJsonEndpoint = applicationContext.contextPath + '/rest/summary';
+	var dataTableSelector = '#dataTable';
 
-function SummaryService(crudService) {
+	$scope.dataTableEnabled = false;
+	$scope.dataTableSettings = null;
 	
-	var filterEndpoint = '../rest/summary/filter';
+	$scope.dataTableFilterInitial = null;
+	$scope.dataTableFilter = {};
 
-	this.getFilter = function(onsuccess) {
-		crudService.post(filterEndpoint, $.urlValuesToObject(), {onsuccess: onsuccess});
-	};
-
-}
-
-function SummaryRenderer() {
-	
-	this.renderDataTable = function($scope) {
+	// DataTable
+	function initDataTable() {
 		
-		var url = '../rest/summary/page';
-		var logsUrl = 'logs.html?showList=false&showChart=true&immediate=true';
-		var dataTableSelector = '#dataTable';
-		
-		$scope.dataTable = $(dataTableSelector).metalisxDataTable($scope.filter, {
+		$scope.dataTableSettings = {
+			onsuccessRow: function(nRow, aData, iDataIndex) {
+				var html = $(nRow).html();
+				$(nRow).html(
+					$compile(html)($scope)
+				);
+			},
 			"dataTableSettings": {
-				"sAjaxSource": url,
+				"sAjaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
 				"aaSorting": [[0, 'desc']],
 		        "aoColumns": [
 					{ "sName": "message",
@@ -43,33 +43,70 @@ function SummaryRenderer() {
 						"mDataProp": "totalDuration"}
 				]
 			}
-		});
-
+		};
 	};
+
+	// Init
 	
-}
-
-function SummaryController($scope, templateProvider, summaryService, summaryRenderer) {
-
 	function init() {
-		summaryService.getFilter(function(result) {
-			if (result && result.item) {
-				$scope.filter = result.item;
-				$scope.$digest();
-				$scope.search();
-			}
-		});
+		initDataTable();
+		crudService.getFilter(requestJsonEndpoint, {onsuccess: function(result) {
+			$scope.dataTableFilterInitial = result.item;
+			initDataTableFilter();
+			$scope.dataTableEnabled = true;
+			$scope.$apply();
+		}});
+	}
+	
+	$scope.$on('$routeUpdate', function(next, current) {        
+		initDataTableFilter();
+		$scope.refreshDataTable();
+	});
+	
+	// Actions
+	
+	$scope.search = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
+		$location.search($scope.dataTableFilter);
+		$scope.refreshDataTable();
+	}
+	
+	// Helpers
+	
+	$scope.refreshDataTable = function() {
+		$(dataTableSelector).dataTable().fnDraw();
 	}
 
-	$scope.changeRange = function() {
-		$scope.filter.startDate = null;
-		$scope.filter.endDate = null;
-	};
+	// Filter
 
-	$scope.search = function() {
-		summaryRenderer.renderDataTable($scope);
-	};
-
+	function initDataTableFilter() {
+		$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
+		if (!utilsService.isUrlParamEmpty($routeParams.message)) {
+			$scope.dataTableFilter.message = $routeParams.message;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.range)) {
+			$scope.dataTableFilter.range = $routeParams.range;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.startDate)) {
+			$scope.dataTableFilter.startDate = $routeParams.startDate;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.endDate)) {
+			$scope.dataTableFilter.endDate = $routeParams.endDate;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.sessionId)) {
+			$scope.dataTableFilter.sessionId = $routeParams.sessionId;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.requestId)) {
+			$scope.dataTableFilter.requestId = $routeParams.requestId;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.organization)) {
+			$scope.dataTableFilter.organization = $routeParams.organization;
+		}
+		if (!utilsService.isUrlParamEmpty($routeParams.username)) {
+			$scope.dataTableFilter.username = $routeParams.username;
+		}
+	}
+	
 	init();
-
 }
