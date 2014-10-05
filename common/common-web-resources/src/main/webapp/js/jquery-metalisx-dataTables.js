@@ -211,6 +211,10 @@
 			}
 			return dataTableResult;
 		}
+		
+		this.getDataTable = function() {
+			return dataTable;
+		}
 
 		if (!settings.dataTableSettings.sAjaxSource) {
 			alert('Property dataTableSettings.sAjaxSource must be set in the options parameter.');
@@ -249,7 +253,7 @@
 			return dataTableFnDraw.call(this);
 		};
 		
-		return dataTable;
+		return this;
 	};
 	
 })(jQuery);

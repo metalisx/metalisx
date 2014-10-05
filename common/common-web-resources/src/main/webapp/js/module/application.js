@@ -474,6 +474,7 @@ application.directive('ngcTypeahead', function () {
 		link:function (scope, element, attrs) {
 
 			var url = null;
+			var callback = null;
 			var idKey = null;
 			var valueKey = null;
 			var limit = 20;
@@ -483,7 +484,6 @@ application.directive('ngcTypeahead', function () {
 			} else {
 				url = scope.ngcTypeahead;
 			}
-			var callback = null;
 			if (attrs['ngcTypeaheadCallback'] && attrs['ngcTypeaheadCallback'] != '') {
 				callback = scope.ngcTypeaheadCallback;
 			}
@@ -818,8 +818,11 @@ application.directive('ngcCkeditor', function () {
  * to a DataTable. This way you can prevent the execution of an AJAX request to
  * retrieve data, for instance with parent-child. The property is watched and if
  * it is changed from false to true the element is promoted to a DataTable.
+ * 
  * ngcDataTableSettings Is the property containing the DataTables settings.
  * ngcDataTableFilter Is the filter send with the AJAX request to retrieve data.
+ * ngcDataTableCallback Is the scope method executed after creating the dataTable.
+ *   Use it in an attribute like: ngc-data-table-callback="myMethod(dataTable)"
  * Requires jQuery datatables.js 1.9.2 javascript files.
  */
 application.directive('ngcDataTable', function () {
@@ -828,27 +831,54 @@ application.directive('ngcDataTable', function () {
 		restrict: 'A',
 		scope: {ngcDataTableEnabled:'=',
     			ngcDataTableSettings:'=',
-    			ngcDataTableFilter: '='},
+    			ngcDataTableFilter: '=',
+    			ngcDataTableCallback: '&'},
         link:function (scope, element, attrs) {
-    				
+    		
+        	var callback = null;
+        	var dataTable = null;
+        	
     		function initDataTable() {
-    			if (attrs['ngcDataTableSettings'] == null || attrs['ngcDataTableSettings'] == '') {
-    				alert('The ngc-data-table-settings attribute is missing.');
-    			} else {
-    				var filter = null;
-    				if (attrs['ngcDataTableFilter'] != null && attrs['ngcDataTableFilter'] != '') {
-    					filter = scope.ngcDataTableFilter;
-    				}
-	    			var datatable = element.metalisxDataTable(filter, scope.ngcDataTableSettings);
-	    			// Destroy the datatable when the element is removed from the DOM.
-	    			// This is required when the ng-view is used.
-	    			element.bind("$destroy", function() {
-	        			datatable.fnDestroy();
-	    	        });
+    			metalisxDataTable = element.metalisxDataTable(filter, scope.ngcDataTableSettings);
+    			dataTable = metalisxDataTable.getDataTable();
+    			if (callback) {
+    				callback({
+    					dataTable: dataTable
+    				})
     			}
+    			// Destroy the datatable when the element is removed from the DOM.
+    			// This is required when the ng-view is used.
+    			element.bind("$destroy", function() {
+    				dataTable.fnDestroy();
+    	        });
     		}
-    				
-    		if ($.fn.dataTable === 'undefined') {
+
+    		function addWatcher() {
+				scope.$watch("ngcDataTableEnabled", function() {
+					if (scope.ngcDataTableEnabled === true) {
+						if (dataTable == null) {
+							initDataTable();
+						} else {
+							console.log('aaa');
+							dataTable.dataTable().fnDraw();
+						}
+					}
+			   });
+    		}
+    		
+			var filter = null;
+			
+			if (attrs['ngcDataTableSettings'] == null || attrs['ngcDataTableSettings'] == '') {
+				alert('The ngc-data-table-settings attribute is missing.');
+			}
+			if (attrs['ngcDataTableFilter'] != null && attrs['ngcDataTableFilter'] != '') {
+				filter = scope.ngcDataTableFilter;
+			}
+			if (attrs['ngcDataTableCallback'] && attrs['ngcDataTableCallback'] != '') {
+				callback = scope.ngcDataTableCallback;
+			}
+
+    		if ($.fn.dataTable === undefined) {
     			alert('Please include the DataTables javascript files or remove the AngularJS directive from the element.');
     		} else {
     			var enabled = true;
@@ -856,15 +886,12 @@ application.directive('ngcDataTable', function () {
     				enabled = false;
     				// We watch if it is changed from disabled to enabled, not the otherway arround.
     				// If it is changed to true the element is promoted to a DataTable.
-    				scope.$watch("ngcDataTableEnabled", function() {
-    					if (scope.ngcDataTableEnabled === true) {
-    						initDataTable();
-    					}
-    			   });
+    				addWatcher();
     			}
     			// If it is not enabeld we do nothing.
     			if (enabled) {
     				initDataTable();
+    				addWatcher();
     			}
     		}
         }
@@ -888,7 +915,7 @@ application.directive('ngcZeroClipboard', function () {
     			ngcZeroClipboardDataProvider: '&'},
         link:function (scope, element, attrs) {
     				
-    		if (ZeroClipboard === 'undefined') {
+    		if (ZeroClipboard === undefined) {
     			alert('Please include the ZeroTable javascript files or remove the AngularJS directive from the element.');
     		} else if (attrs['ngcZeroClipboardDataProvider'] == null || attrs['ngcZeroClipboardDataProvider'] == '') {
     			alert('Attribute ngc-zero-clipboard-data-provider is missing.');

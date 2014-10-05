@@ -1,25 +1,27 @@
-application.service('settingsRenderer', SettingsRenderer);
-
-application.service('settingsService', SettingsService);
-
-function SettingsService(crudService) {
+function SettingsController($scope, $compile, $http, $location, $routeParams, 
+			templateProvider, crudService, utilsService, applicationContext) {
 
 	var saveEndpoint = '../rest/settings/item';
-	
-	this.save = function(aData, onsuccess) {
-		crudService.post(saveEndpoint, aData, {onsuccess: onsuccess});
-	};
-	
-}
+	var settingJsonEndpoint = applicationContext.contextPath + '/rest/settings';
+	var templateSettingUrl = applicationContext.contextPath  + '/template/setting.html';
 
-function SettingsRenderer(templateProvider) {
+	$scope.dataTable = null;
+	
+	$scope.dataTableEnabled = true;
+	$scope.dataTableSettings = null;
+	$scope.dataTableCallback = null;
+	
+	$scope.nRow = null;
+	$scope.aData = null;
+	$scope.iDataIndex = null;
 
-	this.renderDataTable = function($scope) {
+	// DataTable
+	function initDataTable() {
 		
-		var url = '../rest/settings/page';
-		var templateSettingUrl = '../template/setting.html';
-		var dataTableSelector = '#dataTable';
-
+		$scope.dataTableCallback = function(plot, result) {
+			$scope.dataTable = plot;
+		}
+		
 		$scope.refresh = function($detailContainer, nRow, aData, iDataIndex) {
 			$scope.nRow = nRow;
 			$scope.aData = aData;
@@ -27,12 +29,12 @@ function SettingsRenderer(templateProvider) {
 			templateProvider.compile(templateSettingUrl, $detailContainer, $scope);
 		};
 		
-		$scope.dataTable = $(dataTableSelector).metalisxDataTable(null, {
+		$scope.dataTableSettings = {
 			renderDetail: function($detailContainer, nRow, aData, iDataIndex) {
 				$scope.refresh($detailContainer, nRow, aData, iDataIndex);
 			},
 			"dataTableSettings": {
-				"sAjaxSource": url,
+				"sAjaxSource": crudService.getPageEndpoint(settingJsonEndpoint),
 				"aaSorting": [[1, 'asc']],
 		        "aoColumns": [
 					{ "sName": "id",
@@ -46,30 +48,39 @@ function SettingsRenderer(templateProvider) {
 						"sClass": "value"}
 				]
 			}
-		});
+		};
 	};
-	
-}
 
-function SettingController($scope, $compile, $http, settingsRenderer, settingsService) {
-
-	$scope.nRow = null;
-	$scope.aData = null;
-	$scope.iDataIndex = null;
+	// Init
 	
 	function init() {
-		settingsRenderer.renderDataTable($scope);
+		initDataTable();
 	}
 	
+	// Actions
+	
 	$scope.save = function() {
-		settingsService.save($scope.aData, function(result) {
-			$scope.dataTable.fnDraw();
-		});
+		crudService.post(saveEndpoint, $scope.aData, {onsuccess: function(result) {
+			$scope.dataTable.fnClose($scope.nRow);
+			$scope.refreshDataTable();
+		}});
 	};
 	
 	$scope.cancel = function() {
 		$scope.dataTable.fnClose($scope.nRow);
 	};
 	
+	// Helpers
+	
+	$scope.refreshDataTable = function() {
+		// When it is true then set it to false, so the watch event in the directive is triggered.
+		if ($scope.dataTableEnabled === true) {
+			$scope.dataTableEnabled = false;
+			$scope.$apply();
+		}
+		$scope.dataTableEnabled = true;
+		$scope.$apply();
+	}
+
 	init();
 }

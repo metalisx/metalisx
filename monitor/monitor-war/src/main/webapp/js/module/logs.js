@@ -4,13 +4,20 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 	var logUrl = '/log/';
 	var logsUrl = 'logs.html#/?showList=true&immediate=true';
 	var logJsonEndpoint = applicationContext.contextPath + '/rest/logs';
-	var dataTableSelector = '#dataTable';
 
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;
 	
 	$scope.dataTableFilterInitial = null;
 	$scope.dataTableFilter = {};
+
+	$scope.flotEnabled = false;
+	$scope.flotFilter = {};
+	$scope.flotSettings = null;
+	$scope.flotCallback = null;
+	$scope.flotOverviewEnabled = false;
+	$scope.flotOverviewFilter = {};
+	$scope.flotOverviewSettings = null;
 
 	// DataTable
 	function initDataTable() {
@@ -65,10 +72,24 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 	
 	function init() {
 		initDataTable();
+		initCharts();
 		crudService.getFilter(logJsonEndpoint, {onsuccess: function(result) {
+
+			// We watch the dataTableFilter for changes. Deep dirty check is enabled.
+			// If there is a change in the dataTableFilter the values are copied
+			// to the flotFilter and the flotOverviewFilter.
+			// Then we set the startDate and endDate of the flotOverviewFilter
+			// to null because we want a full overview.
+			$scope.$watch('dataTableFilter', function(newValue, oldValue) {
+				$.extend(true, $scope.flotFilter, $scope.dataTableFilter);
+				$.extend(true, $scope.flotOverviewFilter, $scope.dataTableFilter);
+			}, true);
+			
 			$scope.dataTableFilterInitial = result.item;
 			initDataTableFilter();
+
 			$scope.dataTableEnabled = true;
+			$scope.flotEnabled = true;
 			$scope.$apply();
 		}});
 	}
@@ -76,6 +97,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 	$scope.$on('$routeUpdate', function(next, current) {        
 		initDataTableFilter();
 		$scope.refreshDataTable();
+		$scope.refreshChart();
 	});
 	
 	// Actions
@@ -85,6 +107,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		$event.preventDefault();
 		$location.search($scope.dataTableFilter);
 		$scope.refreshDataTable();
+		$scope.refreshCharts();
 	}
 	
 	$scope.changeRange = function() {
@@ -97,10 +120,51 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		}
 	};
 
+	$scope.updateLocationSearch = function() {
+		$location.search($scope.dataTableFilter);
+	};
+	
 	// Helpers
 	
+	$scope.refresh = function(onsuccess) {
+		$scope.refreshDataTable();
+		$scope.refreshChart();
+	}
+	
 	$scope.refreshDataTable = function() {
-		$(dataTableSelector).dataTable().fnDraw();
+		if ($scope.dataTableFilter.showList === true) {
+			// When it is true then set it to false, so the watch event in the directive is triggered.
+			if ($scope.dataTableEnabled === true) {
+				$scope.dataTableEnabled = false;
+				$scope.$apply();
+			}
+			$scope.dataTableEnabled = true;
+			$scope.$apply();
+		}
+	}
+	
+	$scope.refreshChart = function() {
+		if ($scope.dataTableFilter.showChart === true) {
+			// When it is true then set it to false, so the watch event in the directive is triggered.
+			if ($scope.flotEnabled === true) {
+				$scope.flotEnabled = false;
+				$scope.$apply();
+			}
+			$scope.flotEnabled = true;
+			$scope.$apply();
+		}
+	}
+
+	$scope.refreshOverviewChart = function() {
+		if ($scope.dataTableFilter.showOverviewChart === true) {
+			// When it is true then set it to false, so the watch event in the directive is triggered.
+			if ($scope.flotOverviewEnabled === true) {
+				$scope.flotOverviewEnabled = false;
+				$scope.$apply();
+			}
+			$scope.flotOverviewEnabled = true;
+			$scope.$apply();
+		}
 	}
 
 	// Filter
@@ -143,6 +207,9 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		if (!utilsService.isUrlParamEmpty($routeParams.realtime)) {
 			$scope.dataTableFilter.realtime = $routeParams.realtime;
 		}
+		if (!utilsService.isUrlParamEmpty($routeParams.realtimeInterval)) {
+			$scope.dataTableFilter.realtimeInterval = $routeParams.realtimeInterval;
+		}
 	}
 	
 	// Realtime update
@@ -150,11 +217,10 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 	$scope.timer = null;
 	
 	function realtimeUpdate() {
-		renderAll(function() {
-			if ($scope.dataTableFilter.realtime) {
-				$scope.timer = setTimeout(realtimeUpdate, $scope.dataTableFilter.realtimeInterval);
-			}
-		});
+		$scope.refresh();
+		if ($scope.dataTableFilter.realtime) {
+			$scope.timer = setTimeout(realtimeUpdate, $scope.dataTableFilter.realtimeInterval);
+		}
 	}
 	
 	$scope.removeRealtimeUpdateTimer = function() {
@@ -164,7 +230,8 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		}
 	};
 	
-	$scope.toggleRealtimeChartUpdate = function() {
+	$scope.toggleRealtime = function() {
+		$location.search($scope.dataTableFilter);
 		if ($scope.dataTableFilter.realtime) {
 			if ($scope.timer == null) {
 				realtimeUpdate();
@@ -174,251 +241,184 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		}
 	};
 	
-	// Displaying
+	// Charts
 	
-	var logsSelector = '#logs';
-	var lineChartContainerSelector = '#lineChartContainer';
-	var lineChartOverviewSelector = '#lineChartOverview';
-
-	function renderCharts(onsuccess) {
-		if ($scope.dataTableFilter.showChart) {
-			getChart($scope.dataTableFilter, function(chartData) {
-				if (chartData) {
-					$(lineChartContainerSelector).show(); // To show canvas labels the chart has to be visible first.
-					renderChart(chartData, function(plot, chartData) {
-						if ($scope.dataTableFilter.showOverviewChart) {
-							getOverview($scope.dataTableFilter, chartData, function(overviewData) {
-								if (overviewData) {
-									for (prop in $scope.overviewSettings) {
-										delete $scope.overviewSettings[prop]; 
-									}
-									if (overviewData && overviewData.settings) {
-										$.extend(true, $scope.overviewSettings, overviewData.settings);
-									}
-									$(lineChartOverviewSelector).show();
-									renderOverview(plot, overviewData, function() {
-										if (onsuccess) {
-											onsuccess();
-										}
-									});
-								}
-							});
-						} else {
-							$(lineChartOverviewSelector).hide();
-							if (onsuccess) {
-								onsuccess();
-							}
-						}
-					});
-				}
-			});
-		} else {
-			$(lineChartContainerSelector).hide();
-			if (onsuccess) {
-				onsuccess();
+	function initCharts() {
+		
+		$scope.flotCallback = function(plot, result) {
+			if (result && result.settings) {
+				$scope.flotOverviewFilter.startDate = result.settings.min;
+				$scope.flotOverviewFilter.endDate = result.settings.max;
+				$scope.refreshOverviewChart();
 			}
 		}
-	};
-	
-	function renderDataTable(onsuccess) {
-		if ($scope.dataTableFilter.showList) {
-			$(logsSelector).show();
-			$scope.refreshDataTable();
-			if (onsuccess) {
-				onsuccess();
-			}
-		} else {
-			$(logsSelector).hide();
-			if (onsuccess) {
-				onsuccess();
-			}
-		}
-	};
-
-	function renderAll(onsuccess) {
-		if ($scope.dataTableFilter.showList && $scope.dataTableFilter.showChart) { // render chart and list after each other is required for proper use of timer
-			renderDataTable(function() {
-				renderCharts(onsuccess);
-			});
-		} else if ($scope.dataTableFilter.showList) {
-			renderDataTable(onsuccess);
-			renderCharts();
-		} else if ($scope.dataTableFilter.showChart) {
-			renderDataTable();
-			renderCharts(onsuccess);
-		} else {
-			renderDataTable();
-			renderCharts();
-			if (onsuccess) {
-				onsuccess();
-			}
-		}
-	};
-	
-	////////////
-	// Charts //
-	////////////
-
-	// Charts actions
-	
-	$scope.toggleShowCharts = function() {
-		renderAll();
-	};
-	
-	$scope.toggleShowList = function() {
-		renderAll();
-	};
-	
-	// Charts service
-	
-	var urlChartEndpoint = '../rest/logs/chart';
-	var urlOverviewEndpoint = '../rest/logs/overview';
-	var urlOverviewSettingsEndpoint = '../rest/logs/overviewSettings';
-	
-	function getChart(filter, onsuccess) {
-		crudService.post(urlChartEndpoint, filter, {onsuccess: function(result) {
-			if (onsuccess) {
-				onsuccess(result);
-			}
-		}});
-	};
-	
-	function getOverview(filter, chartData, onsuccess) {
-		// The filter needs to be cloned because it does not always contain 
-		// a start and and date. In this case the boundaries of the 
-		// chart are used as start and end date for the overview filter.
-		var overviewFilter = jQuery.extend({}, filter);
-		overviewFilter.startDate = chartData.settings.min;
-		overviewFilter.endDate = chartData.settings.max;
-		crudService.post(urlOverviewEndpoint, overviewFilter, {onsuccess: function(result) {
-			if (onsuccess) {
-				onsuccess(result);
-			}
-		}});
-	};
-
-	function getOverviewSettings(overviewSettings, onsuccess) {
-		crudService.post(urlOverviewSettingsEndpoint, overviewSettings, {onsuccess: function(result) {
-			if (onsuccess) {
-				onsuccess(result);
-			}
-		}});
-	};
-	
-	// Charts renderer
-	
-	$scope.overviewSettings = {};
-
-	function renderChart(chartData, onsuccess) {
 		
-		var lineChartSelector = '#lineChart';
-		
-		var $this = this;
-		
-		$(lineChartSelector).metalisxTimeLineChart(chartData, {
-			getX: function (index, item) {
-				return item.logDate;
-			},
-			getY: function (index, item) { 
-				return item.duration; 
-			},
-			getXaxisMin: function(data) {
-				return data.settings.min;
-			}, 
-			getXaxisMax: function(data) {
-				return data.settings.max;
-			},
-			xaxisTicks: function(items) {
-				return 5;
-			},
-			flotSettings: {
-				xaxis: {
-					min: $scope.dataTableFilter.startDate, 
-					max: $scope.dataTableFilter.endDate 
+		$scope.flotSettings = {
+				getX: function (index, item) {
+					return item.logDate;
 				},
-				selection: { 
-					mode: "x" 
-				}
-			},
-			onsuccess: function(plot, chartData) {
-				plot.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
-				plot.getPlaceholder().on("plotselected", function (event, ranges) {
-					$scope.dataTableFilter.startDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.from));
-					$scope.dataTableFilter.endDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.to));
-					$scope.dataTableFilter.range = 'custom';
-					$scope.dataTableFilter.realtime = false;
-					$scope.$digest();
-					getChart($scope.dataTableFilter, function(chartData) {
-						$this.renderChart(chartData);
-						if ($scope.dataTableFilter.showList) {
-							$this.renderDataTable($scope);
-						}
+				getY: function (index, item) { 
+					return item.duration; 
+				},
+				getXaxisMin: function(data) {
+					return data.settings.min;
+				}, 
+				getXaxisMax: function(data) {
+					return data.settings.max;
+				},
+				xaxisTicks: function(items) {
+					return 5;
+				},
+				flotSettings: {
+					xaxis: {
+						min: $scope.dataTableFilter.startDate, 
+						max: $scope.dataTableFilter.endDate 
+					},
+					selection: { 
+						mode: "x" 
+					}
+				},
+				onsuccess: function(plot, chartData) {
+					plot.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
+					plot.getPlaceholder().on("plotselected", function (event, ranges) {
+						$scope.dataTableFilter.startDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.from));
+						$scope.dataTableFilter.endDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.to));
+						$scope.dataTableFilter.range = 'custom';
+						$scope.dataTableFilter.realtime = false;
+						$location.search($scope.dataTableFilter);
+						// Refresh chart and dataTable
+						$scope.refresh();
+						// Remove timer
 						$scope.removeRealtimeUpdateTimer();
+		        		plot.clearSelection();
 					});
-	        		plot.clearSelection();
-				});
-				if (onsuccess) {
-					onsuccess(plot, chartData);
 				}
-			}
-		});
-	};
-	
-	function renderOverview(plot, overviewData, onsuccess) {
-
-		var lineChartOverviewSelector = '#lineChartOverview';
-
-		$(lineChartOverviewSelector).metalisxTimeLineChart(overviewData, {
-			getX: function (index, item) {
-				return item.date;
-			},
-			getY: function (index, item) { 
-				return item.duration; 
-			},
-			getXaxisMin: function(data) {
-				return data.settings.min;
-			}, 
-			getXaxisMax: function(data) {
-				return data.settings.max;
-			},
-			flotSettings: {
-		        series: {
-		            points: { show: false }
-		        },
-				xaxis: {
-					ticks: 2
-			    },
-		        yaxis: { ticks: []},
-				selection: {
-					mode: "x" 
+			};
+		
+		$scope.flotOverviewSettings = {
+				getX: function (index, item) {
+					return item.date;
 				},
-				grid: {
-					hoverable: false
-				}
-			},
-			showSaveButton: false,
-	        onsuccess: function(overview, overviewData) {
-				overview.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
-				overview.getPlaceholder().on("plotselected", function (event, ranges) {
-					$scope.overviewSettings.selectionStartDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.from));
-					$scope.overviewSettings.selectionEndDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.to));
-					getOverviewSettings($scope.overviewSettings, function(overviewSettingsData) {
-						if (overviewSettingsData) {
-							$.extend(true, $scope.overviewSettings, overviewSettingsData);
-							$scope.$digest();
-							ranges.xaxis.from = $.metalisxUtils.isoDateAsStringtoDate($scope.overviewSettings.selectionStartDate).getTime(); 
-							ranges.xaxis.to = $.metalisxUtils.isoDateAsStringtoDate($scope.overviewSettings.selectionEndDate).getTime();
-							plot.setSelection(ranges);
-						}
+				getY: function (index, item) { 
+					return item.duration; 
+				},
+				getXaxisMin: function(data) {
+					return data.settings.min;
+				}, 
+				getXaxisMax: function(data) {
+					return data.settings.max;
+				},
+				flotSettings: {
+			        series: {
+			            points: { show: false }
+			        },
+					xaxis: {
+						ticks: 2
+				    },
+			        yaxis: { ticks: []},
+					selection: {
+						mode: "x" 
+					},
+					grid: {
+						hoverable: false
+					}
+				},
+				showSaveButton: false,
+		        onsuccess: function(overview, overviewData) {
+					overview.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
+					overview.getPlaceholder().on("plotselected", function (event, ranges) {
+						$scope.dataTableFilter.startDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.from));
+						$scope.dataTableFilter.endDate = $.metalisxUtils.dateToIsoDateAsString(new Date(ranges.xaxis.to));
+						$scope.dataTableFilter.range = 'custom';
+						$scope.dataTableFilter.realtime = false;
+						$location.search($scope.dataTableFilter);
+						// Refresh chart and dataTable
+						$scope.refresh();
+						// Remove timer
+						$scope.removeRealtimeUpdateTimer();
+						overview.clearSelection();
 					});
-					overview.clearSelection();
-				});
-				if (onsuccess) {
-					onsuccess(overview, overviewData);
 				}
-			}
-		});		
-	};
+			};
+	}
 	
 	init();
 }
+
+
+application.directive('ngcFlot', function(crudService) {
+	
+    return {
+		restrict: 'A',
+		scope: {ngcFlot: '@',
+				ngcFlotEnabled:'=',
+    			ngcFlotSettings:'=',
+    			ngcFlotFilter: '=',
+    			ngcFlotCallback: '&'},
+        link:function (scope, element, attrs) {
+    		
+        	var url = null;
+			var filter = null;
+			var settings = null;
+			var callback = null;
+        	var plot = null;
+        	
+			if (attrs['ngcFlot'] == null || attrs['ngcFlot'] == '') {
+				alert('The ngc-flot attribute is missing the value of the REST endpoint.');
+			} else {
+				url = scope.ngcFlot;
+			}
+			if (attrs['ngcFlotFilter'] != null && attrs['ngcFlotFilter'] != '') {
+				filter = scope.ngcFlotFilter;
+			}
+			if (attrs['ngcFlotSettings'] != null && attrs['ngcFlotSettings'] != '') {
+				settings = scope.ngcFlotSettings;
+			}
+			if (attrs['ngcFlotCallback'] && attrs['ngcFlotCallback'] != '') {
+				callback = scope.ngcFlotCallback;
+			}
+			
+			function initFlot() {
+				crudService.post(url, filter, {onsuccess: function(result) {
+					if (result && result.items && result.settings) {
+		    			plot = $(element).metalisxTimeLineChart(result, settings);
+		    			if (callback) {
+		    				callback({
+		    					plot: plot,
+		    					result: result
+		    				});
+		    			}
+		    			// Destroy the flot when the element is removed from the DOM.
+		    			// This is required when the ng-view is used.
+		    			element.bind("$destroy", function() {
+		    				if (plot != null) {
+		    					plot.shutdown();
+		    				}
+		    	        });
+					}
+				}});
+    		}
+
+    		if ($.plot === undefined) {
+    			alert('Please include the Flot javascript files or remove the AngularJS directive from the element.');
+    		} else {
+    			var enabled = true;
+    			if (attrs['ngcFlotEnabled'] && attrs['ngcFlotEnabled'] != '' && scope.ngcFlotEnabled === false) {
+    				enabled = false;
+    				// We watch if it is changed from disabled to enabled, not the otherway arround.
+    				// If it is changed to true the element is promoted to a flot.
+    				scope.$watch("ngcFlotEnabled", function() {
+    					if (scope.ngcFlotEnabled === true) {
+    						initFlot();
+    					}
+    			   });
+    			}
+    			// If it is not enabeld we do nothing.
+    			if (enabled) {
+    				initFlot();
+    			}
+    		}
+        }
+    };
+    
+});

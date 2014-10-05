@@ -1,26 +1,31 @@
-application.service('logFileLoadService', LogFileLoadService);
+function LogFileLoadController($scope, crudService) {
 
-application.service('logFileLoadModelValidator', LogFileLoadModelValidator);
-
-function LogFileLoadService(crudService) {
-	
 	var restEndpoint = '../rest/load';
 	var modelRestEndpoint = restEndpoint + '/model';
 	var startRestEndpoint = restEndpoint + '/start';
 
-	this.get = function(onsuccess) {
-		crudService.get(modelRestEndpoint, null, {onsuccess: onsuccess});
-	};
-
-	this.start = function(model) {
-		crudService.post(startRestEndpoint, model);
-	};
-
-}
-
-function LogFileLoadModelValidator(messagesProvider) {
+	// Init
 	
-	this.validate = function(model) {
+	function init() {
+		crudService.get(modelRestEndpoint, null, {onsuccess: function(result) {
+			if (result && result.item) {
+				$scope.model = result.item;
+				$scope.$digest();
+			}
+		}});
+	}
+
+	// Actions
+	
+	$scope.start = function() {
+		if (validate($scope.model)) {
+			crudService.post(startRestEndpoint, $scope.model);
+		}
+	};
+
+	// Validator
+
+	function validate(model) {
 		var isValid = true;
 		if (model.filename == null || model.filename == '') {
 			messagesProvider.message({message: 'Filename is required, please enter the location of the file on ' +
@@ -31,25 +36,6 @@ function LogFileLoadModelValidator(messagesProvider) {
 		return isValid;
 	};
 	
-}
-
-function LogFileLoadController($scope, templateProvider, logFileLoadService, logFileLoadModelValidator) {
-
-	function init() {
-		logFileLoadService.get(function(result) {
-			if (result && result.item) {
-				$scope.model = result.item;
-				$scope.$digest();
-			}
-		});
-	}
-
-	$scope.start = function() {
-		if (logFileLoadModelValidator.validate($scope.model)) {
-			logFileLoadService.start($scope.model);
-		}
-	};
-
 	init();
 
 }

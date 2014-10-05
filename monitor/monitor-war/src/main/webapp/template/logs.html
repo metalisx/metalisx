@@ -5,7 +5,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.showList" ng-change="toggleShowList()"/>
+							ng-model="dataTableFilter.showList" ng-change="updateLocationSearch()"/>
 						Show list
 					</label>
 				</div>
@@ -15,7 +15,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.showChart" ng-change="toggleShowCharts()"/>
+							ng-model="dataTableFilter.showChart" ng-change="updateLocationSearch()"/>
 						Show chart
 					</label>
 				</div>
@@ -25,7 +25,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showOverviewChart" type="checkbox" 
-							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-click="toggleShowCharts()"></input>
+							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-change="updateLocationSearch()"></input>
 						Show chart overview
 					</label>
 				</div>
@@ -35,9 +35,10 @@
 				<div class="checkbox">
 					<label>
 						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.realtime" ng-disabled="dataTableFilter.range == 'custom'" ng-change="toggleRealtimeChartUpdate()"/>
+							ng-model="dataTableFilter.realtime" ng-disabled="dataTableFilter.range == 'custom'" ng-change="updateLocationSearch()"/>
 						Realtime
-				  		<input id="realtimeInterval" class="form-control" type="text" ng-disabled="dataTableFilter.range == 'custom'" ng-model="dataTableFilter.realtimeInterval"></input>
+				  		<input id="realtimeInterval" class="form-control" type="text" ng-disabled="dataTableFilter.range == 'custom'" ng-model="dataTableFilter.realtimeInterval"
+				  			 ng-change="updateLocationSearch()"></input>
 					</label>
 				</div>
 			</div>
@@ -125,24 +126,23 @@
 			</div>
 		 	
 		</div>
-	</div>	
+	</div>
 
 	<div class="col-sm-9">
 		
 		<div class="row">
 			<div class="col-sm-12">
-			 	<div id="filterResultContainer" class="filterResultContainer">
-				 	<div id="lineChartContainer" class="lineChartContainer">
-					 	<div id="lineChart" class="lineChart"></div>
-						<div id="lineChartOverview" class="lineChartOverview"></div>
-					</div>
-				</div>
+			 	<div id="lineChart" class="lineChart" ng-show="dataTableFilter.showChart == true"
+			 			ngc-flot="../rest/logs/chart" ngc-flot-enabled="flotEnabled" ngc-flot-settings="flotSettings" ngc-flot-filter="flotFilter"
+			 			ngc-flot-callback="flotCallback(plot, result)"></div>
+				<div id="lineChartOverview" class="lineChartOverview" ng-show="dataTableFilter.showChart == true && dataTableFilter.showOverviewChart == true"
+			 			ngc-flot="../rest/logs/overview" ngc-flot-enabled="flotOverviewEnabled" ngc-flot-settings="flotOverviewSettings" ngc-flot-filter="flotOverviewFilter"></div>
 			</div>
 		</div>
 
 		<div class="row">
 			<div class="col-sm-12">
-				<div id="logs" class="logs">
+				<div id="logs" class="logs" ng-show="dataTableFilter.showList == true">
 					<table cellpadding="0" cellspacing="0" border="0" id="dataTable" class="table table-striped table-bordered"
 							ngc-data-table ngc-data-table-enabled="dataTableEnabled"
 							ngc-data-table-settings="dataTableSettings" ngc-data-table-filter="dataTableFilter">

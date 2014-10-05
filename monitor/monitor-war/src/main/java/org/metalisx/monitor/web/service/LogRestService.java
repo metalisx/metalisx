@@ -61,6 +61,8 @@ public class LogRestService {
     public OverviewDto getLogsOverview(MonitorLogFilter monitorLogFilter) {
     	PageContextDto<MonitorLogFilter> pageContextDto = new PageContextDto<MonitorLogFilter>();
     	pageContextDto.setFilter(monitorLogFilter);
+        // We are interested in all values so we remove the default limit on the result
+        pageContextDto.setLimit(null);
         PageDto<MonitorLog> pageDto = monitorLogService.findPage(pageContextDto);
         List<MonitorLog> items = pageDto.getItems();
         OverviewDto overviewDto = new OverviewDto();
@@ -73,6 +75,13 @@ public class LogRestService {
             DatePrecision datePrecision = DateUtils.getPrecision(startDate, endDate);
             overviewSettingsDto.setDatePrecision(datePrecision);
             overviewDto.setItems(getOverviewList(monitorLogFilter, datePrecision));
+            // Make sure we have a min and max date in the settings.
+            if (overviewSettingsDto.getMin() == null) {
+            	overviewSettingsDto.setMin(startDate);
+            }
+            if (overviewSettingsDto.getMax() == null) {
+            	overviewSettingsDto.setMax(endDate);
+            }
         } else {
             overviewDto.setItems(new ArrayList<MonitorOverviewItem>());
         }
@@ -115,59 +124,6 @@ public class LogRestService {
         return monitorOverviewItemList;
     }
 
-    /**
-     * Sets the precision of the start and end date of the overview selection.
-     * It would seem the easiest way to set the precision in the client with
-     * JavaScript. But the choice is made to handle this server side to prevent
-     * scattering of logic in client and server.
-     * 
-     * If using the date precision on the start or end date of the selection
-     * results in a date outside the overview boundary, the boundary date is
-     * used.
-     */
-    @POST
-    @Path("/overviewSettings")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Object getLogsOverviewSettings(OverviewSettingsDto overviewSettingsDto) {
-        if (validate(overviewSettingsDto)) {
-            Date startDate = DateUtils.floor(overviewSettingsDto.getSelectionStartDate(), overviewSettingsDto
-                    .getDatePrecision().getNext());
-            Date endDate = DateUtils.ceil(overviewSettingsDto.getSelectionEndDate(), overviewSettingsDto
-                    .getDatePrecision().getNext());
-            if (startDate.before(overviewSettingsDto.getMin())) {
-                overviewSettingsDto.setSelectionStartDate(overviewSettingsDto.getMin());
-            } else {
-                overviewSettingsDto.setSelectionStartDate(startDate);
-            }
-            if (endDate.after(overviewSettingsDto.getMax())) {
-                overviewSettingsDto.setSelectionEndDate(overviewSettingsDto.getMax());
-            } else {
-                overviewSettingsDto.setSelectionEndDate(endDate);
-            }
-        }
-        return overviewSettingsDto;
-    }
-
-    private boolean validate(OverviewSettingsDto overviewSettingsDto) {
-        if (overviewSettingsDto.getMin() == null) {
-            throw new RestException("Missing min property in the request.");
-        }
-        if (overviewSettingsDto.getMax() == null) {
-            throw new RestException("Missing max property in the request.");
-        }
-        if (overviewSettingsDto.getDatePrecision() == null) {
-            throw new RestException("Missing datePrecision property in the request.");
-        }
-        if (overviewSettingsDto.getSelectionStartDate() == null) {
-            throw new RestException("Missing selectionStartDate property in the request.");
-        }
-        if (overviewSettingsDto.getSelectionEndDate() == null) {
-            throw new RestException("Missing selectionEndDate property in the request.");
-        }
-        return true;
-    }
-
     @POST
     @Path("/chart")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -176,6 +132,8 @@ public class LogRestService {
         DateUtils.processDateRange(monitorLogFilter);
         PageContextDto<MonitorLogFilter> pageContextDto = new PageContextDto<MonitorLogFilter>();
         pageContextDto.setFilter(monitorLogFilter);
+        // We are interested in all values so we remove the default limit on the result
+        pageContextDto.setLimit(null);
         PageDto<MonitorLog> pageDto = monitorLogService.findPage(pageContextDto);
         List<MonitorLog> items = pageDto.getItems();
         ChartDto chartDto = new ChartDto();

@@ -3,7 +3,6 @@ function SummaryController($scope, $compile, $http, $location, $routeParams,
 
 	var logsUrl = applicationContext.contextPath + '/page/logs.html#/?showList=false&showChart=true&immediate=true';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/summary';
-	var dataTableSelector = '#dataTable';
 
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;
@@ -82,7 +81,13 @@ function SummaryController($scope, $compile, $http, $location, $routeParams,
 	// Helpers
 	
 	$scope.refreshDataTable = function() {
-		$(dataTableSelector).dataTable().fnDraw();
+		// When it is true then set it to false, so the watch event in the directive is triggered.
+		if ($scope.dataTableEnabled === true) {
+			$scope.dataTableEnabled = false;
+			$scope.$apply();
+		}
+		$scope.dataTableEnabled = true;
+		$scope.$apply();
 	}
 
 	// Filter

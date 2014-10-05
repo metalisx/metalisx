@@ -96,7 +96,7 @@
 			}
 		}, options || {});
 		
-		this.metalisxChart(url, settings);
+		return this.metalisxChart(url, settings);
 	};
 
 	/*
@@ -243,7 +243,7 @@
 			}
 		}, options || {});
 
-		this.metalisxChart(url, settings);
+		return this.metalisxChart(url, settings);
 	};
 	
 	$.fn.metalisxPieChart = function(url, options) {
@@ -276,7 +276,7 @@
 			}
 		}, options || {});
 
-		this.metalisxChart(url, settings);
+		return this.metalisxChart(url, settings);
 	};
 	
 	$.fn.metalisxChart = function(url, options) {
@@ -414,8 +414,13 @@
 	    	}
         }
 
+	    this.getPlot = function() {
+	    	return plot;
+	    }
+	    
 	    fetchData(url);
 
+	    return this;
 	};
 	
 })(jQuery);

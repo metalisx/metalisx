@@ -20,7 +20,7 @@ function LogController($scope, $compile, $http, $location, $window, $routeParams
 	}
 
 	$scope.getEntity = function(id) {
-    	$.metalisxDataProvider.get(logUrl + id, null, {onsuccess: function(result) {
+    	crudService.get(logUrl + id, null, {onsuccess: function(result) {
     		$scope.entity = result.item;
     		$scope.$apply();
     	}});
