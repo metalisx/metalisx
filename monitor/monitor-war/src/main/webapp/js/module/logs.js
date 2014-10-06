@@ -1,4 +1,4 @@
-function LogsController($scope, $compile, $http, $location, $routeParams, 
+function LogsController($scope, $compile, $http, $location, $routeParams, $timeout,
 			crudService, utilsService, applicationContext) {
 
 	var logUrl = '/log/';
@@ -107,7 +107,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 		$event.preventDefault();
 		$location.search($scope.dataTableFilter);
 		$scope.refreshDataTable();
-		$scope.refreshCharts();
+		$scope.refreshChart();
 	}
 	
 	$scope.changeRange = function() {
@@ -132,15 +132,17 @@ function LogsController($scope, $compile, $http, $location, $routeParams,
 	}
 	
 	$scope.refreshDataTable = function() {
-		if ($scope.dataTableFilter.showList === true) {
-			// When it is true then set it to false, so the watch event in the directive is triggered.
-			if ($scope.dataTableEnabled === true) {
-				$scope.dataTableEnabled = false;
+		$timeout(function() {
+			if ($scope.dataTableFilter.showList === true) {
+				// When it is true then set it to false, so the watch event in the directive is triggered.
+				if ($scope.dataTableEnabled === true) {
+					$scope.dataTableEnabled = false;
+					$scope.$apply();
+				}
+				$scope.dataTableEnabled = true;
 				$scope.$apply();
 			}
-			$scope.dataTableEnabled = true;
-			$scope.$apply();
-		}
+		});
 	}
 	
 	$scope.refreshChart = function() {

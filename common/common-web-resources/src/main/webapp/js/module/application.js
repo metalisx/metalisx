@@ -238,7 +238,7 @@ function CrudService() {
  * For defining some helper functions so we do not need jQuery in
  * the controllers.
  */
-function UtilsService() {
+function UtilsService($rootScope) {
 	
 	/**
 	 * Method to replace booelan 0 and 1 into respective No and Yes.
@@ -258,7 +258,20 @@ function UtilsService() {
 	this.isUrlParamEmpty = function($value) {
 		return $value === undefined || $value === '' || $value === 'null';
 	}
-	
+
+	/**
+	 * Method returns true if an apply or digest is in progress
+	 * otherwise it return false.
+	 */
+	this.isApplyInProgress = function(fn) {
+		var inProgress = false;
+		var phase = $rootScope.$$phase;
+		if (phase === '$apply' || phase === '$digest') {
+			inProgress = true;
+		}
+		return inProgress;
+	};
+
 }
 
 /**
@@ -859,7 +872,6 @@ application.directive('ngcDataTable', function () {
 						if (dataTable == null) {
 							initDataTable();
 						} else {
-							console.log('aaa');
 							dataTable.dataTable().fnDraw();
 						}
 					}

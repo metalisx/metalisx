@@ -1,4 +1,4 @@
-function SettingsController($scope, $compile, $http, $location, $routeParams, 
+function SettingsController($scope, $compile, $http, $location, $routeParams,
 			templateProvider, crudService, utilsService, applicationContext) {
 
 	var saveEndpoint = '../rest/settings/item';
@@ -59,14 +59,17 @@ function SettingsController($scope, $compile, $http, $location, $routeParams,
 	
 	// Actions
 	
-	$scope.save = function() {
+	$scope.save = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.post(saveEndpoint, $scope.aData, {onsuccess: function(result) {
-			$scope.dataTable.fnClose($scope.nRow);
 			$scope.refreshDataTable();
 		}});
 	};
 	
-	$scope.cancel = function() {
+	$scope.cancel = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		$scope.dataTable.fnClose($scope.nRow);
 	};
 	

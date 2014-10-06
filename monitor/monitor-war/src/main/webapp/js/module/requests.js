@@ -1,4 +1,4 @@
-function RequestsController($scope, $compile, $http, $location, $routeParams, 
+function RequestsController($scope, $compile, $http, $location, $routeParams, $timeout,
 			crudService, utilsService, applicationContext) {
 
 	var requestUrl = '/request/';
@@ -90,13 +90,15 @@ function RequestsController($scope, $compile, $http, $location, $routeParams,
 	// Helpers
 	
 	$scope.refreshDataTable = function() {
-		// When it is true then set it to false, so the watch event in the directive is triggered.
-		if ($scope.dataTableEnabled === true) {
-			$scope.dataTableEnabled = false;
+		$timeout(function() {
+			// When it is true then set it to false, so the watch event in the directive is triggered.
+			if ($scope.dataTableEnabled === true) {
+				$scope.dataTableEnabled = false;
+				$scope.$apply();
+			}
+			$scope.dataTableEnabled = true;
 			$scope.$apply();
-		}
-		$scope.dataTableEnabled = true;
-		$scope.$apply();
+		});
 	}
 
 	// Filter
