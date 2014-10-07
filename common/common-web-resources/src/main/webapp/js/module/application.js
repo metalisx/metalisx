@@ -436,7 +436,7 @@ application.directive('ngcStopPropagation', function () {
     return {
 		restrict: 'A',
         link:function (scope, element, attrs) {
-			element.click(function(event) {
+        	element.click(function(event) {
 				event.stopPropagation();
 			});
         }

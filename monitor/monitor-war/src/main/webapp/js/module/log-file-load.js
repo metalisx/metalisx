@@ -17,7 +17,9 @@ function LogFileLoadController($scope, crudService) {
 
 	// Actions
 	
-	$scope.start = function() {
+	$scope.start = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		if (validate($scope.model)) {
 			crudService.post(startRestEndpoint, $scope.model);
 		}

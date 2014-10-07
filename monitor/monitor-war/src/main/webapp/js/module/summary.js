@@ -1,7 +1,7 @@
 function SummaryController($scope, $compile, $http, $location, $routeParams, $timeout,
 			crudService, utilsService, applicationContext) {
 
-	var logsUrl = applicationContext.contextPath + '/page/logs.html#/?showList=false&showChart=true&immediate=true';
+	var logsUrl = 'index.html#/logs?showList=false&showChart=true&immediate=true';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/summary';
 
 	$scope.dataTableEnabled = false;

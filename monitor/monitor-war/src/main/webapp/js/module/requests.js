@@ -1,7 +1,7 @@
 function RequestsController($scope, $compile, $http, $location, $routeParams, $timeout,
 			crudService, utilsService, applicationContext) {
 
-	var requestUrl = '/request/';
+	var requestUrl = '/requests/request/';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/requests';
 
 	$scope.dataTableEnabled = false;

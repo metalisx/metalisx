@@ -37,7 +37,9 @@ function LogFileListenersController($scope, crudService) {
 	
 	// Actions
 	
-	$scope.start = function() {
+	$scope.start = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		if (validate($scope.model)) {
 			crudService.post(startRestEndpoint, $scope.model, {onsuccess: function(result) {
 				$scope.getList();
@@ -45,7 +47,9 @@ function LogFileListenersController($scope, crudService) {
 		}
 	};
 
-	$scope.stop = function(index) {
+	$scope.stop = function($event, index) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		if (validate($scope.model)) {
 			crudService.post(stopRestEndpoint, {filename: $scope.items[index]}, {onsuccess: function(result) {
 				$scope.getList();

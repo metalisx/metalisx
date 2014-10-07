@@ -7,7 +7,7 @@
 	</div>
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-	 		<a href="#" id="startListener" class="btn btn-primary" ng-click="start()">Start listener</a>
+	 		<a href="#" id="startListener" class="btn btn-primary" ng-click="start($event)">Start listener</a>
 	 	</div>
 	</div>
 	<div class="form-group">
@@ -20,7 +20,7 @@
 				<div class='listener listenerRow' data-ng-repeat="item in items">
 					<div class='filename'>{{item}}</div>
 					<div class='stopListener'>
-						<a href="#" ng-click="stop($index)">Stop</a>
+						<a href="#" ng-click="stop($event, $index)">Stop</a>
 					</div>
 				</div>
 			</div>

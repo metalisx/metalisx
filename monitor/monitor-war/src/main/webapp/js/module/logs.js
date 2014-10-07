@@ -1,8 +1,8 @@
 function LogsController($scope, $compile, $http, $location, $routeParams, $timeout,
 			crudService, utilsService, applicationContext) {
 
-	var logUrl = '/log/';
-	var logsUrl = 'logs.html#/?showList=true&immediate=true';
+	var logUrl = '/logs/log/';
+	var logsUrl = 'index.html#/logs?showList=true&immediate=true';
 	var logJsonEndpoint = applicationContext.contextPath + '/rest/logs';
 
 	$scope.dataTableEnabled = false;
@@ -58,7 +58,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 					{ "sName": "message",
 						"mDataProp": "message",
 						"fnRender": function ( oObj, sVal ) {
-							return '<a href="' + logsUrl + '&message=' + sVal + '">' + 
+							return '<a href="' + logsUrl + '&message=' + sVal + '" ngc-stop-propagation>' + 
 										sVal + '</a>';
 						}},
 					{ "sName": "duration",
@@ -198,13 +198,13 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 			$scope.dataTableFilter.username = $routeParams.username;
 		}
 		if (!utilsService.isUrlParamEmpty($routeParams.showList)) {
-			$scope.dataTableFilter.showList = $routeParams.showList;
+			$scope.dataTableFilter.showList = Boolean($routeParams.showList);
 		}
 		if (!utilsService.isUrlParamEmpty($routeParams.showChart)) {
-			$scope.dataTableFilter.showChart = $routeParams.showChart;
+			$scope.dataTableFilter.showChart = Boolean($routeParams.showChart);
 		}
 		if (!utilsService.isUrlParamEmpty($routeParams.showOverviewChart)) {
-			$scope.dataTableFilter.showOverviewChart = $routeParams.showOverviewChart;
+			$scope.dataTableFilter.showOverviewChart = Boolean($routeParams.showOverviewChart);
 		}
 		if (!utilsService.isUrlParamEmpty($routeParams.realtime)) {
 			$scope.dataTableFilter.realtime = $routeParams.realtime;
