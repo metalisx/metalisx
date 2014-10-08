@@ -26,6 +26,7 @@ import org.metalisx.monitor.domain.model.MonitorRequest;
 import org.metalisx.monitor.domain.model.MonitorRequestCertificate;
 import org.metalisx.monitor.domain.model.MonitorRequestPart;
 import org.metalisx.monitor.domain.model.MonitorResponse;
+import org.metalisx.monitor.domain.model.MonitorResponseHeader;
 import org.metalisx.monitor.domain.model.list.MonitorRequestList;
 import org.metalisx.monitor.domain.service.MonitorRequestService;
 import org.metalisx.monitor.profiler.interceptor.Profile;
@@ -155,7 +156,15 @@ public class RequestRestService {
     public Response getResponseContentPrettyPrint(@PathParam("id") Long id) {
         MonitorResponse response = monitorRequestService.findResponse(id);
         if (response != null && response.isTextContent()) {
-            ResponseBuilder responseBuilder = Response.ok(PrettyPrintUtils.prettyPrint(response.getContentType(),
+        	String contentType = response.getContentType();
+        	if (contentType == null) {
+        		for (MonitorResponseHeader monitorResponseHeader : response.getHeaders()) {
+        			if ("content-type".equals(monitorResponseHeader.getName().toLowerCase())) {
+        				contentType = monitorResponseHeader.getValue();
+        			}
+        		}
+        	}
+            ResponseBuilder responseBuilder = Response.ok(PrettyPrintUtils.prettyPrint(contentType,
                     response.getContent()));
             responseBuilder.type("plain/text");
             return responseBuilder.build();

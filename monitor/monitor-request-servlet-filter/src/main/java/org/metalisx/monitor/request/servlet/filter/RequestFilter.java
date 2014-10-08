@@ -352,6 +352,13 @@ public class RequestFilter implements Filter {
                 monitorResponseHeader.setName(headerName);
                 monitorResponseHeader.setValue(teeHttpServletResponseWrapper.getHeader(headerName));
                 monitorResponse.addHeader(monitorResponseHeader);
+                // If the content type is null we check if there is a content type header. 
+                // If so then the prettyPrint is set according to this content type.
+				if (monitorResponse.getContentType() == null
+						&& "content-type".equals(headerName.toLowerCase())) {
+					monitorResponse.setPrettyPrint(PrettyPrintUtils.isPrettyPrintable(teeHttpServletResponseWrapper
+							.getHeader(headerName)));
+				}
             }
         }
     }
