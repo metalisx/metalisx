@@ -44,11 +44,13 @@ application.config(function($routeProvider, $locationProvider) {
 	})
 	.when('/logs/log/:id', {
 		templateUrl: contextPath + '/template/log.html',
-		controller: LogController
+		controller: LogController,
+		reloadOnSearch: false
 	})
 	.when('/logs/log-request/:requestId', {
 		templateUrl: contextPath + '/template/log-request.html',
-		controller: LogRequestController
+		controller: LogRequestController,
+		reloadOnSearch: false
 	})
 
 	// requests
@@ -60,7 +62,8 @@ application.config(function($routeProvider, $locationProvider) {
 	})
 	.when('/requests/request/:id', {
 		templateUrl: contextPath + '/template/request.html',
-		controller: RequestController
+		controller: RequestController,
+		reloadOnSearch: false
 	})
 	
 	// settings
