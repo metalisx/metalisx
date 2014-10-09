@@ -5,7 +5,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.showList" ng-change="updateLocationSearch()"/>
+							ng-model="dataTableFilter.showList" ng-click="updateLocationSearch($event)"/>
 						Show list
 					</label>
 				</div>
@@ -14,8 +14,8 @@
 			<div class="form-group">
 				<div class="checkbox">
 					<label>
-						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.showChart" ng-change="updateLocationSearch()"/>
+						<input id="showChart" type="checkbox" 
+							ng-model="dataTableFilter.showChart" ng-click="updateLocationSearch($event)"/>
 						Show chart
 					</label>
 				</div>
@@ -25,7 +25,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showOverviewChart" type="checkbox" 
-							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-change="updateLocationSearch()"></input>
+							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-click="updateLocationSearch($event)"></input>
 						Show chart overview
 					</label>
 				</div>
@@ -34,11 +34,11 @@
 			<div class="form-group">
 				<div class="checkbox">
 					<label>
-						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.realtime" ng-disabled="dataTableFilter.range == 'custom'" ng-change="updateLocationSearch()"/>
+						<input id="realtime" type="checkbox" 
+							ng-model="dataTableFilter.realtime" ng-disabled="dataTableFilter.range == 'custom'" ng-click="updateLocationSearch($event)"/>
 						Realtime
 				  		<input id="realtimeInterval" class="form-control" type="text" ng-disabled="dataTableFilter.range == 'custom'" ng-model="dataTableFilter.realtimeInterval"
-				  			 ng-change="updateLocationSearch()"></input>
+				  			 ng-click="updateLocationSearch($event)"></input>
 					</label>
 				</div>
 			</div>
