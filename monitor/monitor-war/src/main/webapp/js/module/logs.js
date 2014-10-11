@@ -74,8 +74,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 		initDataTable();
 		initCharts();
 		crudService.getFilter(logJsonEndpoint, {onsuccess: function(result) {
-
-			// We watch the dataTableFilter for changes. Deep dirty check is enabled.
+			// We watch the dataTableFilter for changes, with the deep dirty check enabled.
 			// If there is a change in the dataTableFilter the values are copied
 			// to the flotFilter and the flotOverviewFilter.
 			// Then we set the startDate and endDate of the flotOverviewFilter
@@ -84,17 +83,16 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 				$.extend(true, $scope.flotFilter, $scope.dataTableFilter);
 				$.extend(true, $scope.flotOverviewFilter, $scope.dataTableFilter);
 			}, true);
-			
 			$scope.dataTableFilterInitial = result.item;
+			$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
 			initDataTableFilter();
-
 			$scope.dataTableEnabled = true;
 			$scope.flotEnabled = true;
 			$scope.$apply();
 		}});
 	}
 	
-	$scope.$on('$routeUpdate', function(next, current) {        
+	$scope.$on('$routeUpdate', function(next, current) {
 		initDataTableFilter();
 		$scope.refreshDataTable();
 		$scope.refreshChart();
@@ -106,8 +104,6 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 		$event.stopPropagation();
 		$event.preventDefault();
 		$location.search($scope.dataTableFilter);
-		$scope.refreshDataTable();
-		$scope.refreshChart();
 	}
 	
 	$scope.changeRange = function() {
@@ -120,7 +116,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 		}
 	};
 
-	$scope.updateLocationSearch = function() {
+	$scope.updateLocationSearch = function($event) {
 		$location.search($scope.dataTableFilter);
 	};
 	
@@ -146,71 +142,79 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 	}
 	
 	$scope.refreshChart = function() {
-		if ($scope.dataTableFilter.showChart === true) {
-			// When it is true then set it to false, so the watch event in the directive is triggered.
-			if ($scope.flotEnabled === true) {
-				$scope.flotEnabled = false;
+		$timeout(function() {
+			if ($scope.dataTableFilter.showChart === true) {
+				// When it is true then set it to false, so the watch event in the directive is triggered.
+				if ($scope.flotEnabled === true) {
+					$scope.flotEnabled = false;
+					$scope.$apply();
+				}
+				$scope.flotEnabled = true;
 				$scope.$apply();
 			}
-			$scope.flotEnabled = true;
-			$scope.$apply();
-		}
+		});
 	}
 
 	$scope.refreshOverviewChart = function() {
-		if ($scope.dataTableFilter.showOverviewChart === true) {
-			// When it is true then set it to false, so the watch event in the directive is triggered.
-			if ($scope.flotOverviewEnabled === true) {
-				$scope.flotOverviewEnabled = false;
+		$timeout(function() {
+			if ($scope.dataTableFilter.showOverviewChart === true) {
+				// When it is true then set it to false, so the watch event in the directive is triggered.
+				if ($scope.flotOverviewEnabled === true) {
+					$scope.flotOverviewEnabled = false;
+					$scope.$apply();
+				}
+				$scope.flotOverviewEnabled = true;
 				$scope.$apply();
 			}
-			$scope.flotOverviewEnabled = true;
-			$scope.$apply();
-		}
+		});
 	}
 
 	// Filter
 
 	function initDataTableFilter() {
-		$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
-		if (!utilsService.isUrlParamEmpty($routeParams.message)) {
-			$scope.dataTableFilter.message = $routeParams.message;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.range)) {
-			$scope.dataTableFilter.range = $routeParams.range;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.startDate)) {
-			$scope.dataTableFilter.startDate = $routeParams.startDate;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.endDate)) {
-			$scope.dataTableFilter.endDate = $routeParams.endDate;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.sessionId)) {
-			$scope.dataTableFilter.sessionId = $routeParams.sessionId;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.requestId)) {
-			$scope.dataTableFilter.requestId = $routeParams.requestId;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.organization)) {
-			$scope.dataTableFilter.organization = $routeParams.organization;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.username)) {
-			$scope.dataTableFilter.username = $routeParams.username;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.showList)) {
-			$scope.dataTableFilter.showList = Boolean($routeParams.showList);
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.showChart)) {
-			$scope.dataTableFilter.showChart = Boolean($routeParams.showChart);
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.showOverviewChart)) {
-			$scope.dataTableFilter.showOverviewChart = Boolean($routeParams.showOverviewChart);
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.realtime)) {
-			$scope.dataTableFilter.realtime = $routeParams.realtime;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.realtimeInterval)) {
-			$scope.dataTableFilter.realtimeInterval = $routeParams.realtimeInterval;
+		var $params = $location.search();
+		if ($.isEmptyObject($params)) {
+			$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
+		} else {
+			if (!utilsService.isUrlParamEmpty($params.message)) {
+				$scope.dataTableFilter.message = $params.message;
+			}
+			if (!utilsService.isUrlParamEmpty($params.range)) {
+				$scope.dataTableFilter.range = $params.range;
+			}
+			if (!utilsService.isUrlParamEmpty($params.startDate)) {
+				$scope.dataTableFilter.startDate = $params.startDate;
+			}
+			if (!utilsService.isUrlParamEmpty($params.endDate)) {
+				$scope.dataTableFilter.endDate = $params.endDate;
+			}
+			if (!utilsService.isUrlParamEmpty($params.sessionId)) {
+				$scope.dataTableFilter.sessionId = $params.sessionId;
+			}
+			if (!utilsService.isUrlParamEmpty($params.requestId)) {
+				$scope.dataTableFilter.requestId = $params.requestId;
+			}
+			if (!utilsService.isUrlParamEmpty($params.organization)) {
+				$scope.dataTableFilter.organization = $params.organization;
+			}
+			if (!utilsService.isUrlParamEmpty($params.username)) {
+				$scope.dataTableFilter.username = $params.username;
+			}
+			if (!utilsService.isUrlParamEmpty($params.showList)) {
+				$scope.dataTableFilter.showList = $params.showList === false ? false : true;
+			}
+			if (!utilsService.isUrlParamEmpty($params.showChart)) {
+				$scope.dataTableFilter.showChart = $params.showChart === false ? false : true;
+			}
+			if (!utilsService.isUrlParamEmpty($params.showOverviewChart)) {
+				$scope.dataTableFilter.showOverviewChart = $params.showOverviewChart === false ? false : true;
+			}
+			if (!utilsService.isUrlParamEmpty($params.realtime)) {
+				$scope.dataTableFilter.realtime = $params.realtime;
+			}
+			if (!utilsService.isUrlParamEmpty($params.realtimeInterval)) {
+				$scope.dataTableFilter.realtimeInterval = $params.realtimeInterval;
+			}
 		}
 	}
 	

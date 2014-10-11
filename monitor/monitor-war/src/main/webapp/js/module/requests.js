@@ -60,6 +60,7 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 		initDataTable();
 		crudService.getFilter(requestJsonEndpoint, {onsuccess: function(result) {
 			$scope.dataTableFilterInitial = result.item;
+			$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
 			initDataTableFilter();
 			$scope.dataTableEnabled = true;
 			$scope.$apply();
@@ -77,7 +78,6 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 		$event.stopPropagation();
 		$event.preventDefault();
 		$location.search($scope.dataTableFilter);
-		$scope.refreshDataTable();
 	}
 	
 	$scope.changeRange = function() {
@@ -104,30 +104,34 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 	// Filter
 
 	function initDataTableFilter() {
-		$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
-		if (!utilsService.isUrlParamEmpty($routeParams.url)) {
-			$scope.dataTableFilter.url = $routeParams.url;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.range)) {
-			$scope.dataTableFilter.range = $routeParams.range;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.startDate)) {
-			$scope.dataTableFilter.startDate = $routeParams.startDate;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.endDate)) {
-			$scope.dataTableFilter.endDate = $routeParams.endDate;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.sessionId)) {
-			$scope.dataTableFilter.sessionId = $routeParams.sessionId;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.requestId)) {
-			$scope.dataTableFilter.requestId = $routeParams.requestId;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.organization)) {
-			$scope.dataTableFilter.organization = $routeParams.organization;
-		}
-		if (!utilsService.isUrlParamEmpty($routeParams.username)) {
-			$scope.dataTableFilter.username = $routeParams.username;
+		var $params = $location.search();
+		if ($.isEmptyObject($params)) {
+			$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
+		} else {
+			if (!utilsService.isUrlParamEmpty($routeParams.url)) {
+				$scope.dataTableFilter.url = $routeParams.url;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.range)) {
+				$scope.dataTableFilter.range = $routeParams.range;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.startDate)) {
+				$scope.dataTableFilter.startDate = $routeParams.startDate;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.endDate)) {
+				$scope.dataTableFilter.endDate = $routeParams.endDate;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.sessionId)) {
+				$scope.dataTableFilter.sessionId = $routeParams.sessionId;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.requestId)) {
+				$scope.dataTableFilter.requestId = $routeParams.requestId;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.organization)) {
+				$scope.dataTableFilter.organization = $routeParams.organization;
+			}
+			if (!utilsService.isUrlParamEmpty($routeParams.username)) {
+				$scope.dataTableFilter.username = $routeParams.username;
+			}
 		}
 	}
 	
