@@ -21,7 +21,6 @@ import org.metalisx.common.domain.utils.DateUtils;
 import org.metalisx.common.gson.annotation.GsonTransient;
 import org.metalisx.common.rest.dto.ItemDto;
 import org.metalisx.common.rest.dto.ItemsDto;
-import org.metalisx.common.rest.service.RestException;
 import org.metalisx.monitor.domain.dto.MonitorOverviewItem;
 import org.metalisx.monitor.domain.dto.MonitorSummary;
 import org.metalisx.monitor.domain.filter.MonitorLogFilter;
@@ -179,27 +178,20 @@ public class LogRestService {
         return itemDto;
     }
 
-    /**
-     * The <code>list</code> is converted to a hierarchical structure. The
-     * conversion is required because the <code>list</code> has one problems:
-     * the items with different levels are ordered in reverse. What makes it
-     * difficult is the fact that the items with the same level are in the
-     * correct order. For example the list contains log statements with the
-     * following levels: 3 (A) 2 (B) 2 (C) 1 (D) 3 (E) 2 (F) 1 (G) The resulting
-     * hierarchy tree must look like: 1 (D) 2 (B) 3 (A) 2 (C) 1 (G) 2 (F) 3 (E)
-     */
     private Tree getMonitorLogsAsTree(List<MonitorLog> list) {
         Tree tree = new Tree();
         TreeNode currentTreeNode = null;
-        // First we create the hierarchy from the end to the beginning of the
-        // list.
-        for (int i = list.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < list.size(); i++) {
             MonitorLog monitorLog = list.get(i);
             if (currentTreeNode != null) {
                 if (monitorLog.getDepth() == currentTreeNode.getMonitorLog().getDepth()) {
                     currentTreeNode = currentTreeNode.getParent();
                 } else if (monitorLog.getDepth() < currentTreeNode.getMonitorLog().getDepth()) {
-                    currentTreeNode = currentTreeNode.getParent().getParent();
+                	if (currentTreeNode.getParent() != null) {
+                		currentTreeNode = currentTreeNode.getParent().getParent();
+                	} else {
+                		currentTreeNode = null;
+                	}
                 }
             }
             TreeNode treeNode = new TreeNode(monitorLog, currentTreeNode);
@@ -210,8 +202,9 @@ public class LogRestService {
             }
             currentTreeNode = treeNode;
         }
-        // Now we need to reverse back the order of all items in the children
-        // lists.
+        // We need to reverse the order of all items in the children
+        // lists because the nodes on the same level are retrieved  
+        // in the wrong order by the DAO.
         swapChildren(tree.getChildren());
         return tree;
     }
