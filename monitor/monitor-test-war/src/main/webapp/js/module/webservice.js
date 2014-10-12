@@ -7,7 +7,9 @@ function WebserviceController($scope, crudService) {
 		name: 'Enter your name here...'
 	};
 
-	$scope.run = function() {
+	$scope.run = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.post('../rest/test/testWebservice', $scope.model, {onsuccess: function(data) {
 			$.metalisxMessages({id: resultContainerId, message: data.item}, {clean : false});
 		}});

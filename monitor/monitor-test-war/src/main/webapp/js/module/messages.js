@@ -1,25 +1,33 @@
 function MessagesController($scope, crudService) {
 
-	$scope.getMessagesDefaultContainer = function() {
+	$scope.getMessagesDefaultContainer = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.get('../rest/test/testMessagesDefaultContainer', $scope.model, {onsuccess: function(data) {
 			$.metalisxMessages(data);
 		}});
 	};
 	
-	$scope.getSingleMessageNamedContainer = function() {
+	$scope.getSingleMessageNamedContainer = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.get('../rest/test/testSingleMessageNamedContainer', $scope.model, {onsuccess: function(data) {
 			$.metalisxMessages(data);
 		}});
 	};
 	
 	
-	$scope.getMessagesNamedContainer = function() {
+	$scope.getMessagesNamedContainer = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.get('../rest/test/testMessagesNamedContainer', $scope.model, {onsuccess: function(data) {
 			$.metalisxMessages(data);
 		}});
 	};
 	
-	$scope.getMessagesMultipleNamedContainers = function() {
+	$scope.getMessagesMultipleNamedContainers = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.get('../rest/test/testMessagesMultipleNamedContainers', $scope.model, {onsuccess: function(data) {
 			$.metalisxMessages(data);
 		}});

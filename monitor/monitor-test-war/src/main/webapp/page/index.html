@@ -3,9 +3,13 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- default -->
 	<link href="../css/bootstrap.css" rel="stylesheet" type="text/css"></link>
 	<link href="../css/bootstrap-theme.css" rel="stylesheet" type="text/css">
-	<link href="../css/common.css" rel="stylesheet" type="text/css"></link> 
+	<link href="../css/common.css" rel="stylesheet" type="text/css"></link>
+	
+	<!-- default --> 
 	<script src="../js/jquery-1.9.1.js" type="text/javascript"></script>
 	<script src="../js/angular.js" type="text/javascript"></script>
 	<script src="../js/angular-route.js" type="text/javascript"></script>
@@ -13,11 +17,21 @@
 	<script src="../js/bootstrap.js" type="text/javascript"></script>
 	<script src="../js/jquery-metalisx-utils.js" type="text/javascript"></script>
 
+	<!-- default -->
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
+	<script src="../js/module/routing.js" type="text/javascript"></script>
+	
+	<!-- extra -->
+	<script src="../js/module/input-field.js" type="text/javascript"></script>
+	<script src="../js/module/logging.js" type="text/javascript"></script>
+	<script src="../js/module/webservice.js" type="text/javascript"></script>
+	<script src="../js/module/messages.js" type="text/javascript"></script>
+
+	<!-- default -->
 	<script>
 	(function($){
-		$.contextPath = '';
+		$.contextPath = '/monitor-test';
 		application.run(function(applicationContext) {
 			applicationContext.contextPath = $.contextPath;
 		});
@@ -36,7 +50,11 @@
 
 			<div id="messagesContainer" class="messagesContainer"></div>
 		
-		 	<div class="contentContainer"></div>
+		 	<div class="contentContainer">
+		 	
+		 		<div ng-view></div>
+		 		
+		 	</div>
 
 		</div>
 	</div>

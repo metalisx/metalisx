@@ -2,7 +2,9 @@ function HierarchyLoggingController($scope, crudService) {
 
 	var resultContainerId = 'resultContainer';
 	
-	$scope.run = function() {
+	$scope.run = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.get('../rest/test/testLoggingHierarchy', null, {onsuccess: function(data) {
 			$.metalisxMessages({id: resultContainerId, message: data.item}, {clean : false});
 		}});
@@ -19,7 +21,9 @@ function DomainServiceLoggingController($scope, crudService) {
 		name: ''
 	};
 
-	$scope.add = function() {
+	$scope.add = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.post('../rest/test/testDomainServiceLoggingPersist', $scope.model, {onsuccess: function(data) {
 			$data.empty();
 			$.each(data.items, function(index, item) {
@@ -28,7 +32,9 @@ function DomainServiceLoggingController($scope, crudService) {
 		}});
 	};
 	
-	$scope.clean = function() {
+	$scope.clean = function($event) {
+		$event.stopPropagation();
+		$event.preventDefault();
 		crudService.del('../rest/test/testDomainServiceLoggingClean', null, {onsuccess: function(data) {
 			$data.empty();
 			$data.append(data.item);
