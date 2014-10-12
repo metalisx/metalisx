@@ -11,7 +11,8 @@ function CrudColumnValueFormatter() {
 	
 }
 
-function CrudController($scope, templateProvider, crudService, crudColumnValueFormatter, $timeout, $compile) {
+function CrudController($scope, $timeout, $compile, templateProvider, crudService, 
+		crudCacheService, crudColumnValueFormatter) {
 
 	var scope = $scope;
 	
@@ -23,6 +24,10 @@ function CrudController($scope, templateProvider, crudService, crudColumnValueFo
 
 	$scope.newEntity = null;
 	$scope.entity = null;
+	
+	function init() {
+		crudCacheService.load($scope);
+	}
 	
 	$scope.getNewEntity = function() {
 		crudService.getNewEntity(restEndpoint, {onsuccess: function(data) {
@@ -130,4 +135,6 @@ function CrudController($scope, templateProvider, crudService, crudColumnValueFo
 		$scope.getDataTable();
 	}, 0);
 
+	init();
+	
 }

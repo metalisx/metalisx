@@ -18,6 +18,9 @@ public class CrudRestService extends AbstractRestService {
     @PostConstruct
     public void postConstruct() {
     	setEntityManager(entityManager);
+    	// Available entities
+    	this.entityClasses.add("org.metalisx.crud.domain.model.User");
+    	this.entityClasses.add("org.metalisx.crud.domain.model.Company");
     }
 
 }

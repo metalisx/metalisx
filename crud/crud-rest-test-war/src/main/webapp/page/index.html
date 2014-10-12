@@ -15,6 +15,8 @@
 
 	<script src="../js/module/application.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
+	<script src="../js/module/crud-navbar.js" type="text/javascript"></script>
+	<script src="../js/module/crud-cache.js" type="text/javascript"></script>
 	<script>
 	(function($){
 		$.contextPath = '';
@@ -29,7 +31,7 @@
 
 <div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ngc-navbar="../template/navbar.html" ngc-navbar-active-item=""></div>
+	<div class="navbarContainer" ng-controller="CrudMenuController" ngc-navbar="../template/navbar.html" ngc-navbar-active-item=""></div>
 
 	<div class="row">
 		<div class="col-sm-12">
