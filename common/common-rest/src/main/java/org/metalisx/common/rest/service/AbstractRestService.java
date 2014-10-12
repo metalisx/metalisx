@@ -1,5 +1,6 @@
 package org.metalisx.common.rest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,6 +40,8 @@ import org.slf4j.LoggerFactory;
  * <li>inject the correct entity manager with @PersistenceContext</li>
  * <li>create a method and annotate it with @PostConstruct</li>
  * <li>in this method call setEntityManager with the injected entity manager</li>
+ * <li>in this method add the available entities with full name to the entityClasses property
+ * if you want to use the /metadata rest service for getting the available entities</li>
  * <li>create a sub class for the javax.ws.rs.core.Application class</li>
  * <li>annotate it with @ApplicationPath("/rest") and replace rest if you need</li>
  * <ul>
@@ -48,18 +51,33 @@ public abstract class AbstractRestService {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRestService.class);
 
 	@Inject
-	private MetadataProvider metadataProvider;
+	protected MetadataProvider metadataProvider;
 	
 	@Inject
-	private RestGsonConverter restGsonConverter;
+	protected RestGsonConverter restGsonConverter;
 
-	private AbstractDao abstractDao = new AbstractDao() {
+	protected AbstractDao abstractDao = new AbstractDao() {
 	};
 
+	protected List<String> entityClasses = new ArrayList<String>();
+	
 	public AbstractRestService() {
 		logger.debug("Initalized rest service " + this.getClass().getName());
 	}
 
+	@GET
+	@Path("/metadata")
+	@Produces("application/json")
+	public List<EntityMetadataDto> metadata() throws ClassNotFoundException,
+	        InstantiationException, IllegalAccessException {
+		List<EntityMetadataDto> entityMetadataDtos = new ArrayList<EntityMetadataDto>();
+		for (String entityClass : entityClasses) {
+			entityMetadataDtos.add(new EntityMetadataDto(entityClass,
+					metadataProvider.getEntityMetadata(entityClass)));
+		}
+		return entityMetadataDtos;
+	}
+	
 	@GET
 	@Path("/{entityClass}/metadata")
 	@Produces("application/json")
@@ -100,7 +118,7 @@ public abstract class AbstractRestService {
 	public EntitiesDto get(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
 		List<?> list = abstractDao.findAll(JpaUtils.toClass(entityClass));
-		return new EntitiesDto(list, new EntityMetadataDto(metadataProvider.getEntityMetadata(entityClass)));
+		return new EntitiesDto(list, new EntityMetadataDto(entityClass, metadataProvider.getEntityMetadata(entityClass)));
 	}
 
 	@GET
@@ -109,7 +127,7 @@ public abstract class AbstractRestService {
 	public EntityDto getNewEntity(@PathParam("entityClass") String entityClass) throws ClassNotFoundException,
 	        InstantiationException, IllegalAccessException {
 		Object entity = JpaUtils.toClass(entityClass).newInstance();
-		return new EntityDto(entity, new EntityMetadataDto(metadataProvider.getNewEntityMetadata(entityClass)));
+		return new EntityDto(entity, new EntityMetadataDto(entityClass, metadataProvider.getNewEntityMetadata(entityClass)));
 	}
 
 	@GET
@@ -118,7 +136,7 @@ public abstract class AbstractRestService {
 	public EntityDto get(@PathParam("entityClass") String entityClass, @PathParam("id") Long id)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		return new EntityDto(abstractDao.findById(JpaUtils.toClass(entityClass), id), new EntityMetadataDto(
-				metadataProvider.getEntityMetadata(entityClass)));
+				entityClass, metadataProvider.getEntityMetadata(entityClass)));
 	}
 
 	@DELETE

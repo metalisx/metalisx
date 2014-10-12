@@ -37,7 +37,6 @@ public class EntityFieldTypeMapper {
 		Class<?> type = field.getType();
 		String guiType = map.get(type);
 		if (guiType == null) {
-			System.out.println(field.getType());
 			guiType = "string";
 		}
 		return guiType;
