@@ -224,7 +224,17 @@
 						if ($('.' + settings.messageIframeClass, $container).size() == 0) {
 							$message.append('<iframe width="100%" height="' + settings.messageInnerContainerHeight + 
 										'" class="' + settings.messageIframeClass + '"/>');
-							$('.' + settings.messageIframeClass, $message).contents().find('html').html(detail);
+							var body = '';
+							// If the detail starts with specific HTML characters we assume the detail is html,
+							// otherwise we assume it is text and we preserve spaces.
+							if (detail != null && 
+									(detail.indexOf('<!') == 0 || detail.indexOf('<?') == 0 ||
+											detail.toLowerCase().indexOf('<html') == 0)) {
+								body = detail;
+							} else {
+								body = '<div style="white-space: pre">' + detail + '</div>';
+							}
+							$('.' + settings.messageIframeClass, $message).contents().find('html').html(body);
 						} else {
 							$('.' + settings.messageIframeClass, $message).remove();
 						}
