@@ -1,3 +1,16 @@
+application.service('crudColumnValueFormatter', CrudColumnValueFormatter);
+
+function CrudColumnValueFormatter() {
+	
+	this.format = function(type, value) {
+		if (type == 'date') {
+			return $.metalisxUtils.isoDateAsStringtoDisplayDate(value);
+		}
+		return value;
+	};
+	
+}
+
 application.service('crudCacheService', CrudCacheService);
 
 function CrudCacheService(crudService, applicationCache, applicationContext) {
@@ -15,7 +28,6 @@ function CrudCacheService(crudService, applicationCache, applicationContext) {
 			crudService.metadata(crudJsonEndpoint, {onsuccess: function(result) {
 				if (result) {
 					applicationCache.put('entitiesMetadata', result);
-					console.log($scope.entitiesMetadata);
 					$scope.entitiesMetadata = applicationCache.get('entitiesMetadata');
 					$scope.$apply();
 					if (onsuccess) {

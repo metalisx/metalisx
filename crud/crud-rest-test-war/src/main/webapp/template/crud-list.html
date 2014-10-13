@@ -1,28 +1,9 @@
-<div ngc-enter=".newEntityButton">
-	<h2>{{entityClass}}</h2>
-
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<a href="#" class="btn btn-primary newEntityButton" ng-click="getNewEntity()">New</a>
-			 	</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-sm-12">
-			<div ng-show="newEntity">
-				<dynamic-control-panel ngc-entity="newEntity" ngc-save="put" ngc-cancel="cancelNewEntity"></dynamic-control-panel>
-			</div>
-		</div>
-	</div>
-		
-	<div class="row">
-		<div class="col-sm-12">
-			<table cellpadding="0" cellspacing="0" border="0" id="{{entityClass}}.dataTable" class="table table-striped table-bordered crudDataTable">
-			</table>
-		</div>
-	</div>
+<div class="buttonContainer">
+	<a href="#" class="btn btn-default btn-primary" ng-click="newEntity($event)">New</a>
+</div>
+<div id="crudTable">
+	<table cellpadding="0" cellspacing="0" border="0" id="{{entityClass}}.dataTable" class="table table-striped table-bordered"
+		ngc-data-table ngc-data-table-enabled="dataTableEnabled"
+		ngc-data-table-settings="dataTableSettings">
+	</table>
 </div>

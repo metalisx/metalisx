@@ -3,8 +3,8 @@
 		<dynamic-control-group ngc-entity="ngcEntity"></dynamic-control-group>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-8">
-				<a href="#" class="btn btn-primary ngc-save" ng-click="ngcSave()">Save</a>
-				<a href="#" class="btn btn-primary ngc-cancel" ng-click="ngcCancel()">Cancel</a>
+				<a href="#" class="btn btn-primary ngc-save" ng-click="ngcSave($event)">Save</a>
+				<a href="#" class="btn btn-primary ngc-cancel" ng-click="ngcCancel($event)">Cancel</a>
 			</div>
 		</div>
 	</div>
