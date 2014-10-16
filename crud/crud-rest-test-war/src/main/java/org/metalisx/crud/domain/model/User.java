@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.Length;
 import org.metalisx.common.domain.model.AbstractEntity;
 
 @Entity
@@ -22,11 +21,14 @@ public class User extends AbstractEntity {
     private Long id;
     
 	@NotNull
-	@Length(min=1)
     private String name;
 
     private Date date;
 
+    @Lob
+    private String text;
+    
+    @Lob
     private byte[] document;
     
     public User() {
@@ -56,7 +58,15 @@ public class User extends AbstractEntity {
         this.date = date;
     }
 
-    @Lob
+    public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	@Lob
 	public byte[] getDocument() {
 		return document;
 	}

@@ -12,6 +12,8 @@ public class EntityFieldDto {
 	
 	private String type;
 	
+	private boolean isLob = false;
+	
 	public EntityFieldDto() {
 	}
 
@@ -54,5 +56,13 @@ public class EntityFieldDto {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
+	public boolean isLob() {
+		return isLob;
+	}
+
+	public void setLob(boolean isLob) {
+		this.isLob = isLob;
+	}
+
 }

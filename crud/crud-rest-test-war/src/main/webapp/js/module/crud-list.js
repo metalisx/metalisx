@@ -25,16 +25,20 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 			}
 			if (data.columns) {
 				$.each(data.columns, function(index , column) {
-					aoColumns[aoColumns.length] = {
-						sName: column.field.name,
-						mDataProp: column.field.name,
-						sTitle: column.title,
-						sClass: column.className,
-						bSortable: column.sortable,
-						fnRender: function(oObj, sVal) {
-							return crudColumnValueFormatter.format(column.field.type, sVal);
-						}
-					};
+					console.log(column);
+					// The clob field are not included in the dataTable.
+					if (column.field.isLob == false) {
+						aoColumns[aoColumns.length] = {
+							sName: column.field.name,
+							mDataProp: column.field.name,
+							sTitle: column.title,
+							sClass: column.className,
+							bSortable: column.sortable,
+							fnRender: function(oObj, sVal) {
+								return crudColumnValueFormatter.format(column.field.type, sVal);
+							}
+						};
+					}
 				});
 				aoColumns[aoColumns.length] = {
 					sTitle: null,

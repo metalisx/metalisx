@@ -59,7 +59,6 @@ function CrudDetailController($scope, $timeout, $compile, $location, $window, $r
 	}
 	
 	$scope.put = function() {
-		console.log($scope.entity);
 		crudService.put(restEndpoint, $scope.entity.item, {onsuccess: function(result) {
 			if (result && !result.exception && !result.validationerror) {
 				$scope.entity = null;

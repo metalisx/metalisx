@@ -8,6 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.metalisx.common.domain.utils.JpaUtils;
@@ -127,12 +128,16 @@ public class MetadataProvider {
 		EntityFieldDto entityFieldDto = new EntityFieldDto();
 		entityFieldDto.setIndex(index);
 		entityFieldDto.setName(field.getName());
-		entityFieldDto.setType(entityFieldTypeMapper.getGuiType(field));
+		String type = entityFieldTypeMapper.getType(field);
+		entityFieldDto.setType(type);
 		if (field.isAnnotationPresent(Id.class)) {
 			entityFieldDto.setPrimaryKey(true);
 		}
 		if (field.isAnnotationPresent(NotNull.class)) {
 			entityFieldDto.setRequired(true);
+		}
+		if (field.isAnnotationPresent(Lob.class)) {
+			entityFieldDto.setLob(true);
 		}
 		return entityFieldDto;
 	}

@@ -277,81 +277,114 @@ function UtilsService($rootScope) {
 /**
  * Requires the jQuery UI datetpicker plugin. And requires the jQuery Timepicker Addon
  * for adding a timepicker to the jQuery UI datepicker.
+ * 
+ * The following attribute can be set on the element: 
+ *  - ngc-datepicker-show-timepicker 
+ *  
+ * ngc-datepicker-show-timepicker
+ * Allowed values are true and false. When true a timepicker is shown when false not.
+ * When false the time is stripped from the view value and when the model value is 
+ * updated the time is set to all zeros.
+ * 
+ * The date format in de view when ngc-datepicker-show-timepicker is true is: 
+ * dd-mm-yy hh:mm:ss.l. And when false it is: dd-mm-yy.
+ * 
+ * The date format in the model is expected to be: yyyy-MM-dd HH:mm:ss.SSS
+ * Example: 2014-10-16T01:04:28.287
+ * If the ngc-datepicker-show-timepicker is 
+ * 
+ * We are not using isolated scope to prevent, when multiple directives are set, the error: 
+ *  Multiple directives [..] asking for new/isolated scope
  */
-application.directive('datetimepicker', function () {
+application.directive('ngcDatepicker', function ($timeout) {
     return {
 		restrict: 'A',
         require:'ngModel',
         link:function (scope, element, attrs, ngModel) {
 
+        	var showTimepicker = false;
         	var dateFormat = 'dd-mm-yy';
        		var timeFormat = 'hh:mm:ss.l';
 
-			function getFullDisplayDate(value) {
+			function viewDateToModelDate(value) {
 				if (!value) return null;
-				var v = null;
-				if (value.match(/^[0-3]\d-[01]\d-\d{4} [0-2]\d:[0-5]\d:[0-5]\d\.\d{3}$/) != null) { // date + hours + minutes + seconds + milliseconds, no timezone stuff
-					v = value;
-				} else if (value.match(/^[0-3]\d-[01]\d-\d{4} [0-2]\d:[0-5]\d:[0-5]\d$/) != null) { // without milliseconds
-					v = value + '.000';
-				} else if (value.match(/^[0-3]\d-[01]\d-\d{4} [0-2]\d:[0-5]\d$/) != null) { // without seconds
-					v = value + ':00.000';
-				} else if (value.match(/^[0-3]\d-[01]\d-\d{4} [0-2]\d$/) != null) { // without minutes
-					v = value + ':00:00.000';
-				} else if (value.match(/^[0-3]\d-[01]\d-\d{4}$/) != null) { // without hours
-					v = value + ' 00:00:00.000';
-				}
-				return v;
-			}
-			
-			function getFullIsoDateAsString(value) {
-				if (!value) return null;
-				var v = null;
-				if (value.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d{3}$/) != null) { // date + hours + minutes + seconds + milliseconds, no timezone stuff
-					v = value;
-				} else if (value.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d$/) != null) { // without milliseconds
-					v = value + '.000';
-				} else if (value.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d$/) != null) { // without seconds
-					v = value + ':00.000';
-				} else if (value.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d$/) != null) { // without minutes
-					v = value + ':00:00.000';
-				} else if (value.match(/^\d{4}-[01]\d-[0-3]\d$/) != null) { // without hours
-					v = value + 'T00:00:00.000';
-				}
-				return v;
+				var dateTimeParts = value.split(' ');
+				var dateParts = dateTimeParts[0].split('-');
+				var modelValue = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+       			if (showTimepicker === true) {
+       				modelValue = modelValue + 'T' + dateTimeParts[1];
+       			} else {
+       				modelValue = modelValue + 'T00:00:00.000';
+       			}
+				return modelValue;
 			}
 
+			function modelDateToViewDate(value) {
+				if (!value) return null;
+				var dateTimeParts = value.split("T");
+				var dateParts = dateTimeParts[0].split('-');
+				var timeMillisecondParts = dateTimeParts[1].split('.');
+				var timeParts = timeMillisecondParts[0].split(':');
+				var viewValue = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+				if (showTimepicker === true) {
+					viewValue = viewValue + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
+				}
+				return viewValue;
+			}
+
+			if (attrs['ngcDatepickerShowTimepicker']) {
+        		if (typeof attrs.ngcDatepickerShowTimepicker === 'boolean') {
+            		showTimepicker = attrs.ngcDatepickerShowTimepicker;
+        		} else if (typeof attrs.ngcDatepickerShowTimepicker === 'string') {
+            		showTimepicker = attrs.ngcDatepickerShowTimepicker === 'true' ? true : false; 
+        		}
+        	}
+       		
+			// View value to model value
 			ngModel.$parsers.unshift(function (viewValue) {
-				var value = getFullDisplayDate(viewValue);
-				if (value != null) {
-					value = $.metalisxUtils.displayDateToIsoDateAsString(value);
+				var value = null;
+				if (viewValue != null) {
+					value = viewDateToModelDate(viewValue);
 				} else {
 					ngModel.$setValidity('Incorrect date format.', false);
 				}
 				return value;
             });
 
+	    	// Model value to view value
 			ngModel.$formatters.unshift(function (modelValue) {
-				var value = getFullIsoDateAsString(modelValue);
-				if (value != null && typeof value != 'undefined') {
-					value = $.metalisxUtils.isoDateAsStringtoDisplayDate(value);
+				var value = null;
+				if (modelValue != null && typeof modelValue != 'undefined') {
+					value = modelDateToViewDate(modelValue);
 				}
 				return value;
             });
 
-			element.datetimepicker({
-    			dateFormat: dateFormat,
-    			showButtonPanel: true,
-    			changeMonth: true,
-    			changeYear: true,
-    			showSecond: true,
-    			showMillisec: true,
-    			timeFormat: timeFormat,
-    			onSelect: function(dateText, inst) {
-    				ngModel.$setViewValue(element.val());
-    				scope.$apply();
-     			}    
-            });
+			// $timeout is used otherwise the following error is thrown: 
+			//  Uncaught Missing instance data for this datepicker
+			$timeout(function() {
+				element.datetimepicker({
+	    			dateFormat: dateFormat,
+	    			showButtonPanel: true,
+	    			changeMonth: true,
+	    			changeYear: true,
+	    			showTimepicker: showTimepicker,
+	    			showSecond: true,
+	    			showMillisec: true,
+	    			timeFormat: timeFormat,
+	    			onSelect: function(dateText, inst) {
+	    				ngModel.$setViewValue(element.val());
+	    				scope.$apply();
+	     			}    
+	            });
+				
+				// Destroy the datatable when the element is removed from the DOM.
+				// This is required when the ng-view is used.
+				element.bind("$destroy", function() {
+					element.datepicker("destroy");
+		        });
+			});
+			
         }
     };
 });
@@ -417,16 +450,36 @@ application.directive('ngcEnter', function () {
     };
 });
 
+/**
+ * Directive to set focus on the element the attribute is set on.
+ * 
+ * The optional HTML input attributes are: 
+ *  - ngc-focus-enabled
+ * 
+ * ngc-focus-enabled You can set this attribute on one element to true,
+ * if the attribute is set on multiple elements.
+ */
 application.directive('ngcFocus', function ($timeout) {
     return {
 		restrict: 'A',
         link:function (scope, element, attrs) {
+    		var ngcFocusEnabled = true;
+        	if (attrs['ngcFocusEnabled']) {
+        		if (typeof attrs.ngcFocusEnabled === 'boolean') {
+        			ngcFocusEnabled = attrs.ngcFocusEnabled;
+        		} else if (typeof attrs.ngcFocusEnabled === 'string') {
+            		ngcFocusEnabled = attrs.ngcFocusEnabled === 'true' ? true : false; 
+        		}
+        	}
     		// The timeout is used to take the ng-show in account.
     		$timeout(function() {
-        		if (!element.hasClass('ng-hide') && element.parents('.ng-hide').length == 0 &&  
-        				element.is(':visible') && element.parents(':hidden').length == 0) {
-        			element.focus();
-        		}
+    			if (ngcFocusEnabled === true) {
+// 					Parent check removed    				
+//  	   				element.parents('.ng-hide').length == 0 && element.parents(':hidden').length == 0
+					if (!element.hasClass('ng-hide') && element.is(':visible') ) {
+	        			element.focus();
+	        		}
+    			}
     		});
         }
     };
@@ -755,8 +808,9 @@ application.directive('ngcCkeditor', function () {
     					customConfig: attrs['ngcCkeditorConfig']
     				});
     			}
+    			var mode = 'wysiwyg';
     			if (attrs['ngcCkeditorMode'] && attrs['ngcCkeditorMode'] != '') {
-    				var mode = attrs['ngcCkeditorMode'];
+    				mode = attrs['ngcCkeditorMode'];
     				if (mode != 'source' && mode != 'wysiwyg') {
     					alert('Unknown mode ' + mode);
     				} else {
@@ -894,7 +948,8 @@ application.directive('ngcDataTable', function () {
     			alert('Please include the DataTables javascript files or remove the AngularJS directive from the element.');
     		} else {
     			var enabled = true;
-    			if (attrs['ngcDataTableEnabled'] && attrs['ngcDataTableEnabled'] != '' && scope.ngcDataTableEnabled === false) {
+    			if (attrs['ngcDataTableEnabled'] && attrs['ngcDataTableEnabled'] != '' && 
+    					(scope.ngcDataTableEnabled === false || scope.ngcDataTableEnabled === 'false')) {
     				enabled = false;
     				// We watch if it is changed from disabled to enabled, not the otherway arround.
     				// If it is changed to true the element is promoted to a DataTable.

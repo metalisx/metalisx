@@ -27,19 +27,19 @@ public class EntityFieldTypeMapper {
 		map.put(List.class, "list");
 		map.put(Set.class, "list");
 		map.put(Map.class, "list");
-		//map.put(Byte[].class, "file");
+		map.put(byte[].class, "byte[]");
 	}
 	
 	public EntityFieldTypeMapper() {
 	}
 	
-	public String getGuiType(Field field) {
-		Class<?> type = field.getType();
-		String guiType = map.get(type);
-		if (guiType == null) {
-			guiType = "string";
+	public String getType(Field field) {
+		Class<?> fieldType = field.getType();
+		String type = map.get(fieldType);
+		if (type == null) {
+			type = "string";
 		}
-		return guiType;
+		return type;
 	}
 	
 }

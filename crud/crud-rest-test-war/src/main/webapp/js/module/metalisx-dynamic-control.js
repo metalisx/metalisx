@@ -56,11 +56,12 @@ application.directive('dynamicControl', function(dynamicControlTemplateSelector,
 		restrict: 'E',
 		scope: {
 			ngcEntity: '=',
-			ngcField: '='
+			ngcField: '=',
+			ngcFocusEnabled: '@'
 		},
 		transclude: true,
         link:function (scope, element, attrs) {
-        	var html = dynamicControlTemplateSelector.getTemplate(scope.ngcField.type);
+        	var html = dynamicControlTemplateSelector.getTemplateByField(scope.ngcField);
         	templateCompile.compile(html, element, scope);
         }
     };
@@ -123,18 +124,52 @@ function DynamicControlTemplateSelector($templateCache, dynamicControlTemplateLo
 		dynamicControlTemplateLoaderService.loadTemplates();
 	}
 	
-	this.getTemplate = function(type) {
+	this.getTemplateByField = function(field) {
+		var type = field.type;
 		var html = '';
     	if (type == 'date') {
     		html = $templateCache.get('dynamic-control-date-input.html');
-    	} else if (type == 'group') {
-    		html = $templateCache.get('dynamic-control-group.html');
-    	} else if (type == 'panel') {
-    		html = $templateCache.get('dynamic-control-panel.html');
+    	} else if (type == 'string' && field.isLob == true) {
+    		html = $templateCache.get('dynamic-control-textarea.html');
     	} else {
     		html = $templateCache.get('dynamic-control-input.html');
     	}
     	return html;
 	};
 	
+	this.getTemplate = function(type) {
+		var html = '';
+    	if (type == 'group') {
+    		html = $templateCache.get('dynamic-control-group.html');
+    	} else if (type == 'panel') {
+    		html = $templateCache.get('dynamic-control-panel.html');
+    	}
+    	return html;
+	};
+	
 };
+
+
+/////////////
+// Filters //
+/////////////
+
+application.filter('entities', function() {
+	return function(entities, isPrimary) {
+		var list = new Array();
+		angular.forEach(entities, function(value, key) {
+			if (value.isPrimaryKey === undefined) {
+				list.push(value);
+			} else if (value.isPrimaryKey === isPrimary) {
+				list.push(value);
+			}
+		});
+		return list;
+    };
+});
+
+application.filter('startFrom', function() {
+  return function(input, start) {
+      return input.slice(start);
+  }
+});
