@@ -25,7 +25,6 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 			}
 			if (data.columns) {
 				$.each(data.columns, function(index , column) {
-					console.log(column);
 					// The clob field are not included in the dataTable.
 					if (column.field.isLob == false) {
 						aoColumns[aoColumns.length] = {

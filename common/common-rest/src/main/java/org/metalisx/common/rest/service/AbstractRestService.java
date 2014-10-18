@@ -1,5 +1,8 @@
 package org.metalisx.common.rest.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
 import org.metalisx.common.domain.dao.AbstractDao;
 import org.metalisx.common.domain.dto.ContextDto;
 import org.metalisx.common.domain.dto.OrderBy;
@@ -78,6 +90,54 @@ public abstract class AbstractRestService {
 		return entityMetadataDtos;
 	}
 	
+	/**
+	 * Donwload the byte[] in the field of the object of type entityClass identified by id.
+	 * 
+	 * The Tika detect method does not return the correct mime types for Microsoft documents
+	 * like docx. To get the correct mime types the filename should be set on the Metadata 
+	 * instance like: metadata.set(Metadata.RESOURCE_NAME_KEY, "mydoc.docx");
+	 * But for this to work a strategy should be introduced to store the filename and
+	 * to retrieve it in this method.
+	 */
+    @GET
+    @Path("/{entityClass}/download/{field}/{id}")
+    public Response download(@PathParam("entityClass") String entityClass, 
+    		@PathParam("field") String field, @PathParam("id") Long id) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MimeTypeException {
+    	Object object = abstractDao.findById(JpaUtils.toClass(entityClass), id);
+        if (object != null) {
+        	// Get the byte array
+        	Class<?> c = object.getClass();
+        	Field[] fields = c.getDeclaredFields();
+        	byte[] b = null;
+        	for( Field f : fields ){
+    			if (field.equals(f.getName().toString())) {
+    				f.setAccessible(true);
+    				b = (byte[]) f.get(object);
+    				break;
+    			}
+        	}
+        	// Detect the mime type
+            TikaConfig config = TikaConfig.getDefaultConfig();
+        	Metadata metadata = new Metadata();
+        	MediaType mediaType = null;
+        	MimeType mimeType = null;
+        	if (b != null) {
+        		TikaInputStream inputStream = TikaInputStream.get(new ByteArrayInputStream(b));
+	            mediaType = config.getMimeRepository().detect(inputStream, metadata);
+	            mimeType = config.getMimeRepository().forName(mediaType.toString());
+        	} else {
+	            mimeType = config.getMimeRepository().forName("text/plain");
+        	}
+        	// Build the response
+            ResponseBuilder responseBuilder = Response.ok(b);
+            responseBuilder.type(mimeType.toString());
+            responseBuilder.header("Content-Disposition", "attachment; filename=\"" + 
+            		id + mimeType.getExtension() + "\"");
+            return responseBuilder.build();
+        }
+        return Response.status(Status.NOT_FOUND).build();
+    }
+    
 	@GET
 	@Path("/{entityClass}/metadata")
 	@Produces("application/json")
@@ -168,7 +228,7 @@ public abstract class AbstractRestService {
 		return abstractDao.persist(clazz, restGsonConverter.fromJson(body, clazz));
 	}
 
-	public void setEntityManager(EntityManager entityManager) {
+    public void setEntityManager(EntityManager entityManager) {
 		abstractDao.setEntityManager(entityManager);
 	}
 

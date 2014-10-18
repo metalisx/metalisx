@@ -10,7 +10,7 @@
 	</div>
 </script>
 <script type="text/ng-template" id="dynamic-control-group.html">
-	<fieldset ng-repeat="field in ngcEntity.metadata.fields | entities:true">
+	<fieldset ng-repeat="field in ngcEntity.metadata.fields | primary:true">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">{{field.name}}</label>
 			<div class="col-sm-10">
@@ -18,7 +18,7 @@
 			</div>
 		</div>
 	</fieldset>
-	<fieldset ng-repeat="field in ngcEntity.metadata.fields | entities:false | limitTo:1">
+	<fieldset ng-repeat="field in ngcEntity.metadata.fields | primary:false | limitTo:1">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">{{field.name}}</label>
 			<div class="col-sm-10">
@@ -26,7 +26,7 @@
 			</div>
 		</div>
 	</fieldset>
-	<fieldset ng-repeat="field in ngcEntity.metadata.fields | entities:false | startFrom:1">
+	<fieldset ng-repeat="field in ngcEntity.metadata.fields | primary:false | startFrom:1">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">{{field.name}}</label>
 			<div class="col-sm-10">
@@ -46,4 +46,13 @@
 <script type="text/ng-template" id="dynamic-control-textarea.html">
 	<textarea id="{{ngcField.name}}" type="text" class="form-control" ng-model="ngcEntity.item[ngcField.name]" ng-disabled="ngcField.isPrimaryKey" 
 		ngc-ckeditor ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
+</script>
+<script type="text/ng-template" id="dynamic-control-file.html">
+	<a  class="control-label" style="float:left; margin-right:15px;" title="download"
+		ng-repeat="field in ngcEntity.metadata.fields | primary:true" ng-show="ngcEntity.item[field.name] != null"
+		ng-href="{{applicationContext.contextPath}}/rest/crud/{{ngcEntity.metadata.entityClass}}/download/{{ngcField.name}}/{{ngcEntity.item[field.name]}}">
+		<span class="glyphicon glyphicon-floppy-save"></span>
+	</a>
+	<input style="float:left" id="{{ngcField.name}}" type="file" class="control-label" ng-model="ngcEntity.item[ngcField.name]" ng-disabled="ngcField.isPrimaryKey" 
+		ngc-fileupload ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
 </script>

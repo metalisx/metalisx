@@ -51,7 +51,8 @@ application.run(function($rootScope) {
  * easiest way. Unfortunately these script tags should be in the HTML code and
  * as such located in the HTML block with the ng-app attribute.
  */
-application.directive('dynamicControl', function(dynamicControlTemplateSelector, templateCompile) {
+application.directive('dynamicControl', function(dynamicControlTemplateSelector, templateCompile,
+		applicationContext) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -61,6 +62,7 @@ application.directive('dynamicControl', function(dynamicControlTemplateSelector,
 		},
 		transclude: true,
         link:function (scope, element, attrs) {
+        	scope.applicationContext = applicationContext;
         	var html = dynamicControlTemplateSelector.getTemplateByField(scope.ngcField);
         	templateCompile.compile(html, element, scope);
         }
@@ -131,6 +133,8 @@ function DynamicControlTemplateSelector($templateCache, dynamicControlTemplateLo
     		html = $templateCache.get('dynamic-control-date-input.html');
     	} else if (type == 'string' && field.isLob == true) {
     		html = $templateCache.get('dynamic-control-textarea.html');
+    	} else if (type == 'byte[]' && field.isLob == true) {
+    		html = $templateCache.get('dynamic-control-file.html');
     	} else {
     		html = $templateCache.get('dynamic-control-input.html');
     	}
@@ -149,12 +153,7 @@ function DynamicControlTemplateSelector($templateCache, dynamicControlTemplateLo
 	
 };
 
-
-/////////////
-// Filters //
-/////////////
-
-application.filter('entities', function() {
+application.filter('primary', function() {
 	return function(entities, isPrimary) {
 		var list = new Array();
 		angular.forEach(entities, function(value, key) {
@@ -168,8 +167,3 @@ application.filter('entities', function() {
     };
 });
 
-application.filter('startFrom', function() {
-  return function(input, start) {
-      return input.slice(start);
-  }
-});

@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.metalisx.common.domain.model.AbstractEntity;
+import org.metalisx.common.gson.annotation.GsonTransient;
 
 @Entity
 public class User extends AbstractEntity {
@@ -25,11 +26,12 @@ public class User extends AbstractEntity {
 
     private Date date;
 
-    @Lob
-    private String text;
-    
+    @GsonTransient
     @Lob
     private byte[] document;
+    
+    @Lob
+    private String text;
     
     public User() {
     }
@@ -58,15 +60,6 @@ public class User extends AbstractEntity {
         this.date = date;
     }
 
-    public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	@Lob
 	public byte[] getDocument() {
 		return document;
 	}
@@ -75,4 +68,12 @@ public class User extends AbstractEntity {
 		this.document = document;
 	}
     
+    public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 }

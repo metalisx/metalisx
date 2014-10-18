@@ -705,6 +705,44 @@ application.directive('ngcColorPicker', function () {
 //})(jQuery)
 
 /**
+ * Directive for file upload with HTML 5 functionality.
+ * 
+ * The model is updated with the base64 representation of the file.
+ */
+application.directive('ngcFileupload', function ($timeout) {
+	
+    return {
+		restrict: 'A',
+		require: 'ngModel',
+        link:function (scope, element, attrs, ngModel) {
+
+			function handleFileSelect(evt) {
+        		var files = evt.target.files;
+        		var selFile = files[0];
+        		getData(selFile);
+			}
+
+        	function getData(selFile) {
+        		var reader = new FileReader();
+        		reader.onload = function(e) {
+        			var result = reader.result; 
+        			ngModel.$setViewValue(result);
+        		};
+        		reader.onerror = function(e) {
+        			console.log(e);
+        		};
+        		reader.readAsDataURL(selFile);
+        	}
+
+			element.on('change', function(evt) {
+				handleFileSelect(evt);
+			});
+        	
+        }
+    };
+});
+
+/**
  * Directive to append an icon to the field. When clicked a popup window
  * with a filebrowser is opened. On selecting a filename in the popup the
  * filename is set in the field an the model.
@@ -1324,5 +1362,15 @@ application.directive('ngcDatefilter', function() {
 				return value;
 			});
 		}
+	}
+});
+
+/**
+ * Filter to return a list from the position start.
+ * As opposed to AngularJS provided limitTo filter.
+ */
+application.filter('startFrom', function() {
+	return function(input, start) {
+		return input.slice(start);
 	}
 });
