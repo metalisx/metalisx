@@ -1,7 +1,5 @@
 package org.metalisx.crud.domain.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.metalisx.common.domain.model.AbstractEntity;
 
 @Entity
-public class User extends AbstractEntity {
+public class TestTextarea extends AbstractEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,19 +21,10 @@ public class User extends AbstractEntity {
 	@NotNull
     private String name;
 
-    private Date date;
-
-    @Lob
-    private byte[] document;
-    
-    private String mimeType;
-    
-    private String filename;
-    
-    @Lob
+	@Lob
     private String text;
     
-    public User() {
+    public TestTextarea() {
     }
 
     public Long getId() {
@@ -53,38 +42,6 @@ public class User extends AbstractEntity {
     public String getName() {
         return name;
     }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-	public byte[] getDocument() {
-		return document;
-	}
-
-	public void setDocument(byte[] document) {
-		this.document = document;
-	}
-    
-	public String getMimeType() {
-		return mimeType;
-	}
-
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
 
 	public String getText() {
 		return text;

@@ -9,8 +9,9 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>jdbc/monitorDS</jta-data-source>
 
-		<class>org.metalisx.crud.domain.model.User</class>
-		<class>org.metalisx.crud.domain.model.Company</class>
+		<class>org.metalisx.crud.domain.model.Test</class>
+		<class>org.metalisx.crud.domain.model.TestDocument</class>
+		<class>org.metalisx.crud.domain.model.TestTextarea</class>
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 

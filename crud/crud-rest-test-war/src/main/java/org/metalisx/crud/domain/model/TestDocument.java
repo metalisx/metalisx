@@ -4,13 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.Length;
 import org.metalisx.common.domain.model.AbstractEntity;
 
 @Entity
-public class Company extends AbstractEntity {
+public class TestDocument extends AbstractEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,12 +19,16 @@ public class Company extends AbstractEntity {
     private Long id;
     
 	@NotNull
-	@Length(min=1)
     private String name;
 
-    private String location;
-
-    public Company() {
+	@Lob
+    private byte[] document;
+    
+    private String mimeType;
+    
+    private String filename;
+    
+    public TestDocument() {
     }
 
     public Long getId() {
@@ -43,12 +47,28 @@ public class Company extends AbstractEntity {
         return name;
     }
 
-	public String getLocation() {
-		return location;
+	public byte[] getDocument() {
+		return document;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setDocument(byte[] document) {
+		this.document = document;
+	}
+    
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 }
