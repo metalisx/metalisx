@@ -707,31 +707,53 @@ application.directive('ngcColorPicker', function () {
 /**
  * Directive for file upload with HTML 5 functionality.
  * 
+ * If a file is selected the following actions are executed.
+ * The filename is placed in the model property specified by 
+ * ngc-file-upload-filename.
+ * The mime type is placed in the model property specified by 
+ * ngc-file-upload-mime-type.
+ * The data is converted with readAsDataUrl to base64 and placed
+ * in the property specified by ngc-file-upload-document.
+ * 
  * The model is updated with the base64 representation of the file.
  */
-application.directive('ngcFileupload', function ($timeout) {
+application.directive('ngcFileUpload', function ($timeout) {
 	
     return {
 		restrict: 'A',
-		require: 'ngModel',
-        link:function (scope, element, attrs, ngModel) {
+		scope: {ngcFileUploadDocument:'=',
+				ngcFileUploadFilename:'=',
+				ngcFileUploadMimeType:'='},
+        link:function (scope, element, attrs) {
 
 			function handleFileSelect(evt) {
         		var files = evt.target.files;
-        		var selFile = files[0];
-        		getData(selFile);
+        		var file = files[0];
+        		getData(file);
 			}
 
-        	function getData(selFile) {
+        	function getData(file) {
+        		console.log(file);
         		var reader = new FileReader();
         		reader.onload = function(e) {
-        			var result = reader.result; 
-        			ngModel.$setViewValue(result);
+        			console.log(file);
+        			if (attrs['ngcFileUploadDocument']) {
+            			scope.ngcFileUploadDocument = reader.result;
+        			}
+        			if (attrs['ngcFileUploadFilename']) {
+        				scope.ngcFileUploadFilename = file.name;
+        			}
+        			if (attrs['ngcFileUploadMimeType']) {
+        				console.log(file.type);
+        				scope.ngcFileUploadMimeType = file.type;
+        				console.log(scope.ngcFileUploadMimeType);
+        			}
+    				scope.$apply();
         		};
         		reader.onerror = function(e) {
         			console.log(e);
         		};
-        		reader.readAsDataURL(selFile);
+        		reader.readAsDataURL(file);
         	}
 
 			element.on('change', function(evt) {

@@ -10,7 +10,6 @@ import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.metalisx.common.domain.model.AbstractEntity;
-import org.metalisx.common.gson.annotation.GsonTransient;
 
 @Entity
 public class User extends AbstractEntity {
@@ -26,9 +25,12 @@ public class User extends AbstractEntity {
 
     private Date date;
 
-    @GsonTransient
     @Lob
     private byte[] document;
+    
+    private String mimeType;
+    
+    private String filename;
     
     @Lob
     private String text;
@@ -68,7 +70,23 @@ public class User extends AbstractEntity {
 		this.document = document;
 	}
     
-    public String getText() {
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public String getText() {
 		return text;
 	}
 

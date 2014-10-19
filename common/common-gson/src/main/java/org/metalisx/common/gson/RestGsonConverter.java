@@ -22,6 +22,7 @@ public class RestGsonConverter {
         // object.
         GsonBuilder builder = new GsonBuilder().serializeNulls().setDateFormat(DATE_FORMAT_TO_JSON);
         builder.setExclusionStrategies(new GsonAnnotationExclusionStrategy());
+        builder.registerTypeAdapter(byte[].class, new GsonSerializeByteArrayToBase64());
         Gson gson = builder.create();
         return gson.toJson(object);
     }
@@ -29,7 +30,7 @@ public class RestGsonConverter {
     public <T> T fromJson(String object, Class<T> clazz) {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Date.class, new GsonDeserializeDate());
-        builder.registerTypeAdapter(byte[].class, new GsonDeserializeHtml5Base64());
+        builder.registerTypeAdapter(byte[].class, new GsonDeserializeBase64ToByteArray());
         Gson gson = builder.create();
         return (T) gson.fromJson(object, clazz);
     }
@@ -37,7 +38,7 @@ public class RestGsonConverter {
     public <T> T fromJson(String object, Type type) {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Date.class, new GsonDeserializeDate());
-        builder.registerTypeAdapter(byte[].class, new GsonDeserializeHtml5Base64());
+        builder.registerTypeAdapter(byte[].class, new GsonDeserializeBase64ToByteArray());
     	Gson gson = builder.create();
     	return gson.fromJson(object, type);
     }
@@ -45,7 +46,7 @@ public class RestGsonConverter {
     public <T> T fromJson(InputStreamReader inputStreamReader, Type type) {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Date.class, new GsonDeserializeDate());
-        builder.registerTypeAdapter(byte[].class, new GsonDeserializeHtml5Base64());
+        builder.registerTypeAdapter(byte[].class, new GsonDeserializeBase64ToByteArray());
     	Gson gson = builder.create();
     	return gson.fromJson(inputStreamReader, type);
     }

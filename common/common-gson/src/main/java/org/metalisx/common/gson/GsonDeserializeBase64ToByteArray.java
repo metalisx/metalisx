@@ -15,21 +15,27 @@ import com.google.gson.JsonParseException;
  * This adapter handles base64 input and converts it to a byte[] for
  * use in the JPA persistence.
  */
-public class GsonDeserializeHtml5Base64 implements JsonDeserializer<byte[]> {
+public class GsonDeserializeBase64ToByteArray implements JsonDeserializer<byte[]> {
 
 	@Override
 	public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
 		if (json.getAsString() == null || "".equals(json.getAsString())) {
 			return null;
 		} else {
-			return byteArrayFromJson(json.getAsString());
+			return base64ToByteArray(json.getAsString());
 		}
 	}
 
-	private byte[] byteArrayFromJson(String value) {
+	private byte[] base64ToByteArray(String value) {
 		byte[] data = null;
-		int index = value.indexOf("base64") + 7;
-		String base64 = value.substring(index);
+		String base64 = null;
+		// First we check if there is a base64 marker in the value.
+		int index = value.indexOf("base64");
+		if (index != -1) {
+			base64 = value.substring(index + 7);
+		} else { 
+			base64 = value;
+		}
 		data = Base64.decodeBase64(base64.getBytes());
 		if (data == null) {
 			throw new JsonParseException("Could not parse base64 data.");

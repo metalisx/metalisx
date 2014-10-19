@@ -53,6 +53,10 @@
 		ng-href="{{applicationContext.contextPath}}/rest/crud/{{ngcEntity.metadata.entityClass}}/download/{{ngcField.name}}/{{ngcEntity.item[field.name]}}">
 		<span class="glyphicon glyphicon-floppy-save"></span>
 	</a>
-	<input style="float:left" id="{{ngcField.name}}" type="file" class="control-label" ng-model="ngcEntity.item[ngcField.name]" ng-disabled="ngcField.isPrimaryKey" 
-		ngc-fileupload ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
+	<input style="float:left" id="{{ngcField.name}}" type="file" class="control-label" ng-disabled="ngcField.isPrimaryKey"
+		ngc-file-upload
+		ngc-file-upload-document="ngcEntity.item[ngcField.name]" 
+		ngc-file-upload-filename="ngcEntity.item['filename']" 
+		ngc-file-upload-mime-type="ngcEntity.item['mimeType']"
+		ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
 </script>

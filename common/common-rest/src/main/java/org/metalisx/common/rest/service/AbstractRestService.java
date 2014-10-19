@@ -51,9 +51,14 @@ import org.slf4j.LoggerFactory;
  * <li>annotate it with @path("/crud"), replace crud if you need</li>
  * <li>inject the correct entity manager with @PersistenceContext</li>
  * <li>create a method and annotate it with @PostConstruct</li>
- * <li>in this method call setEntityManager with the injected entity manager</li>
- * <li>in this method add the available entities with full name to the entityClasses property
- * if you want to use the /metadata rest service for getting the available entities</li>
+ * <li>in this method call {@link #setEntityManager} with the injected entity manager</li>
+ * <li>in this method, if a file can be down loaded, set the {@link #filenameProperty} when 
+ * there is a property containing the filename which is different from 'filename'</li>
+ * <li>in this method, if a file can be down loaded, call {@link #mimeTypeProperty} when 
+ * there is a property containing the mime type which is different from 'mimeType'</li>
+ * <li>in this method add the available entities with full name to the {@link #entityClasses} 
+ * property if you want to use the /metadata rest service for getting the available 
+ * entities</li>
  * <li>create a sub class for the javax.ws.rs.core.Application class</li>
  * <li>annotate it with @ApplicationPath("/rest") and replace rest if you need</li>
  * <ul>
@@ -62,6 +67,10 @@ public abstract class AbstractRestService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRestService.class);
 
+	protected String filenameProperty = "filename";
+	
+	protected String mimeTypeProperty = "mimeType";
+	
 	@Inject
 	protected MetadataProvider metadataProvider;
 	
@@ -91,13 +100,24 @@ public abstract class AbstractRestService {
 	}
 	
 	/**
-	 * Donwload the byte[] in the field of the object of type entityClass identified by id.
+	 * REST method to download a file.
 	 * 
-	 * The Tika detect method does not return the correct mime types for Microsoft documents
-	 * like docx. To get the correct mime types the filename should be set on the Metadata 
-	 * instance like: metadata.set(Metadata.RESOURCE_NAME_KEY, "mydoc.docx");
-	 * But for this to work a strategy should be introduced to store the filename and
-	 * to retrieve it in this method.
+	 * The down loaded file is the byte[] in the <code>field</code> of the object 
+	 * of type <code>entityClass</code> identified by <code>id</code>.
+	 * 
+	 * The method tries to get the filename from the property <code>filenameProperty</code>
+	 * in the entity. If this does not work it will set the filename to the id
+	 * concatenated with the extension of the mime type.  
+	 * The method tries to get the mime type from the property <code>mimeTypeProperty</code>
+	 * in the entity. If this does not work it will detect the mime type from the byte array
+	 * and from the value in filenamePropery if it is present.
+	 * 
+	 * The {@link #filenameProperty} contains the value 'filename', if it is not correct
+	 * change it by setting the {@link #filenameProperty} in the post construct method of
+	 * the sub class.
+	 * The {@link #mimeTypeProperty} contains the value 'mimeType', if it is not correct
+	 * change it by setting the {@link #mimeTypeProperty} in the post construct method of
+	 * the sub class.
 	 */
     @GET
     @Path("/{entityClass}/download/{field}/{id}")
@@ -105,39 +125,27 @@ public abstract class AbstractRestService {
     		@PathParam("field") String field, @PathParam("id") Long id) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MimeTypeException {
     	Object object = abstractDao.findById(JpaUtils.toClass(entityClass), id);
         if (object != null) {
-        	// Get the byte array
-        	Class<?> c = object.getClass();
-        	Field[] fields = c.getDeclaredFields();
-        	byte[] b = null;
-        	for( Field f : fields ){
-    			if (field.equals(f.getName().toString())) {
-    				f.setAccessible(true);
-    				b = (byte[]) f.get(object);
-    				break;
-    			}
+        	byte[] b = (byte[]) getValue(object, field);
+        	String filename = (String) getValue(object, filenameProperty);
+        	String mimeTypeValue = (String) getValue(object, mimeTypeProperty);
+        	if (filename == null || "".equals(filename) || 
+        			mimeTypeValue == null || "".equals(mimeTypeValue)) {
+        		MimeType mimeType = detectMimeType(b, filename);
+	        	if (mimeTypeValue == null || "".equals(mimeTypeValue)) {
+	        		mimeTypeValue = mimeType.toString();
+	        	}
+	        	if (filename == null || "".equals(filename)) {
+	        		filename = id + mimeType.getExtension();
+	        	}
         	}
-        	// Detect the mime type
-            TikaConfig config = TikaConfig.getDefaultConfig();
-        	Metadata metadata = new Metadata();
-        	MediaType mediaType = null;
-        	MimeType mimeType = null;
-        	if (b != null) {
-        		TikaInputStream inputStream = TikaInputStream.get(new ByteArrayInputStream(b));
-	            mediaType = config.getMimeRepository().detect(inputStream, metadata);
-	            mimeType = config.getMimeRepository().forName(mediaType.toString());
-        	} else {
-	            mimeType = config.getMimeRepository().forName("text/plain");
-        	}
-        	// Build the response
             ResponseBuilder responseBuilder = Response.ok(b);
-            responseBuilder.type(mimeType.toString());
-            responseBuilder.header("Content-Disposition", "attachment; filename=\"" + 
-            		id + mimeType.getExtension() + "\"");
+            responseBuilder.type(mimeTypeValue);
+            responseBuilder.header("Content-Disposition", "attachment; filename=\"" + filename + "\"");
             return responseBuilder.build();
         }
         return Response.status(Status.NOT_FOUND).build();
     }
-    
+
 	@GET
 	@Path("/{entityClass}/metadata")
 	@Produces("application/json")
@@ -219,7 +227,7 @@ public abstract class AbstractRestService {
 	}
 
 	@POST
-	@Path("/{entityClass}")
+	@Path("/{entityClass}/{id}")
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Object post(@PathParam("entityClass") String entityClass, String body) throws ClassNotFoundException,
@@ -232,4 +240,53 @@ public abstract class AbstractRestService {
 		abstractDao.setEntityManager(entityManager);
 	}
 
+	/**
+     * Method to detect the mime type of the content in the <code>byteArray</code>.
+     * If the <code>filename</code> is not null, it is also used by Tika to detect
+     * the mime type. 
+     * 
+     * Tika's detect method does not return the correct mime types for Microsoft 
+     * documents like docx. But by specifying the filename it can guess it from the
+     * file extension.
+     */
+    private MimeType detectMimeType(byte[] b, String filename) throws IOException, MimeTypeException {
+        TikaConfig config = TikaConfig.getDefaultConfig();
+    	Metadata metadata = new Metadata();
+    	if (filename != null) {
+    		metadata.add(Metadata.RESOURCE_NAME_KEY,filename);
+    	}
+    	MimeType mimeType = null;
+    	if (b != null) {
+    		try {
+    		TikaInputStream inputStream = TikaInputStream.get(new ByteArrayInputStream(b));
+    		MediaType mediaType = config.getMimeRepository().detect(inputStream, metadata);
+            mimeType = config.getMimeRepository().forName(mediaType.toString());
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			throw new RuntimeException(e);
+    		}
+    	} else {
+            mimeType = config.getMimeRepository().forName("text/plain");
+    	}
+    	return mimeType;
+    }
+    
+    /**
+     * Method using reflection to get the value of the property <code>field</code> from
+     * the <code>object</code>.
+     */
+    private Object getValue(Object object, String field) throws IllegalArgumentException, IllegalAccessException {
+    	Class<?> c = object.getClass();
+    	Field[] fields = c.getDeclaredFields();
+    	Object value = null;
+    	for( Field f : fields ){
+			if (field.equals(f.getName().toString())) {
+				f.setAccessible(true);
+				value = f.get(object);
+				break;
+			}
+    	}
+    	return value;
+    }
+    
 }
