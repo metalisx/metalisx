@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -19,16 +19,13 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.mime.FormBodyPart;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
@@ -50,19 +47,19 @@ public class MonitorRequestSendUtil {
     private static final String METHOD_NAME_DELETE = "DELETE";
     private static final String METHOD_NAME_HEAD = "HEAD";
     
-    private static final String mimeType = "text/plain";
+    private static final ContentType contentType = ContentType.TEXT_PLAIN;
     private static final String characterSet = "UTF-8";
 
     private MonitorRequestSendUtil() {
     }
 
     public static HttpResponse send(MonitorRequest monitorRequest) {
-        DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+        HttpClient httpClient = HttpClientBuilder.create().build();
         BasicHttpContext basicHttpContext = toBasicHttpContext(monitorRequest);
         HttpResponse response = null;
         try {
             HttpRequestBase httpRequestBase = toHttpRequestBase(monitorRequest);
-            response = defaultHttpClient.execute(httpRequestBase, basicHttpContext);
+            response = httpClient.execute(httpRequestBase, basicHttpContext);
         } catch (URISyntaxException e) {
             throw new IllegalStateException(e);
         } catch (UnsupportedEncodingException e) {
@@ -121,7 +118,7 @@ public class MonitorRequestSendUtil {
             cookie.setVersion(monitorRequestCookie.getVersion());
             basicCookieStore.addCookie(cookie);
         }
-        basicHttpContext.setAttribute(ClientContext.COOKIE_STORE, basicCookieStore);
+        basicHttpContext.setAttribute(HttpClientContext.COOKIE_STORE, basicCookieStore);
         return basicHttpContext;
     }
 
@@ -140,21 +137,16 @@ public class MonitorRequestSendUtil {
 
     private static HttpPost toMultipartHttpPost(MonitorRequest monitorRequest) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost();
-        MultipartEntity multipartEntity = new MultipartEntity();
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         for (MonitorRequestPart monitorRequestPart : monitorRequest.getParts()) {
             if (monitorRequestPart.getFilename() == null) {
-                StringBody stringBody = new StringBody(monitorRequestPart.getValue(), mimeType,
-                        Charset.forName(characterSet));
-                FormBodyPart formParameterBodyPart = new FormBodyPart(monitorRequestPart.getName(), stringBody);
-                multipartEntity.addPart(formParameterBodyPart);
+                multipartEntityBuilder.addTextBody(monitorRequestPart.getName(), monitorRequestPart.getValue(), contentType);
             } else {
-                ContentBody contentBody = new ByteArrayBody(monitorRequestPart.getContent(),
-                        monitorRequestPart.getContentType(), monitorRequestPart.getFilename());
-                FormBodyPart formBodyPart = new FormBodyPart(monitorRequestPart.getName(), contentBody);
-                multipartEntity.addPart(formBodyPart);
+                multipartEntityBuilder.addBinaryBody(monitorRequestPart.getName(), monitorRequestPart.getContent(),
+                        ContentType.parse(monitorRequestPart.getContentType()), monitorRequestPart.getFilename());
             }
         }
-        httpPost.setEntity(multipartEntity);
+        httpPost.setEntity(multipartEntityBuilder.build());
         return httpPost;
     }
 
