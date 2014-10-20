@@ -201,13 +201,13 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 				$scope.dataTableFilter.username = $params.username;
 			}
 			if (!utilsService.isUrlParamEmpty($params.showList)) {
-				$scope.dataTableFilter.showList = $params.showList === false ? false : true;
+				$scope.dataTableFilter.showList = $params.showList === false || $params.showList === 'false' ? false : true;
 			}
 			if (!utilsService.isUrlParamEmpty($params.showChart)) {
-				$scope.dataTableFilter.showChart = $params.showChart === false ? false : true;
+				$scope.dataTableFilter.showChart = $params.showChart === false || $params.showChart === 'false' ? false : true;
 			}
 			if (!utilsService.isUrlParamEmpty($params.showOverviewChart)) {
-				$scope.dataTableFilter.showOverviewChart = $params.showOverviewChart === false ? false : true;
+				$scope.dataTableFilter.showOverviewChart = $params.showOverviewChart === false || $params.showOverviewChart === 'false' ? false : true;
 			}
 			if (!utilsService.isUrlParamEmpty($params.realtime)) {
 				$scope.dataTableFilter.realtime = $params.realtime;
