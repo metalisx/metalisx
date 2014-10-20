@@ -291,7 +291,6 @@ function UtilsService($rootScope) {
  * 
  * The date format in the model is expected to be: yyyy-MM-dd HH:mm:ss.SSS
  * Example: 2014-10-16T01:04:28.287
- * If the ngc-datepicker-show-timepicker is 
  * 
  * We are not using isolated scope to prevent, when multiple directives are set, the error: 
  *  Multiple directives [..] asking for new/isolated scope
