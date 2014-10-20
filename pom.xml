@@ -512,8 +512,8 @@
 				<version>1.6</version>
 				<exclusions>
 					<exclusion>
+						<artifactId>asm-debug-all</artifactId>
 						<groupId>org.ow2.asm</groupId>
-						<artifactId>asm-parent</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
