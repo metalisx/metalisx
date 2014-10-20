@@ -1,6 +1,7 @@
 package org.metalisx.monitor.profiler.servlet.filter;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -28,6 +29,8 @@ public class ProfilerFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfilerFilter.class);
 
+    private static final String UTF8 = "UTF-8";
+    		
     @Inject
     private ProfilerFilterContext profilerFilterContext;
 
@@ -47,7 +50,12 @@ public class ProfilerFilter implements Filter {
             if (!profilerFilterContext.isDisableFilter()) {
                 String url = "";
                 if (request instanceof HttpServletRequest) {
-                    url = ((HttpServletRequest) request).getRequestURL().toString();
+                	HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+                    url = httpServletRequest.getRequestURL().toString();
+                    if (httpServletRequest.getQueryString() != null) {
+                    	url = url + "?" + httpServletRequest.getQueryString();
+                    }
+                    url =  URLDecoder.decode(url, UTF8);
                 }
                 Date startDate = new Date();
                 monitorContext.increaseDepth();

@@ -1,6 +1,8 @@
 package org.metalisx.monitor.request.servlet.filter;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -55,6 +57,8 @@ import org.metalisx.utils.PrettyPrintUtils;
  */
 public class RequestFilter implements Filter {
 
+    private static final String UTF8 = "UTF-8";
+    
     @Inject
     private MonitorRequestService requestMonitorService;
 
@@ -300,7 +304,7 @@ public class RequestFilter implements Filter {
         }
     }
 
-    private String getUrl(ServletRequest request) {
+    private String getUrl(ServletRequest request) throws UnsupportedEncodingException {
         StringBuffer url = new StringBuffer();
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -321,7 +325,7 @@ public class RequestFilter implements Filter {
                 url.append("?").append(queryString);
             }
         }
-        return url.toString();
+        return URLDecoder.decode(url.toString(), UTF8);
     }
 
     private MonitorResponse toResponse(TeeHttpServletResponseWrapper teeHttpServletResponseWrapper) throws IOException {
