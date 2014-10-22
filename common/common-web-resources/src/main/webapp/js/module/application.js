@@ -725,6 +725,10 @@ application.directive('ngcFileUpload', function ($timeout) {
 				ngcFileUploadMimeType:'='},
         link:function (scope, element, attrs) {
 
+        	if (!(window.File && window.FileReader)) {
+        		console.log('Uploading files will not work because the File APIs are not supported in the browser.');
+       		}
+        	
 			function handleFileSelect(evt) {
         		var files = evt.target.files;
         		var file = files[0];
@@ -735,7 +739,6 @@ application.directive('ngcFileUpload', function ($timeout) {
         		console.log(file);
         		var reader = new FileReader();
         		reader.onload = function(e) {
-        			console.log(file);
         			if (attrs['ngcFileUploadDocument']) {
             			scope.ngcFileUploadDocument = reader.result;
         			}
@@ -743,14 +746,13 @@ application.directive('ngcFileUpload', function ($timeout) {
         				scope.ngcFileUploadFilename = file.name;
         			}
         			if (attrs['ngcFileUploadMimeType']) {
-        				console.log(file.type);
         				scope.ngcFileUploadMimeType = file.type;
-        				console.log(scope.ngcFileUploadMimeType);
         			}
     				scope.$apply();
+    				this.onerror(e);
         		};
         		reader.onerror = function(e) {
-        			console.log(e);
+        			console.log("Uploading file failed");
         		};
         		reader.readAsDataURL(file);
         	}
