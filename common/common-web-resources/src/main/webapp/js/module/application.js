@@ -714,21 +714,31 @@ application.directive('ngcColorPicker', function () {
  * The data is converted with readAsDataUrl to base64 and placed
  * in the property specified by ngc-file-upload-document.
  * 
+ * The ngc-file-upload-file-limit is an optional attribute to limit the size
+ * of the uploaded file. It is specified in bytes and default set to 5242880.
+ * 
  * The model is updated with the base64 representation of the file.
  */
-application.directive('ngcFileUpload', function ($timeout) {
+application.directive('ngcFileUpload', function ($timeout, messagesProvider) {
 	
     return {
 		restrict: 'A',
 		scope: {ngcFileUploadDocument:'=',
 				ngcFileUploadFilename:'=',
-				ngcFileUploadMimeType:'='},
+				ngcFileUploadMimeType:'=',
+				ngcFileUploadFileLimit:'='},
         link:function (scope, element, attrs) {
 
         	if (!(window.File && window.FileReader)) {
         		console.log('Uploading files will not work because the File APIs are not supported in the browser.');
        		}
         	
+        	var fileLimit = 5242880;
+        	
+			if (attrs['ngcFileUploadFileLimit']) {
+    			fileLimit = scope.ngcFileUploadFileLimit;
+			}
+			
 			function handleFileSelect(evt) {
         		var files = evt.target.files;
         		var file = files[0];
@@ -736,23 +746,26 @@ application.directive('ngcFileUpload', function ($timeout) {
 			}
 
         	function getData(file) {
-        		console.log(file);
         		var reader = new FileReader();
         		reader.onload = function(e) {
-        			if (attrs['ngcFileUploadDocument']) {
-            			scope.ngcFileUploadDocument = reader.result;
+        			if (fileLimit != null && file.size > fileLimit) {
+        				messagesProvider.message('Can not upload file. Maximum file size allowed is ' + fileLimit + ' bytes.');
+        			} else {
+	        			if (reader.readyState === FileReader.DONE) {
+		        			if (attrs['ngcFileUploadDocument']) {
+		            			scope.ngcFileUploadDocument = reader.result;
+		        			}
+		        			if (attrs['ngcFileUploadFilename']) {
+		        				scope.ngcFileUploadFilename = file.name;
+		        			}
+		        			if (attrs['ngcFileUploadMimeType']) {
+		        				scope.ngcFileUploadMimeType = file.type;
+		        			}
+		    				scope.$apply();
+	        			} else {
+	        				messagesProvider.message('File loading failed. ' + reader.error);
+	        			}
         			}
-        			if (attrs['ngcFileUploadFilename']) {
-        				scope.ngcFileUploadFilename = file.name;
-        			}
-        			if (attrs['ngcFileUploadMimeType']) {
-        				scope.ngcFileUploadMimeType = file.type;
-        			}
-    				scope.$apply();
-    				this.onerror(e);
-        		};
-        		reader.onerror = function(e) {
-        			console.log("Uploading file failed");
         		};
         		reader.readAsDataURL(file);
         	}
