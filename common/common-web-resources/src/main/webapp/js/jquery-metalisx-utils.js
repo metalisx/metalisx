@@ -570,17 +570,17 @@
 			contentType: settings.contentType,
 			dataType: settings.dataType
 		}).fail(function(jqXHR, textStatus, errorThrown) {
-        	if (jqXHR.status != 0) { // Canceled requests are not processed.
+			if (jqXHR.statusText !== 'abort') {
 				var message = {};
 				message.id = settings.messagesContainerId;
 				message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
-				if (jqXHR.responseText.indexOf('body') > 0) {
+				if (jqXHR.responseText && jqXHR.responseText.indexOf('body') > 0) {
 					message.detail = jqXHR.responseText;
 				}
 				message.level = 'error';
 				$.metalisxMessages(message);
-				$.metalisxUnblock();
-        	}
+			}
+			$.metalisxUnblock();
 		});
 		
 		return this;
