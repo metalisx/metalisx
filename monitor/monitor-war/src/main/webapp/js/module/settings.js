@@ -34,7 +34,7 @@ function SettingsController($scope, $compile, $http, $location, $routeParams,
 				$scope.refresh($detailContainer, nRow, aData, iDataIndex);
 			},
 			"dataTableSettings": {
-				"ajaxSource": crudService.getPageEndpoint(settingJsonEndpoint),
+				"ajax": crudService.getPageEndpoint(settingJsonEndpoint),
 				"sorting": [[1, 'asc']],
 		        "columns": [
 					{ "name": "id",

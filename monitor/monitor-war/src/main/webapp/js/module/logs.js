@@ -35,7 +35,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 				);
 			},
 			"dataTableSettings": {
-				"ajaxSource": crudService.getPageEndpoint(logJsonEndpoint),
+				"ajax": crudService.getPageEndpoint(logJsonEndpoint),
 				"sorting": [[0, 'desc']],
 		        "columns": [
 					{ "name": "logDate",

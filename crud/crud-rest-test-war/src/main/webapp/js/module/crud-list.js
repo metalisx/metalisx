@@ -60,7 +60,7 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 					);
 				},
 				"dataTableSettings": {
-					"ajaxSource": crudService.getPageEndpoint(restEndpoint),
+					"ajax": crudService.getPageEndpoint(restEndpoint),
 					"sorting": sorting,
 			        "columns": columns
 				}

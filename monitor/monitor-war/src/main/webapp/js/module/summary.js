@@ -21,7 +21,7 @@ function SummaryController($scope, $compile, $http, $location, $routeParams, $ti
 				);
 			},
 			"dataTableSettings": {
-				"ajaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
+				"ajax": crudService.getPageEndpoint(requestJsonEndpoint),
 				"sorting": [[0, 'desc']],
 		        "columns": [
 					{ "name": "message",

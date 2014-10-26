@@ -35,10 +35,10 @@
  * defaults for the DataTable plugin.
  *
  * The only required setting is the URL from which the data is retrieved. Set 
- * the URL in the options object parameter as dataTableSettings.ajaxSource. 
+ * the URL in the options object parameter as dataTableSettings.ajax. 
  * Example: {
  * 				dataTableSettings: {
- * 										"ajaxSource": myUrl
+ * 										"ajax": myUrl
  *									}
  *			}
  * 
@@ -73,43 +73,43 @@
 			onRowClick: null,
 			renderDetail: null, 
 			dataTableSettings: {
-				"bAutoWidth": false,
-				"bDestroy": true,
-				"bProcessing": true,
-				"bServerSide": true,
-				"bFilter": false,
-				"bSortClasses": false,
-				"bPaginate": true,
-				"sPaginationType": "full_numbers", 
-				"sPaginationType": "bootstrap", // Bootstrap
-				"fnCreatedRow" : function(nRow, aData, iDataIndex) {
-					$('a', $(nRow)).click(function(event) {
+				"ajaxSource": options.dataTableSettings.ajax,
+				"autoWidth": false,
+				"destroy": true,
+				"processing": true,
+				"serverSide": true,
+				"searching": false,
+				"orderClasses": false,
+				"paging": true,
+				"pagingType": "full_numbers", 
+				"createdRow" : function(row, data, dataIndex) {
+					$('a', $(row)).click(function(event) {
 						event.stopImmediatePropagation();
 					});
 					if (settings.renderDetail) {
-						$(nRow).click(function() {
+						$(row).click(function() {
 							if (dataTable.fnIsOpen(this) ) {
 								dataTable.fnClose(this);
 							} else {
-								var nRows = dataTable.fnGetNodes();
-								for (var i=0; i < nRows.length; i++) {
+								var rows = dataTable.fnGetNodes();
+								for (var i=0; i < rows.length; i++) {
 									if (dataTable.fnIsOpen(dataTable.fnGetNodes(i))) {
 										dataTable.fnClose(dataTable.fnGetNodes(i));
 									}
 								}
 								var $detailContainer = $('<div></div>');
 								dataTable.fnOpen(this, $detailContainer, "info_row");
-								settings.renderDetail($detailContainer, nRow, aData, iDataIndex);
+								settings.renderDetail($detailContainer, row, data, dataIndex);
 							}
 						});
 					}
 					if (settings.onsuccessRow) {
-						settings.onsuccessRow(nRow, aData, iDataIndex);
+						settings.onsuccessRow(row, data, dataIndex);
 					}
 					if (settings.onRowClick) {
-						$(nRow).click(function(event) {
+						$(row).click(function(event) {
 							event.stopImmediatePropagation();
-							settings.onRowClick(nRow, aData, iDataIndex);
+							settings.onRowClick(row, data, dataIndex);
 						});
 					}
 				},
@@ -165,6 +165,9 @@
 			}
 		}, options || {});
 		
+		// unset ajax
+		delete settings.ajax;
+		
 		function dataTableContextToPageContext(aoData, filter) {
         	var pageContext = {};
         	var orderBy = {};
@@ -217,8 +220,8 @@
 			return dataTable;
 		}
 
-		if (!settings.dataTableSettings.ajaxSource) {
-			alert('Property dataTableSettings.ajaxSource must be set in the options parameter.');
+		if (!settings.dataTableSettings.ajax) {
+			alert('Property dataTableSettings.ajax must be set in the options parameter.');
 		}
 		
 		var messagesContainer = $('#' + settings.messagesContainerId);

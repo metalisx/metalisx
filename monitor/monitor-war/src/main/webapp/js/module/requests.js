@@ -26,7 +26,7 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 				);
 			},
 			"dataTableSettings": {
-				"ajaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
+				"ajax": crudService.getPageEndpoint(requestJsonEndpoint),
 				"sorting": [[0, 'desc']],
 		        "columns": [
 					{ "name": "startTime",
