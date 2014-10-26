@@ -2,10 +2,11 @@
 /* CSS styles for using DataTables with the styling for table and pagination from Twitter Bootstrap */
 
 /* Modified to use with Bootstrap 3 */
-div.dataTables_length select {
+div.dataTables_length select.form-control {
+	display: inline;
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
-	width: 75px;
+	width: 65px;
 	line-height: 30px;
 	padding: 4px 6px;
 	font-size: 14px;
@@ -20,6 +21,7 @@ div.dataTables_length label {
 	font-weight: normal;
 	line-height: 20px;
 }
+
 table.dataTable > tbody > tr > td {
 	vertical-align: middle;
 }

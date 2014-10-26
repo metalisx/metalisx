@@ -26,28 +26,32 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 				);
 			},
 			"dataTableSettings": {
-				"sAjaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
-				"aaSorting": [[0, 'desc']],
-		        "aoColumns": [
-					{ "sName": "startTime",
-						"mDataProp": "startTime",
-						"fnRender": function ( oObj, sVal ) {
-							return $.metalisxUtils.isoDateAsStringtoDisplayDate(sVal);
+				"ajaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
+				"sorting": [[0, 'desc']],
+		        "columns": [
+					{ "name": "startTime",
+						"data": "startTime",
+						"render": function (data, type, full, meta) {
+							var logDate = data == null ? '' : $.metalisxUtils.isoDateAsStringtoDisplayDate(data);
+							return logDate;
 						}},
-					{ "sName": "requestId", 
-						"mDataProp": "requestId",
-						"fnRender": function ( oObj, sVal ) {
-							return "<div class='wordwrap'>" + sVal + "</div>";
+					{ "name": "requestId", 
+						"data": "requestId",
+						"render": function (data, type, full, meta) {
+							var requestId = data == null ? '' : data;
+							return "<div class='wordwrap'>" + requestId + "</div>";
 						}},
-					{ "sName": "duration",
-						"mDataProp": "duration",
-						"fnRender": function ( oObj, sVal ) {
-							return "<div class='wordwrap'>" + sVal + "</div>";
+					{ "name": "duration",
+						"data": "duration",
+						"render": function (data, type, full, meta) {
+							var duration = data == null ? '' : data;
+							return "<div class='wordwrap'>" + duration + "</div>";
 						}},
-					{ "sName": "url",
-						"mDataProp": "url",
-						"fnRender": function ( oObj, sVal ) {
-							return "<div class='wordwrap'>" + sVal + "</div>";
+					{ "name": "url",
+						"data": "url",
+						"render": function (data, type, full, meta) {
+							var url = data == null ? '' : data;
+							return "<div class='wordwrap'>" + url + "</div>";
 						}}
 				]
 			}

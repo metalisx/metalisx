@@ -90,7 +90,7 @@
 	 * The id in the object should be the id of an existing HTML element.
 	 * The level in the object takes precedence over the level in the options. 
 	 * 
-	 * The second parameter contians options. The properties for the options argument are:
+	 * The second parameter contains options. The properties for the options argument are:
 	 *  - level
 	 *  - clean
 	 *  - location

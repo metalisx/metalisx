@@ -263,7 +263,7 @@ function UtilsService($rootScope) {
 	 * Method returns true if an apply or digest is in progress
 	 * otherwise it return false.
 	 */
-	this.isApplyInProgress = function(fn) {
+	this.isApplyInProgress = function() {
 		var inProgress = false;
 		var phase = $rootScope.$$phase;
 		if (phase === '$apply' || phase === '$digest') {
@@ -749,7 +749,9 @@ application.directive('ngcFileUpload', function ($timeout, messagesProvider) {
         		var reader = new FileReader();
         		reader.onload = function(e) {
         			if (fileLimit != null && file.size > fileLimit) {
-        				messagesProvider.message('Can not upload file. Maximum file size allowed is ' + fileLimit + ' bytes.');
+        				messagesProvider.message(
+        						'Can not upload file. Maximum file size allowed is ' + fileLimit + ' bytes.',
+        						{'level': 'error'});
         			} else {
 	        			if (reader.readyState === FileReader.DONE) {
 		        			if (attrs['ngcFileUploadDocument']) {
@@ -763,7 +765,8 @@ application.directive('ngcFileUpload', function ($timeout, messagesProvider) {
 		        			}
 		    				scope.$apply();
 	        			} else {
-	        				messagesProvider.message('File loading failed. ' + reader.error);
+	        				messagesProvider.message('File loading failed. ' + reader.error,
+	        						{'level': 'error'});
 	        			}
         			}
         		};
@@ -990,7 +993,8 @@ application.directive('ngcDataTable', function () {
     			// Destroy the datatable when the element is removed from the DOM.
     			// This is required when the ng-view is used.
     			element.bind("$destroy", function() {
-    				dataTable.fnDestroy();
+    				// Destroying the table generates an infinite loop.
+    				//dataTable.fnDestroy();
     	        });
     		}
 
@@ -1260,8 +1264,12 @@ application.directive('ngcSelectInteger', function() {
     		// View value to model value
 	    	ngModel.$parsers.push(function (data) {
 	    		var value = null;
-	    		if (data !== null && typeof data === 'string' && data !== '') {
-	    			value = parseInt(data, 10);
+	    		if (data !== null) {
+	    			if (typeof data === 'string' && data !== '') {
+	    				value = parseInt(data, 10);
+	    			} else if (typeof data === 'number') {
+	    				value = data;
+	    			}
 	    		}
 	    		return value;
 	        });
@@ -1408,5 +1416,17 @@ application.directive('ngcDatefilter', function() {
 application.filter('startFrom', function() {
 	return function(input, start) {
 		return input.slice(start);
+	}
+});
+
+/**
+ * Filter to return the currency in euro.
+ */
+application.filter('ngcCurrency', function($filter, $locale) {
+	return function(input) {
+		//$locale.NUMBER_FORMATS.CURRENCY_SYM = '&euro;';
+		//$locale.NUMBER_FORMATS.DECIMAL_SEP = ',';
+		//$locale.NUMBER_FORMATS.GROUP_SEP = '';
+		return $filter('currency')(input, '&euro;');
 	}
 });

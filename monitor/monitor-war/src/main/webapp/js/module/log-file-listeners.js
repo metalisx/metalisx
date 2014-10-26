@@ -11,9 +11,7 @@ function LogFileListenersController($scope, crudService) {
 	// Init
 	
 	function init() {
-		console.log('abb');
 		crudService.get(modelRestEndpoint, null, {onsuccess: function(result) {
-			console.log('c');
 			if (result && result.item) {
 				$scope.model = result.item;
 				$scope.$digest();

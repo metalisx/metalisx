@@ -35,10 +35,10 @@
  * defaults for the DataTable plugin.
  *
  * The only required setting is the URL from which the data is retrieved. Set 
- * the URL in the options object parameter as dataTableSettings.sAjaxSource. 
+ * the URL in the options object parameter as dataTableSettings.ajaxSource. 
  * Example: {
  * 				dataTableSettings: {
- * 										"sAjaxSource": myUrl
+ * 										"ajaxSource": myUrl
  *									}
  *			}
  * 
@@ -107,7 +107,8 @@
 						settings.onsuccessRow(nRow, aData, iDataIndex);
 					}
 					if (settings.onRowClick) {
-						$(nRow).click(function() {
+						$(nRow).click(function(event) {
+							event.stopImmediatePropagation();
 							settings.onRowClick(nRow, aData, iDataIndex);
 						});
 					}
@@ -216,8 +217,8 @@
 			return dataTable;
 		}
 
-		if (!settings.dataTableSettings.sAjaxSource) {
-			alert('Property dataTableSettings.sAjaxSource must be set in the options parameter.');
+		if (!settings.dataTableSettings.ajaxSource) {
+			alert('Property dataTableSettings.ajaxSource must be set in the options parameter.');
 		}
 		
 		var messagesContainer = $('#' + settings.messagesContainerId);

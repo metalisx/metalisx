@@ -35,34 +35,38 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 				);
 			},
 			"dataTableSettings": {
-				"sAjaxSource": crudService.getPageEndpoint(logJsonEndpoint),
-				"aaSorting": [[0, 'desc']],
-		        "aoColumns": [
-					{ "sName": "logDate",
-						"mDataProp": "logDate", 
-						"fnRender": function ( oObj, sVal ) {
-							return $.metalisxUtils.isoDateAsStringtoDisplayDate(sVal);
+				"ajaxSource": crudService.getPageEndpoint(logJsonEndpoint),
+				"sorting": [[0, 'desc']],
+		        "columns": [
+					{ "name": "logDate",
+						"data": "logDate", 
+						"render": function (data, type, full, meta) {
+							var logDate = data == null ? '' : $.metalisxUtils.isoDateAsStringtoDisplayDate(data);
+							return logDate;
 						}},
-					{ "sName": "organization",
-						"mDataProp": "organization",
-						"fnRender": function ( oObj, sVal ) {
-							return '<a href="' + logsUrl + '&organization=' + sVal + '">' + 
-										sVal + '</a>';
+					{ "name": "organization",
+						"data": "organization",
+						"render": function (data, type, full, meta) {
+							var organization = data == null ? '' : data;
+							return '<a href="' + logsUrl + '&organization=' + organization + '">' + 
+										organization + '</a>';
 						}},
-					{ "sName": "username",
-						"mDataProp": "username",
-						"fnRender": function ( oObj, sVal ) {
-							return '<a href="' + logsUrl + '&username=' + sVal + '">' + 
-										sVal + '</a>';
+					{ "name": "username",
+						"data": "username",
+						"render": function (data, type, full, meta) {
+							var username = data == null ? '' : data;
+							return '<a href="' + logsUrl + '&username=' + username + '">' + 
+										username + '</a>';
 						}},
-					{ "sName": "message",
-						"mDataProp": "message",
-						"fnRender": function ( oObj, sVal ) {
-							return '<a href="' + logsUrl + '&message=' + sVal + '" ngc-stop-propagation>' + 
-										sVal + '</a>';
+					{ "name": "message",
+						"data": "message",
+						"render": function (data, type, full, meta) {
+							var message = data == null ? '' : data;
+							return '<a href="' + logsUrl + '&message=' + message + '" ngc-stop-propagation>' + 
+										message + '</a>';
 						}},
-					{ "sName": "duration",
-						"mDataProp": "duration" }
+					{ "name": "duration",
+						"data": "duration" }
 				]
 			}
 		};

@@ -21,25 +21,26 @@ function SummaryController($scope, $compile, $http, $location, $routeParams, $ti
 				);
 			},
 			"dataTableSettings": {
-				"sAjaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
-				"aaSorting": [[0, 'desc']],
-		        "aoColumns": [
-					{ "sName": "message",
-						"mDataProp": "message", 
-						"fnRender": function ( oObj, sVal ) {
-							return '<a href="' + logsUrl + '&message=' + sVal + '">' + 
-										sVal + '</a>';
+				"ajaxSource": crudService.getPageEndpoint(requestJsonEndpoint),
+				"sorting": [[0, 'desc']],
+		        "columns": [
+					{ "name": "message",
+						"data": "message", 
+						"render": function (data, type, full, meta) {
+							var message = data == null ? '' : data;
+							return '<a href="' + logsUrl + '&message=' + message + '">' + 
+										message + '</a>';
 						}},
-					{ "sName": "count",
-						"mDataProp": "count"},
-					{ "sName": "minDuration",
-						"mDataProp": "minDuration"},
-					{ "sName": "maxDuration",
-						"mDataProp": "maxDuration"},
-					{ "sName": "averageDuration",
-						"mDataProp": "averageDuration"},
-					{ "sName": "totalDuration",
-						"mDataProp": "totalDuration"}
+					{ "name": "count",
+						"data": "count"},
+					{ "name": "minDuration",
+						"data": "minDuration"},
+					{ "name": "maxDuration",
+						"data": "maxDuration"},
+					{ "name": "averageDuration",
+						"data": "averageDuration"},
+					{ "name": "totalDuration",
+						"data": "totalDuration"}
 				]
 			}
 		};

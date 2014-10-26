@@ -34,18 +34,15 @@ function SettingsController($scope, $compile, $http, $location, $routeParams,
 				$scope.refresh($detailContainer, nRow, aData, iDataIndex);
 			},
 			"dataTableSettings": {
-				"sAjaxSource": crudService.getPageEndpoint(settingJsonEndpoint),
-				"aaSorting": [[1, 'asc']],
-		        "aoColumns": [
-					{ "sName": "id",
-						"mDataProp": "id",
-						"sClass": "id"},
-					{ "sName": "code",
-						"mDataProp": "code",
-						"sClass": "code"},
-					{ "sName": "value",
-						"mDataProp": "value",
-						"sClass": "value"}
+				"ajaxSource": crudService.getPageEndpoint(settingJsonEndpoint),
+				"sorting": [[1, 'asc']],
+		        "columns": [
+					{ "name": "id",
+						"data": "id"},
+					{ "name": "code",
+						"data": "code"},
+					{ "name": "value",
+						"data": "value"}
 				]
 			}
 		};

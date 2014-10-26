@@ -15,37 +15,34 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 	function initDataTable() {
 		crudService.pageMetadata(restEndpoint, {onsuccess: function(data) {
 
-			var aaSorting = new Array();
-			var aoColumns = new Array();
+			var sorting = new Array();
+			var columns = new Array();
 			
 			if (data.sorting) {
 				$.each(data.sorting, function(index, sort) {
-					aaSorting[aaSorting.length] = sort;
+					sorting[sorting.length] = sort;
 				});
 			}
 			if (data.columns) {
 				$.each(data.columns, function(index , column) {
 					// The clob field are not included in the dataTable.
 					if (column.field.isLob == false) {
-						aoColumns[aoColumns.length] = {
-							sName: column.field.name,
-							mDataProp: column.field.name,
-							sTitle: column.title,
-							sClass: column.className,
-							bSortable: column.sortable,
-							fnRender: function(oObj, sVal) {
-								return crudColumnValueFormatter.format(column.field.type, sVal);
+						columns[columns.length] = {
+							name: column.field.name,
+							data: column.field.name,
+							title: column.title,
+							sortable: column.sortable,
+							render: function(data, type, full, meta) {
+								return crudColumnValueFormatter.format(column.field.type, data);
 							}
 						};
 					}
 				});
-				aoColumns[aoColumns.length] = {
-					sTitle: null,
-					mDataProp: null,
-					sClass: "delete",
-					bSortable: false,
-					fnRender: function (oObj, sVal ) {
-						return '<a href="#" ng-click="del(\'' + oObj.aData.id + '\', $event)">X</a>';
+				columns[columns.length] = {
+					data: null,
+					sortable: false,
+					render: function (data, type, full, meta) {
+						return '<a href="#" ng-click="del(\'' + data.id + '\', $event)">X</a>';
 					}
 				};
 			}
@@ -63,9 +60,9 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 					);
 				},
 				"dataTableSettings": {
-					"sAjaxSource": crudService.getPageEndpoint(restEndpoint),
-					"aaSorting": aaSorting,
-			        "aoColumns": aoColumns
+					"ajaxSource": crudService.getPageEndpoint(restEndpoint),
+					"sorting": sorting,
+			        "columns": columns
 				}
 			};
 			
