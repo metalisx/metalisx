@@ -8,6 +8,12 @@
  * Removed form-inline from the sWrapper property.
  * Added property sLength with the form-inline.
  * This was neccessary for opening a info row when clicking on a data row.
+ * 
+ * Changed DataTable.defaults.dom
+ * Changed the last line: "<'row'<'col-xs-6'i><'col-xs-6'p>>"
+ * into: "<'row'<'col-xs-3'i><'col-xs-9'p>>"
+ * This was neccessary for fitting the pager longer correctly when using
+ * a smaller browser window.
  */
 
 /**
@@ -29,7 +35,7 @@ $.extend( true, DataTable.defaults, {
 	dom:
 		"<'row'<'col-xs-6'l><'col-xs-6'f>r>" +
 		"<'row'<'col-xs-12't>>" +
-		"<'row'<'col-xs-6'i><'col-xs-6'p>>",
+		"<'row'<'col-xs-3'i><'col-xs-9'p>>",
 	renderer: 'bootstrap'
 } );
 
