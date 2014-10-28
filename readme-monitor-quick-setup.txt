@@ -1,6 +1,6 @@
 MetalIsX
 
-1 Using the monitor application
+1 Quick setup for using the monitor application
 
 You need to follow the actions in this chapter for quickly 
 enabling all functionality of the monitor application and 
