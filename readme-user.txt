@@ -138,19 +138,12 @@ executing the following actions:
  - add to the datasources section the following datasource, this will create a 
    h2 database with the monitor tables when the application is first started:
 				<datasource jndi-name="java:jdbc/monitorDS" pool-name="monitorDS" enabled="true" use-java-context="true">
-
 					<connection-url>jdbc:h2:file:${jboss.server.data.dir}/h2database/monitor;DB_CLOSE_DELAY=-1</connection-url>
-
 					<driver>h2</driver>
-
 					<security>
-
 						<user-name>sa</user-name>
-
 						<password>sa</password>
 					</security>
-
 				</datasource>
-
  - you can change the datasource setting to your liking, but the 
    jndi-name should remain the same
