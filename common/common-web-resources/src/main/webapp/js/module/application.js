@@ -1410,6 +1410,43 @@ application.directive('ngcDatefilter', function() {
 });
 
 /**
+ * Directive for formating a currency model value to a view value and back
+ * to the model value. Both values should be strings.
+ * 
+ * The view value will be outlined with zeros to two decimals. 
+ */
+application.directive('ngcCurrency', function($filter) {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function(scope, element, attrs, ngModel) {
+
+    		// View value to model value
+			ngModel.$parsers.push(function(data) {
+				var value = null;
+				if (data != null) {
+	    			if (typeof data === 'string' && data !== '') {
+	    				value = parseFloat(data, 10);
+	    			} else if (typeof data === 'number') {
+	    				value = data;
+	    			}
+				}
+				return value;
+			});
+		
+	    	// Model value to view value
+			ngModel.$formatters.push(function(data) {
+				var value = null;
+				if (data != null) {
+					value = $filter('currency')(data, '');
+				}
+				return value;
+			});
+		}
+	}
+});
+
+/**
  * Filter to return a list from the position start.
  * As opposed to AngularJS provided limitTo filter.
  */
@@ -1420,13 +1457,15 @@ application.filter('startFrom', function() {
 });
 
 /**
- * Filter to return the currency in euro.
+ * Filter to return the currency with the euro sign.
+ * Note &euro; is not working so the €-sign is used,
+ * this will require a correct character set.
  */
-application.filter('ngcCurrency', function($filter, $locale) {
+application.filter('ngcCurrency', function($filter) {
 	return function(input) {
 		//$locale.NUMBER_FORMATS.CURRENCY_SYM = '&euro;';
 		//$locale.NUMBER_FORMATS.DECIMAL_SEP = ',';
 		//$locale.NUMBER_FORMATS.GROUP_SEP = '';
-		return $filter('currency')(input, '&euro;');
+		return $filter('currency')(input, '€ ');
 	}
 });
