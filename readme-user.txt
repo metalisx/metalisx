@@ -63,7 +63,7 @@ Install and configure Wildfly 8.1.0.Final
  - configure in the application server
    a datasource named: 
      jdbc/monitorDS
-   follow the instruction in: 2.1 Datasource
+   follow the instruction in: 4.1 Datasource
  - copy the Monitor web application war file:
      monitor\monitor-war\target\monitor-war-1.0-SNAPSHOT.war
    to
@@ -135,7 +135,8 @@ Congigure the jdbc/monitorDS datasource in Wildfly 8.1.0.Final by
 executing the following actions:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
- - add in the datasources section the following datasource to create a h2 database:
+ - add to the datasources section the following datasource, this will create a 
+   h2 database with the monitor tables when the application is first started:
 				<datasource jndi-name="java:jdbc/monitorDS" pool-name="monitorDS" enabled="true" use-java-context="true">
 
 					<connection-url>jdbc:h2:file:${jboss.server.data.dir}/h2database/monitor;DB_CLOSE_DELAY=-1</connection-url>
