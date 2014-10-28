@@ -6,10 +6,10 @@
  *  - filter
  *  - options
  * 
- * The filter parameter can contain an object. This object is added to the
- * pageContext and posted to the server.
+ * The filter parameter can contain an object with any kind of properties. This 
+ * object is added to the pageContext and posted to the server.
  * 
- * The posted object structure is:
+ * The posted object structure to the server is:
  * {
  * 		filter: <only present if there is a filter object>,
  * 		orderBy: {
@@ -21,14 +21,18 @@
  *			count: <count>
  *		}
  * }
- * Note: if in the options.dataTableSettings.bPaginate is set to false
+ * Note: if in the options.dataTableSettings.paging is set to false
  * the limit.count will be set to -1. Indicating no paging is used. 
  * 
- * The returned object structure is:
+ * The recieved object structure from the server is:
  * {
  * 		items: <list of objects>,
  * 		totalNumberOfRows: <total number of rows>
+ * 		messages: <list of messages>
  * }
+ * Messages in the messages property are shown in the HTML container
+ * with the id specified in the messagesContainerId property of the options.
+ * This can be used to show errors from the back end in the view.
  * 
  * The options parameter provides the plugin with some settings. One of
  * the properties in options is dataTableSettings where you can set the
@@ -50,8 +54,8 @@
  * The options parameter has a property renderDetail. It is default null
  * but when set it needs to be a function with one parameter, this parameter
  * contains the object for the row. Example: renderDetail(aData). When a user 
- * clicks on a row a new row is added below this row and the renderDetail function 
- * is called to populate the row.
+ * clicks on a row a child row is added below this row and the renderDetail function 
+ * is called to populate the child row.
  * 
  * The options parameter has a property onsuccess. It is default null
  * and can contain a method without parameters. It will run after the
@@ -64,6 +68,8 @@
 (function($){
 
 	$.fn.metalisxDataTable = function(filter, options) {
+		var url = options.dataTableSettings.ajax;
+		var dataTable = null;
 		var runOnsuccess = true;
 		var settings = $.extend(true, {
 			messagesContainerId: 'messagesContainer',
@@ -73,7 +79,6 @@
 			onRowClick: null,
 			renderDetail: null, 
 			dataTableSettings: {
-				"ajaxSource": options.dataTableSettings.ajax,
 				"autoWidth": false,
 				"destroy": true,
 				"processing": true,
@@ -88,17 +93,19 @@
 					});
 					if (settings.renderDetail) {
 						$(row).click(function() {
-							if (dataTable.fnIsOpen(this) ) {
-								dataTable.fnClose(this);
+							var child = dataTable.api().row($(row)).child;
+							if (child.isShown()) {
+								child.remove();
 							} else {
-								var rows = dataTable.fnGetNodes();
-								for (var i=0; i < rows.length; i++) {
-									if (dataTable.fnIsOpen(dataTable.fnGetNodes(i))) {
-										dataTable.fnClose(dataTable.fnGetNodes(i));
+								var nodes = dataTable.api().rows().nodes();
+								for (var i=0; i < nodes.length; i++) {
+									if (dataTable.api().row($(nodes[i])).child.isShown()) {
+										dataTable.api().row($(nodes[i])).child.remove();
 									}
 								}
-								var $detailContainer = $('<div></div>');
-								dataTable.fnOpen(this, $detailContainer, "info_row");
+								var $detailContainer = $('<div></div>').addClass("detail");
+								child($detailContainer);
+								child.show();
 								settings.renderDetail($detailContainer, row, data, dataIndex);
 							}
 						});
@@ -108,94 +115,81 @@
 					}
 					if (settings.onRowClick) {
 						$(row).click(function(event) {
-							event.stopImmediatePropagation();
 							settings.onRowClick(row, data, dataIndex);
 						});
 					}
-				},
-		        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
-		        	
-		        	// An interceptor function will show errors gracefully.
-	    			messagesContainer.hide();
-	    			messagesContainer.empty();
-
-		        	var innerFnCallback = function(result) {
-		        		if (result.messages) {
-		        			$.metalisxMessages(result.messages, {messagesContainerId: settings.messagesContainerId});
-							$('#' + id + '_processing', $this.parent()).hide();
-						} else {
-							var dataTableResult = pageToDataTableResult(result);
-							fnCallback(dataTableResult);
-							if (settings.onsuccess && runOnsuccess) {
-								runOnsuccess = false;
-								settings.onsuccess();
-							}
-							if (settings.onsuccessAjax) {
-								settings.onsuccessAjax($this);
-							}
-						}
-		        	};
-
-		        	var pageContext = dataTableContextToPageContext(aoData, filter);
-		        	oSettings.jqXHR = $.ajax({
-							"type": "POST",
-							"contentType": "application/json",
-							"dataType": "json",
-							"url": sSource,
-							"data": JSON.stringify(pageContext),
-							"success": innerFnCallback}
-		            ).fail(function(jqXHR, textStatus, errorThrown) {
-		            	if (jqXHR.status != 0) { // Canceled requests are not processed. 
-				        	if ($.metalisxMessages === undefined) {
-				        		alert(textStatus + (errorThrown ? ': ' + errorThrown : ''));
-				        	} else {
-				    			var message = {};
-				    			message.id = settings.messagesContainerId;
-				    			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
-				    			if (jqXHR.responseText.indexOf('body') > 0) {
-				    				message.detail = jqXHR.responseText;
-				    			}
-				    			message.level = 'error';
-				    			$.metalisxMessages(message);
-				            	$('#' + id + '_processing', $this.parent()).hide();
-				        	}
-		            	}
-		    		});
-		        }
+				}
 			}
 		}, options || {});
-		
-		// unset ajax
-		delete settings.ajax;
-		
-		function dataTableContextToPageContext(aoData, filter) {
+
+		settings.dataTableSettings.ajax = function(data, callback, ajaxSettings) {
+			messagesContainer.hide();
+			messagesContainer.empty();
+
+			var innerCallback = function(result) {
+        		if (result.messages) {
+        			$.metalisxMessages(result.messages, {messagesContainerId: settings.messagesContainerId});
+					$('#' + id + '_processing', $this.parent()).hide();
+				} else {
+					var dataTableResult = pageToDataTableResult(result);
+					callback(dataTableResult);
+					if (settings.onsuccess && runOnsuccess) {
+						runOnsuccess = false;
+						settings.onsuccess();
+					}
+					if (settings.onsuccessAjax) {
+						settings.onsuccessAjax($this);
+					}
+				}
+        	};
+
+        	var pageContext = dataTableContextToPageContext(data, filter);
+        	ajaxSettings.jqXHR = $.ajax({
+					"type": "POST",
+					"contentType": "application/json",
+					"dataType": "json",
+					"url": url,
+					"data": JSON.stringify(pageContext),
+					"success": innerCallback}
+            ).fail(function(jqXHR, textStatus, errorThrown) {
+            	if (jqXHR.status != 0) { // Canceled requests are not processed. 
+		        	if ($.metalisxMessages === undefined) {
+		        		alert(textStatus + (errorThrown ? ': ' + errorThrown : ''));
+		        	} else {
+		    			var message = {};
+		    			message.id = settings.messagesContainerId;
+		    			message.message = textStatus + (errorThrown ? ': ' + errorThrown : '');
+		    			if (jqXHR.responseText.indexOf('body') > 0) {
+		    				message.detail = jqXHR.responseText;
+		    			}
+		    			message.level = 'error';
+		    			$.metalisxMessages(message);
+		            	$('#' + id + '_processing', $this.parent()).hide();
+		        	}
+            	}
+    		});
+		};
+
+		function dataTableContextToPageContext(data, filter) {
         	var pageContext = {};
         	var orderBy = {};
         	var limit = {};
 
-        	// Find if sColumns are set, if so then use the name in the sorting instead of the index
-			var columnNames = null;
-        	for (var j=0; j < aoData.length; j++) {
-        		if (aoData[j].name == 'sColumns') {
-        			sColumns = aoData[j].value;
-        			columnNames = sColumns.split(',');
+        	limit.start = data.start
+        	limit.count = data.length;
+
+        	var columns = data.columns;
+        	var order = data.order;
+        	for (var i=0; i<order.length; i++) {
+        		var column = order[i].column;
+        		if (columns[column].name != null && columns[column].name != '') {
+                	orderBy.columnName = columns[column].name; 
+        		} else {
+        			orderBy.columnName = column;
         		}
+               	orderBy.columnDirection = order[i].dir
         	}
-        	for (var i=0; i < aoData.length; i++) {
-        		if (aoData[i].name == 'iDisplayStart') {
-        			limit.start = aoData[i].value;
-        		} else if (aoData[i].name == 'iDisplayLength') {
-        			limit.count = aoData[i].value;
-        		} else if (aoData[i].name == 'iSortCol_0') {
-            		if (columnNames) { // translate the iSortCol index to the name in sColumns
-            			orderBy.columnName = columnNames[aoData[i].value];
-            		} else {
-            			orderBy.columnName = aoData[i].value;
-            		}
-        		} else if (aoData[i].name == 'sSortDir_0') {
-        			orderBy.columnDirection = aoData[i].value;
-        		}
-        	}
+
        		pageContext.orderBy = orderBy;
        		pageContext.limit = limit;
         	if (filter) {
@@ -206,9 +200,9 @@
 		
 		function pageToDataTableResult(page) {
 			var dataTableResult = {
-					aaData: page.items,
-					iTotalDisplayRecords: page.totalNumberOfRows,
-					iTotalRecords: page.totalNumberOfRows,
+					data: page.items,
+					recordsFiltered: page.totalNumberOfRows,
+					recordsTotal: page.totalNumberOfRows,
 				};
 			if (page.columnNames) {
 				dataTableResult.sColumns = page.columnNames.join(',');
@@ -229,33 +223,16 @@
 			messagesContainer.hide();
 			messagesContainer.empty();
 		} else {
-			alert('Missing html container to place alerts. Please specify a div with id ' + settings.messagesContainerId);
+			alert('Missing html container to place alerts. Please add a html container(div) in the body with the following id ' + settings.messagesContainerId);
 		}
 
 		var $this = this;
 		var id = $this.attr('id');
 		
-		var dataTable = $this.dataTable(settings.dataTableSettings);
+		dataTable = $this.dataTable(settings.dataTableSettings);
 		if (settings.onCreation) {
 			settings.onCreation(dataTable);
 		}
-		
-		// We override the fnClose and fnDraw method on the dataTable.
-		// This is done so the child elements in the open details tr are 
-		// removed to trigger the jQuery remove events attached on these 
-		// elements. This way you have the ability to remove the TinyMCE 
-		// editors if it was bind to an element.
-		// It will run on the entire table.
-		var dataTableFnClose = dataTable.fnClose;
-		dataTable.fnClose = function(nTr) {
-			$('.info_row', $this).children().remove();
-			return dataTableFnClose.call(this, nTr);
-		};
-		var dataTableFnDraw = dataTable.fnDraw;
-		dataTable.fnDraw = function() {
-			$('.info_row', $this).children().remove();
-			return dataTableFnDraw.call(this);
-		};
 		
 		return this;
 	};
