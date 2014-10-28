@@ -73,58 +73,33 @@ Install and configure Wildfly 8.1.0.Final
     - find the section with: <subsystem xmlns="urn:jboss:domain:logging:1.1">
     - add the periodic-rotating-file-handler:
             <periodic-rotating-file-handler name="MONITOR" autoflush="true">
-
                 <formatter>
-
                     <pattern-formatter pattern="%d %-5p [%c] (%t) [SessionId: %X{sessionid}, RequestId: %X{requestid}, ParentRequestId: %X{parentrequestid}, Organisatie: %X{organization}, Gebruikersnaam: %X{username}] (Depth: %X{depth}) %s%E%n"/>
-
                 </formatter>
-
                 <file relative-to="jboss.server.log.dir" path="monitor.log"/>
-
                 <suffix value=".yyyy-MM-dd"/>
-
                 <append value="false"/>
-
             </periodic-rotating-file-handler>
-
     - for logging monitor log statements to the MONITOR add the logger:
             <logger category="org.metalisx.monitor" use-parent-handlers="false">
-
                 <level name="INFO"/>
-
                 <handlers>
-
                     <handler name="MONITOR"/>
-
                 </handlers>
-
             </logger>
     - for logging hibernate statements add the logger:
             <logger category="org.hibernate.SQL" use-parent-handlers="false">
-
                 <level name="DEBUG"/>
-
                 <handlers>
-
                     <handler name="MONITOR"/>
-
                 </handlers>
-
             </logger>
-
             <logger category="org.hibernate.type" use-parent-handlers="false">
-
                 <level name="DEBUG"/>
-
                 <handlers>
-
                 	<handler name="MONITOR"/>
-
                 </handlers>
-
             </logger>
-
  - open a browser
  - navigate to:
      localhost:8080\monitor
