@@ -289,7 +289,7 @@ function UtilsService($rootScope) {
  * The date format in de view when ngc-datepicker-show-timepicker is true is: 
  * dd-mm-yy hh:mm:ss.l. And when false it is: dd-mm-yy.
  * 
- * The date format in the model is expected to be: yyyy-MM-dd HH:mm:ss.SSS
+ * The date format in the model is expected to be: yyyy-MM-ddTHH:mm:ss.SSS
  * Example: 2014-10-16T01:04:28.287
  * 
  * We are not using isolated scope to prevent, when multiple directives are set, the error: 
@@ -1458,7 +1458,7 @@ application.filter('startFrom', function() {
 
 /**
  * Filter to return the currency with the euro sign.
- * Note &euro; is not working so the €-sign is used,
+ * Note &euro; is not working so the ï¿½-sign is used,
  * this will require a correct character set.
  */
 application.filter('ngcCurrency', function($filter) {
@@ -1466,6 +1466,6 @@ application.filter('ngcCurrency', function($filter) {
 		//$locale.NUMBER_FORMATS.CURRENCY_SYM = '&euro;';
 		//$locale.NUMBER_FORMATS.DECIMAL_SEP = ',';
 		//$locale.NUMBER_FORMATS.GROUP_SEP = '';
-		return $filter('currency')(input, '€ ');
+		return $filter('currency')(input, 'ï¿½ ');
 	}
 });

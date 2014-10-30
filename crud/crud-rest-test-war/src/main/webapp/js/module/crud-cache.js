@@ -4,7 +4,7 @@ function CrudColumnValueFormatter() {
 	
 	this.format = function(type, value) {
 		if (type == 'date') {
-			return $.metalisxUtils.isoDateAsStringtoDisplayDate(value);
+			return $.metalisxUtils.toDisplayDate(value);
 		}
 		return value;
 	};

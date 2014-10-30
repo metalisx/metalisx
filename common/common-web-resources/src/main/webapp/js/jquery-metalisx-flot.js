@@ -192,7 +192,7 @@
 		    			$('#' + settings.flotTooltipId).remove();
 		    			var dataItem = item.series.data[item.dataIndex];
 		                $content = $('<div style="padding:5px"></div>').
-		                	append('<div>x = ' + $.metalisxUtils.dateToDisplayDate(dataItem[0]) + '</div').
+		                	append('<div>x = ' + $.metalisxUtils.toDisplayDate(dataItem[0]) + '</div').
 		                	append('<div>y = ' + dataItem[1] + '</div>');
 		    			showTooltip(item.pageX, item.pageY, $content);
 		    		}

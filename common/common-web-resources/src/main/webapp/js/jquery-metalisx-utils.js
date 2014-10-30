@@ -615,50 +615,74 @@
 		    .replace(/'/g, '&quot;');
 		},
 
-		displayDateToIsoDateAsString: function isodateAsStringToDate(value) {
-			if (!value) return null;
-			var dateTimeParts = value.split(' ');
-			var dateParts = dateTimeParts[0].split('-');
-			return dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
+		/**
+		 * Converts input to date.
+		 * Input can be an instance of String.
+		 * The String instance should be in ISO date format: YYYY-MM-ddTHH:mm:ss.SSS 
+		 */
+		toDate: function(date) {
+			var s = null;
+			if (date != null) {
+				var dateTimeParts = date.split("T");
+				var dateParts = dateTimeParts[0].split('-');
+				var timeMillisecondParts = dateTimeParts[1].split('.');
+				var timeParts = timeMillisecondParts[0].split(':');
+				s = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+			}
+			return s;
 		},
 
-		isoDateAsStringtoDate: function isodateAsStringToDate(value) {
-			if (!value) return null;
-			var dateTimeParts = value.split("T");
-			var dateParts = dateTimeParts[0].split('-');
-			var timeMillisecondParts = dateTimeParts[1].split('.');
-			var timeParts = timeMillisecondParts[0].split(':');
-			return date = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+		/**
+		 *  Converts input to the ISO date: YYYY-MM-ddTHH:mm:ss.SSS
+		 *  Input can be an instance of Date or a String.
+		 *  The String instance should be of format: dd-MM-YYYY HH:mm:ss.SSS 
+		 */
+		toIsoDate: function(date) {
+			var s = null;
+			if (date != null) {
+				if (date instanceof Date) {
+			        s = date.getFullYear()
+			            + '-' + dateLpad(date.getMonth() + 1)
+			            + '-' + dateLpad(date.getDate())
+			            + 'T' + dateLpad(date.getHours())
+			            + ':' + dateLpad(date.getMinutes())
+			            + ':' + dateLpad(date.getSeconds())
+			            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5)
+			            ;//+ 'Z';
+				} else if (date instanceof String){
+					var dateTimeParts = date.split(' ');
+					var dateParts = dateTimeParts[0].split('-');
+					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
+				}
+			}
+			return s;
 		},
 
-		isoDateAsStringtoDisplayDate: function isoDateAsStringtoDisplayDate(value) {
-			if (!value) return null;
-			var dateTimeParts = value.split("T");
-			var dateParts = dateTimeParts[0].split('-');
-			var timeMillisecondParts = dateTimeParts[1].split('.');
-			var timeParts = timeMillisecondParts[0].split(':');
-			return dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
-		},
-
-		dateToIsoDateAsString: function(date) {
-	        return date.getFullYear()
-	            + '-' + dateLpad(date.getMonth() + 1)
-	            + '-' + dateLpad(date.getDate())
-	            + 'T' + dateLpad(date.getHours())
-	            + ':' + dateLpad(date.getMinutes())
-	            + ':' + dateLpad(date.getSeconds())
-	            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5)
-	            ;//+ 'Z';
-		},
-
-		dateToDisplayDate: function(date) {
-	        return date.getDate()
-	            + '-' + dateLpad(date.getMonth() + 1)
-	            + '-' + date.getFullYear()
-	            + ' ' + dateLpad(date.getHours())
-	            + ':' + dateLpad(date.getMinutes())
-	            + ':' + dateLpad(date.getSeconds())
-	            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
+		/**
+		 *  Converts input to the display date: dd-MM-YYYY HH:mm:ss.SSS
+		 *  Input can be an instance of Date or a String.
+		 *  The String instance should be in ISO date format: YYYY-MM-ddTHH:mm:ss.SSS 
+		 */
+		toDisplayDate: function(date) {
+			var s = null;
+			if (date != null) {
+				if (date instanceof Date) {
+			        s = date.getDate()
+		            + '-' + dateLpad(date.getMonth() + 1)
+		            + '-' + date.getFullYear()
+		            + ' ' + dateLpad(date.getHours())
+		            + ':' + dateLpad(date.getMinutes())
+		            + ':' + dateLpad(date.getSeconds())
+		            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
+				} else if (date instanceof String) {
+					var dateTimeParts = date.split("T");
+					var dateParts = dateTimeParts[0].split('-');
+					var timeMillisecondParts = dateTimeParts[1].split('.');
+					var timeParts = timeMillisecondParts[0].split(':');
+					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
+				}
+			}
+			return s;
 		}
 	};
 

@@ -32,7 +32,7 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 					{ "name": "startTime",
 						"data": "startTime",
 						"render": function (data, type, full, meta) {
-							var logDate = data == null ? '' : $.metalisxUtils.isoDateAsStringtoDisplayDate(data);
+							var logDate = data == null ? '' : $.metalisxUtils.toDisplayDate(data);
 							return logDate;
 						}},
 					{ "name": "requestId", 
