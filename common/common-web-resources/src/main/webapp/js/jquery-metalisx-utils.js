@@ -623,11 +623,13 @@
 		toDate: function(date) {
 			var s = null;
 			if (date != null) {
-				var dateTimeParts = date.split("T");
-				var dateParts = dateTimeParts[0].split('-');
-				var timeMillisecondParts = dateTimeParts[1].split('.');
-				var timeParts = timeMillisecondParts[0].split(':');
-				s = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+				if (date instanceof String) {
+					var dateTimeParts = date.split("T");
+					var dateParts = dateTimeParts[0].split('-');
+					var timeMillisecondParts = dateTimeParts[1].split('.');
+					var timeParts = timeMillisecondParts[0].split(':');
+					s = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+				}
 			}
 			return s;
 		},
