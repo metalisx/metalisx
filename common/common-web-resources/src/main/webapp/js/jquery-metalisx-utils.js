@@ -602,7 +602,7 @@
         return s;
 	}
 
-	/** Create own namespace. */
+	/** Create own namespace for utility methods. */
 	$.metalisxUtils = {
 			
 		/** Escape html characters. */
