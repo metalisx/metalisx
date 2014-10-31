@@ -20,7 +20,7 @@ function RequestController($scope, $compile, $http, $location, $window, $routePa
 	}
 
 	$scope.getEntity = function(id) {
-    	$.metalisxDataProvider.get(requestUrl + id, null, {onsuccess: function(result) {
+    	crudService.get(requestUrl + id, null, {onsuccess: function(result) {
     		$scope.entity = result.item;
     		$scope.$apply();
     	}});
@@ -37,7 +37,7 @@ function RequestController($scope, $compile, $http, $location, $window, $routePa
 	init();
 }
 
-application.directive('ngcRequestDynatree', function(applicationContext) {
+application.directive('ngcRequestDynatree', function($filter, applicationContext) {
 	return {
 		restrict: 'A',
 		require: 'ngModel',
@@ -242,8 +242,12 @@ application.directive('ngcRequestDynatree', function(applicationContext) {
 					if (request.username != null) {
 						requestnode.addChild({title: 'Username: ' + request.username, key: request.id + 'username'});
 					}
-					requestnode.addChild({title: 'Start time: ' + request.startTime, key: request.id + 'startTime'});
-					requestnode.addChild({title: 'End time: ' + request.endTime, key: request.id + 'endTime'});
+					requestnode.addChild({title: 'Start time: ' + 
+						$filter('ngcDate')(request.startTime), 
+						key: request.id + 'startTime'});
+					requestnode.addChild({title: 'End time: ' + 
+						$filter('ngcDate')(request.endTime), 
+						key: request.id + 'endTime'});
 					requestnode.addChild({title: 'Duration (in ms): ' + request.duration, key: request.id + 'duration'});
 					
 					// Request

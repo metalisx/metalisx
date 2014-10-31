@@ -1,10 +1,10 @@
 application.service('crudColumnValueFormatter', CrudColumnValueFormatter);
 
-function CrudColumnValueFormatter() {
+function CrudColumnValueFormatter($filter) {
 	
 	this.format = function(type, value) {
 		if (type == 'date') {
-			return $.metalisxUtils.toDisplayDate(value);
+			return $filter('ngcDate')(value);
 		}
 		return value;
 	};

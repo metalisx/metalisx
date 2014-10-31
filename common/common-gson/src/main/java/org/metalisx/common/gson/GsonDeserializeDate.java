@@ -55,7 +55,15 @@ public class GsonDeserializeDate implements JsonDeserializer<Date> {
 			}
 		}
 		if (date == null) {
-			throw new JsonParseException("Could not parse date parameter " + value + "." + " Valid formats are "
+			try {
+				date = new Date(Long.valueOf(value));
+			} catch (Exception e) {
+				// silent
+				e.printStackTrace();
+			}
+		}
+		if (date == null) {
+			throw new JsonParseException("Could not parse date parameter " + value + "." + " Valid formats are number or "
 			        + formatsToString() + ".");
 		}
 		return date;

@@ -617,13 +617,13 @@
 
 		/**
 		 * Converts input to date.
-		 * Input can be an instance of String.
-		 * The String instance should be in ISO date format: YYYY-MM-ddTHH:mm:ss.SSS 
+		 * Input can be a string.
+		 * The string should be in ISO date format: yyyy-MM-ddTHH:mm:ss.SSS 
 		 */
 		toDate: function(date) {
 			var s = null;
 			if (date != null) {
-				if (date instanceof String) {
+				if (typeof date == 'string') {
 					var dateTimeParts = date.split("T");
 					var dateParts = dateTimeParts[0].split('-');
 					var timeMillisecondParts = dateTimeParts[1].split('.');
@@ -635,15 +635,15 @@
 		},
 
 		/**
-		 *  Converts input to the ISO date: YYYY-MM-ddTHH:mm:ss.SSS
-		 *  Input can be an instance of Date or a String.
-		 *  The String instance should be of format: dd-MM-YYYY HH:mm:ss.SSS 
+		 *  Converts input to the ISO date: yyyy-MM-ddTHH:mm:ss.SSS
+		 *  Input can be an instance of Date or a string.
+		 *  The string should be of format: dd-MM-yyyy HH:mm:ss.SSS 
 		 */
 		toIsoDate: function(date) {
 			var s = null;
 			if (date != null) {
 				if (date instanceof Date) {
-			        s = date.getFullYear()
+			        s = dateLpad(date.getFullYear())
 			            + '-' + dateLpad(date.getMonth() + 1)
 			            + '-' + dateLpad(date.getDate())
 			            + 'T' + dateLpad(date.getHours())
@@ -651,7 +651,7 @@
 			            + ':' + dateLpad(date.getSeconds())
 			            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5)
 			            ;//+ 'Z';
-				} else if (date instanceof String){
+				} else if (typeof date == 'string'){
 					var dateTimeParts = date.split(' ');
 					var dateParts = dateTimeParts[0].split('-');
 					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
@@ -661,27 +661,33 @@
 		},
 
 		/**
-		 *  Converts input to the display date: dd-MM-YYYY HH:mm:ss.SSS
-		 *  Input can be an instance of Date or a String.
-		 *  The String instance should be in ISO date format: YYYY-MM-ddTHH:mm:ss.SSS 
+		 *  Converts input to the display date: dd-MM-yyyy HH:mm:ss.SSS
+		 *  Input can be an instance of Date or a string.
+		 *  The string should be in ISO date format: yyyy-MM-ddTHH:mm:ss.SSS 
 		 */
 		toDisplayDate: function(date) {
 			var s = null;
 			if (date != null) {
 				if (date instanceof Date) {
-			        s = date.getDate()
+			        s = dateLpad(date.getDate())
 		            + '-' + dateLpad(date.getMonth() + 1)
 		            + '-' + date.getFullYear()
 		            + ' ' + dateLpad(date.getHours())
 		            + ':' + dateLpad(date.getMinutes())
 		            + ':' + dateLpad(date.getSeconds())
 		            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
-				} else if (date instanceof String) {
-					var dateTimeParts = date.split("T");
-					var dateParts = dateTimeParts[0].split('-');
-					var timeMillisecondParts = dateTimeParts[1].split('.');
-					var timeParts = timeMillisecondParts[0].split(':');
-					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
+				} else if (typeof date == 'string') {
+					if (isNaN(date)) {
+						var dateTimeParts = date.split("T");
+						var dateParts = dateTimeParts[0].split('-');
+						var timeMillisecondParts = dateTimeParts[1].split('.');
+						var timeParts = timeMillisecondParts[0].split(':');
+						s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
+					} else {
+						s = $.metalisxUtils.toDisplayDate(parseInt(date));
+					}
+				} else if (typeof date == 'number') {
+					s = $.metalisxUtils.toDisplayDate(new Date(date));
 				}
 			}
 			return s;

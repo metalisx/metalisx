@@ -8,6 +8,20 @@
 	</div>
 
 	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-message">Message</label>
+		<div class="col-sm-10">
+			<input id="detail-message" class="form-control" type="text" ng-disabled="true" ng-model="entity.message"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Log date</label>
+		<div class="col-sm-10">
+			<div class="form-control" ng-disabled="true">{{entity.logDate | ngcDate }}</div>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label class="col-sm-2 control-label" for="detail-log-level">Log level</label>
 		<div class="col-sm-10">
 			<input id="detail-log-level" class="form-control" type="text" ng-disabled="true" ng-model="entity.logLevel"/>
@@ -46,5 +60,27 @@
 		</div>
 	</div>
 
-</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Parent request id</label>
+		<div class="col-sm-10">
+			<div class="form-control-static">
+				<a href="index.html#/logs/log-request/{{entity.parentRequestId}}">{{entity.parentRequestId}}</a>
+			</div>
+		</div>
+	</div>
 
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-organization">Organization</label>
+		<div class="col-sm-10">
+			<input id="detail-organization" class="form-control" type="text" ng-disabled="true" ng-model="entity.organization"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="detail-username">Username</label>
+		<div class="col-sm-10">
+			<input id="detail-username" class="form-control" type="text" ng-disabled="true" ng-model="entity.username"/>
+		</div>
+	</div>
+
+</div>

@@ -1,4 +1,4 @@
-function RequestsController($scope, $compile, $http, $location, $routeParams, $timeout,
+function RequestsController($scope, $compile, $http, $location, $routeParams, $timeout, $filter,
 			crudService, utilsService, applicationContext) {
 
 	var requestUrl = '/requests/request/';
@@ -32,8 +32,7 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 					{ "name": "startTime",
 						"data": "startTime",
 						"render": function (data, type, full, meta) {
-							var logDate = data == null ? '' : $.metalisxUtils.toDisplayDate(data);
-							return logDate;
+							return $filter('ngcDate')(data);
 						}},
 					{ "name": "requestId", 
 						"data": "requestId",

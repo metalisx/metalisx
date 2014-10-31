@@ -280,22 +280,28 @@ function UtilsService($rootScope) {
  * 
  * The following attribute can be set on the element: 
  *  - ngc-datepicker-show-timepicker 
+ *  - ngc-datepicker-model-type
  *  
  * ngc-datepicker-show-timepicker
  * Allowed values are true and false. When true a timepicker is shown when false not.
  * When false the time is stripped from the view value and when the model value is 
  * updated the time is set to all zeros.
  * 
+ * ngc-datepicker-model-type
+ * Indicator how to handle the model value as a string or as a number.
+ * Allowed values are string and number. The value string is the default.
+ * 
  * The date format in de view when ngc-datepicker-show-timepicker is true is: 
  * dd-mm-yy hh:mm:ss.l. And when false it is: dd-mm-yy.
  * 
- * The date format in the model is expected to be: yyyy-MM-ddTHH:mm:ss.SSS
- * Example: 2014-10-16T01:04:28.287
+ * The date format in the model when ngc-datepicker-model-type is string 
+ * is: yyyy-MM-ddTHH:mm:ss.SSS. And when number it is a number representation of
+ * the date.
  * 
  * We are not using isolated scope to prevent, when multiple directives are set, the error: 
  *  Multiple directives [..] asking for new/isolated scope
  */
-application.directive('ngcDatepicker', function ($timeout) {
+application.directive('ngcDatepicker', function ($timeout, $filter) {
     return {
 		restrict: 'A',
         require:'ngModel',
@@ -304,31 +310,15 @@ application.directive('ngcDatepicker', function ($timeout) {
         	var showTimepicker = false;
         	var dateFormat = 'dd-mm-yy';
        		var timeFormat = 'hh:mm:ss.l';
-
+       		var modelType = 'string';
+       		
 			function viewDateToModelDate(value) {
-				if (!value) return null;
-				var dateTimeParts = value.split(' ');
-				var dateParts = dateTimeParts[0].split('-');
-				var modelValue = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
-       			if (showTimepicker === true) {
-       				modelValue = modelValue + 'T' + dateTimeParts[1];
-       			} else {
-       				modelValue = modelValue + 'T00:00:00.000';
-       			}
-				return modelValue;
+				var v = value + (showTimepicker === false ? ' 00:00:00.000' : '');
+				return $filter('ngcDateModel')(v, modelType);
 			}
 
 			function modelDateToViewDate(value) {
-				if (!value) return null;
-				var dateTimeParts = value.split("T");
-				var dateParts = dateTimeParts[0].split('-');
-				var timeMillisecondParts = dateTimeParts[1].split('.');
-				var timeParts = timeMillisecondParts[0].split(':');
-				var viewValue = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
-				if (showTimepicker === true) {
-					viewValue = viewValue + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
-				}
-				return viewValue;
+				return $filter('ngcDate')(value);
 			}
 
 			if (attrs['ngcDatepickerShowTimepicker']) {
@@ -338,7 +328,14 @@ application.directive('ngcDatepicker', function ($timeout) {
             		showTimepicker = attrs.ngcDatepickerShowTimepicker === 'true' ? true : false; 
         		}
         	}
-       		
+
+			if (attrs['ngcDatepickerModelType']) {
+				modelType = attrs.ngcDatepickerModelType;
+				if (modelType != 'string' && modelType != 'number') {
+					alert('Invalid value ' + modelType + ' for attribute ngc-datepicker-model-type. Allowed values are string and number');
+				}
+			}
+			
 			// View value to model value
 			ngModel.$parsers.unshift(function (viewValue) {
 				var value = null;
@@ -1468,4 +1465,90 @@ application.filter('ngcCurrency', function($filter) {
 		//$locale.NUMBER_FORMATS.GROUP_SEP = '';
 		return $filter('currency')(input, '� ');
 	}
+});
+
+
+/**
+ * Filter to return a model date as a string or number.
+ * The parameter date is a string of format: dd-MM-yyyy HH:mm:ss.SSS
+ * The parameter type can be string or number.
+ * If it is a string then format is: yyyy-MM-ddTHH:mm:ss.SSS
+ * The parameter type is required because we do not know the
+ * type in the model when the value is null. 
+ */
+application.filter('ngcDateModel', function($filter) {
+	
+	function toDateModel(date, type) {
+		var s = null;
+		var t = !type ? 'string' : type;
+		if (date != null && date != '') {
+			if (t === 'string') {
+				var dateTimeParts = date.split(' ');
+				var dateParts = dateTimeParts[0].split('-');
+				s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
+			} else if (t === 'number') {
+				var dateTimeParts = date.split(' ');
+				var dateParts = dateTimeParts[0].split('-');
+				var timeMillisecondParts = dateTimeParts[1].split('.');
+				var timeParts = timeMillisecondParts[0].split(':');
+				var d = new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+				s = d.getTime();
+			}
+		}
+		return s;
+	}
+	
+	return function(date, type) {
+		return toDateModel(date, type);
+	}
+	
+});
+
+/**
+ * Filter to return a display date in the format: dd-MM-yyyy HH:mm:ss.SSS
+ * Input can be a string or number.
+ * The string should be of format: yyyy-MM-ddTHH:mm:ss.SSS
+ */
+application.filter('ngcDate', function($filter) {
+	
+	function dateLpad(number) {
+    	var s = !number ? '' : number.toString();
+    	while (s.length < 2) {
+    		s = '0' + s;
+    	}
+        return s;
+	}
+
+	function toDisplayDate(date) {
+		var s = null;
+		if (date != null && date != '') {
+			if (date instanceof Date) {
+		        s = dateLpad(date.getDate())
+	            + '-' + dateLpad(date.getMonth() + 1)
+	            + '-' + date.getFullYear()
+	            + ' ' + dateLpad(date.getHours())
+	            + ':' + dateLpad(date.getMinutes())
+	            + ':' + dateLpad(date.getSeconds())
+	            + '.' + String((date.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
+			} else if (typeof date == 'string') {
+				if (isNaN(date)) {
+					var dateTimeParts = date.split("T");
+					var dateParts = dateTimeParts[0].split('-');
+					var timeMillisecondParts = dateTimeParts[1].split('.');
+					var timeParts = timeMillisecondParts[0].split(':');
+					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + timeParts[0] + ':' + timeParts[1] + ':' + timeParts[2] + '.' + timeMillisecondParts[1];
+				} else {
+					s = toDisplayDate(parseInt(date));
+				}
+			} else if (typeof date == 'number') {
+				s = toDisplayDate(new Date(date));
+			}
+		}
+		return s;
+	}
+	
+	return function(date) {
+		return toDisplayDate(date);
+	}
+	
 });

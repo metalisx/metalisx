@@ -1,4 +1,4 @@
-function LogsController($scope, $compile, $http, $location, $routeParams, $timeout,
+function LogsController($scope, $compile, $http, $location, $routeParams, $timeout, $filter,
 			crudService, utilsService, applicationContext) {
 
 	var logUrl = '/logs/log/';
@@ -41,8 +41,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 					{ "name": "logDate",
 						"data": "logDate", 
 						"render": function (data, type, full, meta) {
-							var logDate = data == null ? '' : $.metalisxUtils.toDisplayDate(data);
-							return logDate;
+							return $filter('ngcDate')(data);
 						}},
 					{ "name": "organization",
 						"data": "organization",
