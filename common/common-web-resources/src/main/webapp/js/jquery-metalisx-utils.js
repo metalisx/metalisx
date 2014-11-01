@@ -617,18 +617,24 @@
 
 		/**
 		 * Converts input to date.
-		 * Input can be a string.
+		 * Input can be a number or string.
 		 * The string should be in ISO date format: yyyy-MM-ddTHH:mm:ss.SSS 
 		 */
 		toDate: function(date) {
 			var s = null;
 			if (date != null) {
-				if (typeof date == 'string') {
-					var dateTimeParts = date.split("T");
-					var dateParts = dateTimeParts[0].split('-');
-					var timeMillisecondParts = dateTimeParts[1].split('.');
-					var timeParts = timeMillisecondParts[0].split(':');
-					s = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+				if (typeof date == 'number') {
+					s = new Date(date);
+				} else if (typeof date == 'string') {
+					if (isNaN(date)) {
+						var dateTimeParts = date.split("T");
+						var dateParts = dateTimeParts[0].split('-');
+						var timeMillisecondParts = dateTimeParts[1].split('.');
+						var timeParts = timeMillisecondParts[0].split(':');
+						s = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+					} else {
+						s = $.metalisxUtils.toDate(parseInt(date));
+					}
 				}
 			}
 			return s;
@@ -662,7 +668,7 @@
 
 		/**
 		 *  Converts input to the display date: dd-MM-yyyy HH:mm:ss.SSS
-		 *  Input can be an instance of Date or a string.
+		 *  Input can be an instance of Date, a number or a string.
 		 *  The string should be in ISO date format: yyyy-MM-ddTHH:mm:ss.SSS 
 		 */
 		toDisplayDate: function(date) {

@@ -22,11 +22,9 @@ application.service('utilsService', UtilsService);
  * Factory providing a central point to cache application data,
  * so this information is injectable through out the application.
  * 
- * Purpose is to limit the number of calls to the backend.
- * 
- * Property cache
- * 
- * 
+ * The purpose for this cache factory is to limit the number 
+ * of REST calls to the back-end for data which does not change 
+ * much.
  */
 function ApplicationCache($cacheFactory) {
 
@@ -40,15 +38,36 @@ function ApplicationCache($cacheFactory) {
  * Service providing the information for an application context,
  * so this information is injectable through out the application.
  * 
- * Properties contextPath
- * Set it to store a prefix for all urls at a single place.
- * 
- * Extend it with the information you require.
+ * Extend it with information you require.
  */
 function ApplicationContext($cacheFactory) {
-	
+
+	/**
+	 * Set it to store a prefix for all urls at a single place.
+	 * This is only a definition and is not automatically used 
+	 * by the code, filters and directives. 
+	 */
 	this.contextPath = '';
 
+	/**
+	 * Definition for the model type of a date at a single place.
+	 * Valid values are string and number
+	 * If the value is string then the format of a date in 
+	 * the model is yyyy-MM-ddTHH:mm:ss.SSS.
+	 * If the value is number then the value is the number of 
+	 * milliseconds since 1970/01/01.
+	 * 
+	 * This is only a definition and is not automatically used 
+	 * by the code, filters and directives. Use it to set the 
+	 * parameter type in the filter ngcDateModel so switching 
+	 * the type is easy from this point.
+	 * 
+	 * The REST endpoint on the server should return the dates in 
+	 * the specified type and the client should send dates in 
+	 * the specified type.
+	 */
+	this.dateModelType = 'string';
+	
 }
 
 function BrowserUrlService($rootScope, $location) {
@@ -1467,14 +1486,16 @@ application.filter('ngcCurrency', function($filter) {
 	}
 });
 
-
 /**
  * Filter to return a model date as a string or number.
- * The parameter date is a string of format: dd-MM-yyyy HH:mm:ss.SSS
+ * The parameter date can be a string or number.
+ * If the parameter date is a string the format should
+ * be: dd-MM-yyyy HH:mm:ss.SSS
  * The parameter type can be string or number.
- * If it is a string then format is: yyyy-MM-ddTHH:mm:ss.SSS
+ * If the parameter type is a string then the model date 
+ * is in the format: yyyy-MM-ddTHH:mm:ss.SSS
  * The parameter type is required because we do not know the
- * type in the model when the value is null. 
+ * type in the model when the model value is initial null. 
  */
 application.filter('ngcDateModel', function($filter) {
 	
@@ -1483,16 +1504,26 @@ application.filter('ngcDateModel', function($filter) {
 		var t = !type ? 'string' : type;
 		if (date != null && date != '') {
 			if (t === 'string') {
-				var dateTimeParts = date.split(' ');
-				var dateParts = dateTimeParts[0].split('-');
-				s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
+				if (isNaN(date)) {
+					var dateTimeParts = date.split(' ');
+					var dateParts = dateTimeParts[0].split('-');
+					s = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T' + dateTimeParts[1];
+				} else { // failsafe to handle a number if the type is defined as string
+					var d = new Date(parseInt(date));
+					s = d.getTime();
+				}
 			} else if (t === 'number') {
-				var dateTimeParts = date.split(' ');
-				var dateParts = dateTimeParts[0].split('-');
-				var timeMillisecondParts = dateTimeParts[1].split('.');
-				var timeParts = timeMillisecondParts[0].split(':');
-				var d = new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
-				s = d.getTime();
+				if (isNaN(date)) { // failsafe to handle a string if the type is defined as number.
+					var dateTimeParts = date.split(' ');
+					var dateParts = dateTimeParts[0].split('-');
+					var timeMillisecondParts = dateTimeParts[1].split('.');
+					var timeParts = timeMillisecondParts[0].split(':');
+					var d = new Date(dateParts[2], dateParts[1]-1, dateParts[0], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
+					s = d.getTime();
+				} else {
+					var d = new Date(parseInt(date));
+					s = d.getTime();
+				}
 			}
 		}
 		return s;
@@ -1505,9 +1536,11 @@ application.filter('ngcDateModel', function($filter) {
 });
 
 /**
- * Filter to return a display date in the format: dd-MM-yyyy HH:mm:ss.SSS
- * Input can be a string or number.
- * The string should be of format: yyyy-MM-ddTHH:mm:ss.SSS
+ * Filter to return a display date in the 
+ * format: dd-MM-yyyy HH:mm:ss.SSS
+ * The parameter date can be a string or number.
+ * If the parameter date is a string the format 
+ * should be: yyyy-MM-ddTHH:mm:ss.SSS
  */
 application.filter('ngcDate', function($filter) {
 	

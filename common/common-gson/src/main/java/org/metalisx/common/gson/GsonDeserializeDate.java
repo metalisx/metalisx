@@ -19,6 +19,8 @@ import com.google.gson.JsonParseException;
  * This adapter handles multiple date formats as input. The adapter also needs
  * to process dates with an empty string as value because the default adapter
  * can only process null values and not empty string values.
+ * 
+ * @author Stefan.Oude.Nijhuis
  */
 public class GsonDeserializeDate implements JsonDeserializer<Date> {
 

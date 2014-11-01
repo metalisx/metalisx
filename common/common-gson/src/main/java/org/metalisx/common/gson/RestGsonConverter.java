@@ -9,6 +9,13 @@ import javax.inject.Named;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Converter to serialize and deserialize Java objects to and from JSON objects.
+ * It uses GSON for the convertion with extra serialize and deserialize
+ * functionality for date and byte[]/base64 conversion.
+ * 
+ * @author Stefan.Oude.Nijhuis
+ */
 @Named
 public class RestGsonConverter {
 

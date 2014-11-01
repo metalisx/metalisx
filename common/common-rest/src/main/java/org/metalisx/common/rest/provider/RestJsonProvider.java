@@ -20,6 +20,15 @@ import javax.ws.rs.ext.Provider;
 
 import org.metalisx.common.gson.RestGsonConverter;
 
+/**
+ * Custom JAX-RS provider to serialize and deserialize Java objects to and from
+ * JSON objects.
+ * 
+ * It uses the {@link RestGsonConverter} to do the serialization and
+ * deserialization by GSON.
+ * 
+ * @author Stefan.Oude.Nijhuis
+ */
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

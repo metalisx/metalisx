@@ -12,8 +12,10 @@ import com.google.gson.JsonParseException;
 /**
  * {@link JsonDeserializer} adapter for handling a JSON base64 string.
  * 
- * This adapter handles base64 input and converts it to a byte[] for
- * use in the JPA persistence.
+ * This adapter handles base64 input and converts it to a byte[] for use in JPA
+ * persistence objects.
+ * 
+ * @author Stefan.Oude.Nijhuis
  */
 public class GsonDeserializeBase64ToByteArray implements JsonDeserializer<byte[]> {
 

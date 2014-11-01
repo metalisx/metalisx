@@ -133,21 +133,8 @@
 		function getDate(value) {
 			if (value == null || value == '') return null;
 			if (value instanceof Date) return value;
-			var date = null;
-			if (typeof value === 'number') {
-				date = new Date(value);
-			} else if (typeof value === 'string') { 
-				// Expecting a ISO date as string, example 2012-09-15-2012T13:42:33.543
-				// Because IE 8 and lower can not parse a ISO date string we need to split the 
-				// string into parts to construct the date. Note: month in a Date starts at 0. 
-				// No safety checks as the date should be provided correctly.
-				var dateTimeParts = value.split("T");
-				var dateParts = dateTimeParts[0].split('-');
-				var timeMillisecondParts = dateTimeParts[1].split('.');
-				var timeParts = timeMillisecondParts[0].split(':');
-				date = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2], timeMillisecondParts[1]);
-			}
-			if (!(date instanceof Date)) {
+			var date = $.metalisxUtils.toDate(value);
+			if (date == null) {
 				console.log('metalisxTimeLineChart() -> Not an instance of Date and not parsable to a date ' + getX(index, item));
 			}
 			return date;
