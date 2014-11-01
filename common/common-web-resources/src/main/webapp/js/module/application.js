@@ -18,6 +18,10 @@ application.service('browserUrlService', BrowserUrlService);
 
 application.service('utilsService', UtilsService);
 
+application.run(function($rootScope, applicationContext) {
+    $rootScope.applicationContext = applicationContext;
+})
+
 /* 
  * Factory providing a central point to cache application data,
  * so this information is injectable through out the application.

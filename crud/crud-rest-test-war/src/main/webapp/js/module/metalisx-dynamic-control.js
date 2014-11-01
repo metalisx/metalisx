@@ -62,7 +62,6 @@ application.directive('dynamicControl', function(dynamicControlTemplateSelector,
 		},
 		transclude: true,
         link:function (scope, element, attrs) {
-        	scope.applicationContext = applicationContext;
         	var html = dynamicControlTemplateSelector.getTemplateByField(scope.ngcField);
         	templateCompile.compile(html, element, scope);
         }

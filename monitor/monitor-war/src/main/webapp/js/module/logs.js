@@ -7,8 +7,6 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 
 	var dateModelType = applicationContext.dateModelType;
 
-	$scope.applicationContext = applicationContext;
-
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;
 	

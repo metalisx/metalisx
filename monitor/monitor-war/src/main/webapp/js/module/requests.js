@@ -4,8 +4,6 @@ function RequestsController($scope, $compile, $http, $location, $routeParams, $t
 	var requestUrl = '/requests/request/';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/requests';
 
-	$scope.applicationContext = applicationContext;
-	
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;
 	
