@@ -5,7 +5,9 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 	var logsUrl = 'index.html#/logs?showList=true&immediate=true';
 	var logJsonEndpoint = applicationContext.contextPath + '/rest/logs';
 
-	$scope.dateModelType = applicationContext.dateModelType;
+	var dateModelType = applicationContext.dateModelType;
+
+	$scope.applicationContext = applicationContext;
 
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;
@@ -292,8 +294,8 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 				onsuccess: function(plot, chartData) {
 					plot.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
 					plot.getPlaceholder().on("plotselected", function (event, ranges) {
-						$scope.dataTableFilter.startDate = $filter('ngcDateModel')(ranges.xaxis.from, $scope.dateModelType);
-						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, $scope.dateModelType);
+						$scope.dataTableFilter.startDate = $filter('ngcDateModel')(ranges.xaxis.from, dateModelType);
+						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, dateModelType);
 						$scope.dataTableFilter.range = 'custom';
 						$scope.dataTableFilter.realtime = false;
 						$location.search($scope.dataTableFilter);
@@ -338,8 +340,8 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 		        onsuccess: function(overview, overviewData) {
 					overview.getPlaceholder().off("plotselected"); // clean up an eventual previous set event
 					overview.getPlaceholder().on("plotselected", function (event, ranges) {
-						$scope.dataTableFilter.startDate = $filter('ngcDateModel')(ranges.xaxis.from, $scope.dateModelType);
-						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, $scope.dateModelType);
+						$scope.dataTableFilter.startDate = $filter('ngcDateModel')(ranges.xaxis.from, dateModelType);
+						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, dateModelType);
 						$scope.dataTableFilter.range = 'custom';
 						$scope.dataTableFilter.realtime = false;
 						$location.search($scope.dataTableFilter);

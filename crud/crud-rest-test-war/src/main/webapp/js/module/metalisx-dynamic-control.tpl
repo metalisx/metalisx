@@ -41,7 +41,8 @@
 </script>
 <script type="text/ng-template" id="dynamic-control-date-input.html">
 	<input id="{{ngcField.name}}" type="text" class="form-control" ng-model="ngcEntity.item[ngcField.name]" ng-disabled="ngcField.isPrimaryKey" 
-		ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
+		ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-datepicker-model-type="{{applicationContext.dateModelType}}"
+		ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
 </script>
 <script type="text/ng-template" id="dynamic-control-textarea.html">
 	<textarea id="{{ngcField.name}}" type="text" class="form-control" ng-model="ngcEntity.item[ngcField.name]" ng-disabled="ngcField.isPrimaryKey" 

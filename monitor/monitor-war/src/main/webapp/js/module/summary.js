@@ -4,7 +4,7 @@ function SummaryController($scope, $compile, $http, $location, $routeParams, $ti
 	var logsUrl = 'index.html#/logs?showList=false&showChart=true&immediate=true';
 	var requestJsonEndpoint = applicationContext.contextPath + '/rest/summary';
 
-	$scope.dateModelType = applicationContext.dateModelType;
+	$scope.applicationContext = applicationContext;
 
 	$scope.dataTableEnabled = false;
 	$scope.dataTableSettings = null;

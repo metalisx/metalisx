@@ -33,7 +33,7 @@
 				<label id="startDateLabel" class="col-sm-4 control-label" for="startDate">Start date</label>
 				<div class="col-sm-8">
 			  		<input id="startDate" class="form-control" type="text" ng-model="dataTableFilter.startDate" ng-disabled="dataTableFilter.range != 'custom'" 
-			  			ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-datepicker-model-type="{{dateModelType}}"></input>
+			  			ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-datepicker-model-type="{{applicationContext.dateModelType}}"></input>
 				</div>
 			</div>
 			
@@ -41,7 +41,7 @@
 				<label id="endDateLabel" class="col-sm-4 control-label" for="endDate">End date</label>
 				<div class="col-sm-8">
 			  		<input id="endDate" class="form-control" type="text" ng-model="dataTableFilter.endDate" ng-disabled="dataTableFilter.range != 'custom'" 
-			  			ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-datepicker-model-type="{{dateModelType}}"></input>
+			  			ngc-datepicker ngc-datepicker-show-timepicker="true" ngc-datepicker-model-type="{{applicationContext.dateModelType}}"></input>
 			  	</div>
 			</div>
 
