@@ -44,8 +44,16 @@ function ApplicationCache($cacheFactory) {
  * 
  * Extend it with information you require.
  */
-function ApplicationContext($cacheFactory) {
+function ApplicationContext($cacheFactory, $locale) {
 
+	/**
+	 * Locale is hardcoded set to euro, overruling the
+	 * locale in the browser.
+	 */
+	$locale.NUMBER_FORMATS.CURRENCY_SYM = '&euro; ';
+	$locale.NUMBER_FORMATS.DECIMAL_SEP = ',';
+	$locale.NUMBER_FORMATS.GROUP_SEP = '';
+	
 	/**
 	 * Set it to store a prefix for all urls at a single place.
 	 * This is only a definition and is not automatically used 
@@ -1432,10 +1440,15 @@ application.directive('ngcDatefilter', function() {
 /**
  * Directive for formating a currency model value to a view value and back
  * to the model value. Both values should be strings.
+ * If the $locale.NUMBER_FORMATS.DECIMAL_SEP is a comma the dot in a model
+ * value is translated to a comma before returning it as a view value.
+ * And if the view value contains a comma it is replaced by a dot before
+ * storing it in the model
  * 
- * The view value will be outlined with zeros to two decimals. 
+ * The view value will be outlined with zeros to two decimals without
+ * a currency symbol. 
  */
-application.directive('ngcCurrency', function($filter) {
+application.directive('ngcCurrency', function($filter, $locale) {
 	return {
 		restrict: 'A',
 		require: 'ngModel',
@@ -1446,7 +1459,11 @@ application.directive('ngcCurrency', function($filter) {
 				var value = null;
 				if (data != null) {
 	    			if (typeof data === 'string' && data !== '') {
-	    				value = parseFloat(data, 10);
+	    				var v = data;
+						if ($locale.NUMBER_FORMATS.DECIMAL_SEP == ',') {
+							v = data.replace(',', '.');
+						}
+	    				value = parseFloat(v, 10);
 	    			} else if (typeof data === 'number') {
 	    				value = data;
 	    			}
@@ -1458,7 +1475,11 @@ application.directive('ngcCurrency', function($filter) {
 			ngModel.$formatters.push(function(data) {
 				var value = null;
 				if (data != null) {
-					value = $filter('currency')(data, '');
+					var v = data + '';
+					if ($locale.NUMBER_FORMATS.DECIMAL_SEP == ',') {
+						v.replace('.', ',');
+					}
+					value = $filter('ngcCurrency')(v, '');
 				}
 				return value;
 			});
@@ -1477,16 +1498,22 @@ application.filter('startFrom', function() {
 });
 
 /**
- * Filter to return the currency with the euro sign.
- * Note &euro; is not working so the �-sign is used,
- * this will require a correct character set.
+ * Filter to return the currency.
+ * Used as a single point for currency handling so it 
+ * can be modified without much hassle.
+ * 
+ * Some times the currency is shown as &euro; instead
+ * of the euro sign. This can be resolved by using 
+ * the filter in the ng-bind-html attribute.
+ * 
+ * Angular sanitize is used to make the resulting HTML
+ * trusted, otherwise in some cases thrust errors 
+ * are thrown in the console. 
  */
-application.filter('ngcCurrency', function($filter) {
-	return function(input) {
-		//$locale.NUMBER_FORMATS.CURRENCY_SYM = '&euro;';
-		//$locale.NUMBER_FORMATS.DECIMAL_SEP = ',';
-		//$locale.NUMBER_FORMATS.GROUP_SEP = '';
-		return $filter('currency')(input, '� ');
+application.filter('ngcCurrency', function($filter, $sce) {
+	return function(input, type) {
+		var t = (type === 'undefined') ? '' : type;
+		return $sce.trustAsHtml($filter('currency')(input, t));
 	}
 });
 
