@@ -91,8 +91,12 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 			$scope.dataTableFilterInitial = result.item;
 			$.extend(true, $scope.dataTableFilter, $scope.dataTableFilterInitial);
 			initDataTableFilter();
-			$scope.dataTableEnabled = true;
-			$scope.flotEnabled = true;
+			if ($scope.dataTableFilter.showList) {
+				$scope.dataTableEnabled = true;
+			}
+			if ($scope.dataTableFilter.showChart) {
+				$scope.flotEnabled = true;
+			}
 			$scope.$apply();
 		}});
 	}
