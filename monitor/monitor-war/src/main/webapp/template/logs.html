@@ -5,7 +5,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showList" type="checkbox" 
-							ng-model="dataTableFilter.showList" ng-click="updateLocationSearch($event)"/>
+							ng-model="dataTableFilter.showList" ng-change="updateLocationSearch()"/>
 						Show list
 					</label>
 				</div>
@@ -15,7 +15,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showChart" type="checkbox" 
-							ng-model="dataTableFilter.showChart" ng-click="updateLocationSearch($event)"/>
+							ng-model="dataTableFilter.showChart" ng-change="updateLocationSearch()"/>
 						Show chart
 					</label>
 				</div>
@@ -25,7 +25,7 @@
 				<div class="checkbox">
 					<label>
 						<input id="showOverviewChart" type="checkbox" 
-							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-click="updateLocationSearch($event)"></input>
+							ng-model="dataTableFilter.showOverviewChart" ng-disabled="dataTableFilter.showChart == false" ng-change="updateLocationSearch()"></input>
 						Show chart overview
 					</label>
 				</div>

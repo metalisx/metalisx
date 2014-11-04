@@ -120,7 +120,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 		}
 	};
 
-	$scope.updateLocationSearch = function($event) {
+	$scope.updateLocationSearch = function() {
 		$location.search($scope.dataTableFilter);
 	};
 	
