@@ -49,9 +49,9 @@
 		ngc-ckeditor ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
 </script>
 <script type="text/ng-template" id="dynamic-control-file.html">
-	<a  class="control-label" style="float:left; margin-right:15px;" title="download"
+ 	<a  class="control-label" style="float:left; margin-right:15px;" title="download"
 		ng-repeat="field in ngcEntity.metadata.fields | primary:true" ng-show="ngcEntity.item[field.name] != null"
-		ng-href="{{applicationContext.contextPath}}/rest/crud/{{ngcEntity.metadata.entityClass}}/download/{{ngcField.name}}/{{ngcEntity.item[field.name]}}">
+		ng-href="{{$root.applicationContext.contextPath}}/rest/crud/{{ngcEntity.metadata.entityClass}}/download/{{ngcField.name}}/{{ngcEntity.item[field.name]}}">
 		<span class="glyphicon glyphicon-floppy-save"></span>
 	</a>
 	<input style="float:left" id="{{ngcField.name}}" type="file" class="control-label" ng-disabled="ngcField.isPrimaryKey"
