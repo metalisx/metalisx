@@ -99,8 +99,7 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 	
 	$scope.$on('$routeUpdate', function(next, current) {
 		initDataTableFilter();
-		$scope.refreshDataTable();
-		$scope.refreshChart();
+		$scope.refresh();
 	});
 	
 	// Actions
@@ -296,12 +295,12 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, dateModelType);
 						$scope.dataTableFilter.range = 'custom';
 						$scope.dataTableFilter.realtime = false;
+						// Update the location search part, this will trigger a chart and dataTable refresh.
 						$location.search($scope.dataTableFilter);
-						// Refresh chart and dataTable
-						$scope.refresh();
 						// Remove timer
 						$scope.removeRealtimeUpdateTimer();
 		        		plot.clearSelection();
+		        		$scope.$apply();
 					});
 				}
 			};
@@ -342,12 +341,12 @@ function LogsController($scope, $compile, $http, $location, $routeParams, $timeo
 						$scope.dataTableFilter.endDate = $filter('ngcDateModel')(ranges.xaxis.to, dateModelType);
 						$scope.dataTableFilter.range = 'custom';
 						$scope.dataTableFilter.realtime = false;
+						// Update the location search part, this will trigger a chart and dataTable refresh.
 						$location.search($scope.dataTableFilter);
-						// Refresh chart and dataTable
-						$scope.refresh();
 						// Remove timer
 						$scope.removeRealtimeUpdateTimer();
 						overview.clearSelection();
+						$scope.$apply();
 					});
 				}
 			};
