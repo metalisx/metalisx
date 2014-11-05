@@ -13,16 +13,15 @@ function CrudColumnValueFormatter($filter) {
 
 application.service('crudCacheService', CrudCacheService);
 
-function CrudCacheService(crudService, applicationCache, applicationContext) {
+function CrudCacheService(crudService, applicationCache, applicationContext, translationService) {
 
 	var crudJsonEndpoint = '../rest/crud'
 
-//	var entitieTitles = [
-//	                   {'org.metalisx.crud.domain.model.User': 'Users'},
-//	                   {'org.metalisx.crud.domain.model.Company': 'Companies'}
-//	                   ];
-
-		
+	// Store translation mappings of readable names for the class names.
+	translationService.put({'code':'org.metalisx.crud.domain.model.Test', 'text':'Test'});
+	translationService.put({'code':'org.metalisx.crud.domain.model.TestDocument', 'text':'Test document'});
+	translationService.put({'code':'org.metalisx.crud.domain.model.TestTextarea', 'text':'Test textarea'});
+	
 	this.load = function($scope, onsuccess) {
 		if (applicationCache.get('entitiesMetadata') === undefined) {
 			crudService.metadata(crudJsonEndpoint, {onsuccess: function(result) {

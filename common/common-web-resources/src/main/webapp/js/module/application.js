@@ -1616,3 +1616,72 @@ application.filter('ngcDate', function($filter) {
 	}
 	
 });
+
+//////////////////////////////////////////////////////////
+// Basic supoort for translating a technical code to a  //
+// human readable string.                               //
+//////////////////////////////////////////////////////////
+
+application.factory('translationCache', TranslationCache);
+application.service('translationService', TranslationService);
+
+/**
+ * Service for adding translations to the translationCache.
+ */
+function TranslationService($cacheFactory, translationCache) {
+
+	this.put = function(translation) {
+		translationCache.put(translation.code, translation);
+	}
+	
+	this.get = function(code) {
+		return translationCache.get(code);
+	}
+	
+}
+
+/**
+ * Factory providing a central point to cache translation data,
+ * so this information is injectable through out the application.
+ */
+function TranslationCache($cacheFactory) {
+
+	var cacheName = 'translationCache';
+	
+	return $cacheFactory(cacheName);
+
+}
+
+/**
+ * Filter for translating a code to a human readable 
+ * text with support for parameters.
+ * If there is not a translation found for the code,
+ * then the code is returned.
+ * 
+ * Prior to the use of this filter all translations should
+ * be registerd by the translationService with:
+ *  translationService.put({'code':'myCode','text':'myText'}).
+ *  
+ * Example with no parameters:
+ * {{myCode | ngcTranslate}}
+ * 
+ * Example with to parameters in the text: 
+ * {{myCode | ngcTranslate:({"par1":"a", "par2":"b"})}}
+ */
+application.filter('ngcTranslate', function(translationService, $interpolate) {
+
+	return function(code, parameters) {
+		var text = '';
+		var translation = translationService.get(code);
+		if (translation == null) {
+			text = code;
+		} else {
+			var text = translationService.get(code).text;
+			if (parameters !== undefined && parameters != null) {
+				text = $interpolate(text)(parameters);
+			}
+		}
+		return text;
+	}
+	
+});

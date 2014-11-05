@@ -13,7 +13,7 @@
 			<ul class="nav navbar-nav">
 				<li ng-repeat="entityMetadata in $parent.$parent.entitiesMetadata"
 					id="navbarItem{{entityMetadata.entityClass}}">
-						<a href="index.html#/crud-list/{{entityMetadata.entityClass}}">{{entityMetadata.entityClass}}</a>
+						<a href="index.html#/crud-list/{{entityMetadata.entityClass}}">{{entityMetadata.entityClass | ngcTranslate}}</a>
 				</li>
 			</ul>
 		</div>
