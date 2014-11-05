@@ -17,11 +17,6 @@ function CrudCacheService(crudService, applicationCache, applicationContext, tra
 
 	var crudJsonEndpoint = '../rest/crud'
 
-	// Store translation mappings of readable names for the class names.
-	translationService.put({'code':'org.metalisx.crud.domain.model.Test', 'text':'Test'});
-	translationService.put({'code':'org.metalisx.crud.domain.model.TestDocument', 'text':'Test document'});
-	translationService.put({'code':'org.metalisx.crud.domain.model.TestTextarea', 'text':'Test textarea'});
-	
 	this.load = function($scope, onsuccess) {
 		if (applicationCache.get('entitiesMetadata') === undefined) {
 			crudService.metadata(crudJsonEndpoint, {onsuccess: function(result) {
