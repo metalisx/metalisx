@@ -15,4 +15,3 @@ application.run(function(translationService) {
 	}
 
 })
-
