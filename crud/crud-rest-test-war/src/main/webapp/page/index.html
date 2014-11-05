@@ -24,7 +24,6 @@
 	<script src="../js/ckeditor/adapters/jquery.js" type="text/javascript"></script>
 
 	<script src="../js/module/application.js" type="text/javascript"></script>
-	<script src="../js/module/translations.js" type="text/javascript"></script>
 	<script src="../js/module/navbar.js" type="text/javascript"></script>
 	<script src="../js/module/crud-list.js" type="text/javascript"></script>
 	<script src="../js/module/crud-detail.js" type="text/javascript"></script>
@@ -35,8 +34,12 @@
 	<script>
 	(function($){
 		$.contextPath = '/crud-test';
-		application.run(function(applicationContext) {
+		application.run(function(applicationContext, ngcMessagesService) {
 			applicationContext.contextPath = $.contextPath;
+
+			// Initialize a translation mapping
+			var messagesUrl = applicationContext.contextPath + '/languages/messages.txt'
+			ngcMessagesService.load(messagesUrl);
 		});
 		$.ajaxSetup({cache: false});
 	}) (jQuery);

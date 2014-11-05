@@ -1,4 +1,4 @@
-var application = angular.module('application', ['ngRoute', 'ngCookies']);
+var application = angular.module('application', ['ngRoute', 'ngCookies', 'ngcMessages']);
 
 application.factory('applicationCache', ApplicationCache);
 
@@ -1617,71 +1617,120 @@ application.filter('ngcDate', function($filter) {
 	
 });
 
-//////////////////////////////////////////////////////////
-// Basic supoort for translating a technical code to a  //
-// human readable string.                               //
-//////////////////////////////////////////////////////////
-
-application.factory('translationCache', TranslationCache);
-application.service('translationService', TranslationService);
-
 /**
- * Service for adding translations to the translationCache.
+ * AngularJS module with basic support for translating a technical code to a
+ * human readable string.
  */
-function TranslationService($cacheFactory, translationCache) {
-
-	this.put = function(translation) {
-		translationCache.put(translation.code, translation);
-	}
+(function(angular) {
 	
-	this.get = function(code) {
-		return translationCache.get(code);
-	}
+	'use strict';
+
+	var ngcMessages = angular.module('ngcMessages', []);
 	
-}
-
-/**
- * Factory providing a central point to cache translation data,
- * so this information is injectable through out the application.
- */
-function TranslationCache($cacheFactory) {
-
-	var cacheName = 'translationCache';
+	/**
+	* Factory providing a central point to ngcMessagesCache cache 
+	* of message data, so this information is injectable through 
+	* out the application.
+	*/
+	ngcMessages.factory('ngcMessagesCache', function NgcMessagesCache($cacheFactory) {
 	
-	return $cacheFactory(cacheName);
+		var cacheName = 'ngcMessagesCache';
+		
+		return $cacheFactory(cacheName);
+	
+	});
+	
+	/**
+	* Service for putting messages into the ngcMessagesCache and getting
+	* a message.
+	* 
+	* Place the message into the cache by calling the load or put method.
+	* 
+	* The load method can be called with a URL. The URL should point to a
+	* text file with entries containing a code and a text. The code
+	* is the string prior to the first space and the text is the string
+	* after the first space. Lines prefixed with a #-sign are comments
+	* and are ignored.
+	* Example of such a file:
+	* #some comment
+	* myCode1 Text 1
+	* myCode2 Text 2
+	* 
+	* The put method can be called with an arry of objects or an object. 
+	* The object needs to contain a property code
+	* without spaces with the technical code to identify the text and a 
+	* property text with the human readable text.  
+	* Example array: ngcMessagesService.put([
+	*                   {'code':'myCode1', 'text':'Text 1'},
+	*                   {'code':'myCode2', 'text':'Text 2'}
+	*                  ]);
+	* Example object: ngcMessagesService.put({'code':'myCode1', 'text':'Text 1'});
+	* 
+	*/
+	ngcMessages.service('ngcMessagesService', function NgcMessagesService($cacheFactory, $http, ngcMessagesCache) {
 
-}
+		this.load = function(url) {
+			if (url != null) {
+				$http.get(url).success(function(data) {
+					var lines = data.split('\n');
+				    for(var line = 0; line < lines.length; line++){
+				    	var pos = lines[line].indexOf(' ');
+				    	var code = lines[line].substr(0, pos);
+				    	var text = lines[line].substr(pos + 1);
+				    	ngcMessagesCache.put(code, {'code': code, 'text': text});
+				    }
+				});
+			}
+		}
+		
+		this.put = function(t) {
+			if (t instanceof Array) {
+				for (var i = 0; i < t.length; i++) {
+					ngcMessagesCache.put(t[i].code, t[i]);
+				}
+			} else {
+				ngcMessagesCache.put(t.code, t);
+			}
+		}
+		
+		this.get = function(code) {
+			return ngcMessagesCache.get(code);
+		}
 
-/**
- * Filter for translating a code to a human readable 
- * text with support for parameters.
- * If there is not a translation found for the code,
- * then the code is returned.
- * 
- * Prior to the use of this filter all translations should
- * be registerd by the translationService with:
- *  translationService.put({'code':'myCode','text':'myText'}).
- *  
- * Example with no parameters:
- * {{myCode | ngcTranslate}}
- * 
- * Example with to parameters in the text: 
- * {{myCode | ngcTranslate:({"par1":"a", "par2":"b"})}}
- */
-application.filter('ngcTranslate', function(translationService, $interpolate) {
-
-	return function(code, parameters) {
-		var text = '';
-		var translation = translationService.get(code);
-		if (translation == null) {
-			text = code;
-		} else {
-			var text = translationService.get(code).text;
+	});
+	
+	/**
+	* Filter for translating a code to a human readable 
+	* text with support for parameters.
+	* If there is not a message found for the code,
+	* then the code is returned.
+	* 
+	* Prior to the use of this filter all messages should
+	* be registerd by the ngcMessagesService with:
+	*  ngcMessagesService.put({'code':'myCode','text':'myText'}).
+	*  
+	* Example with no parameters:
+	* {{myCode | ngcMessage}}
+	* 
+	* Example with to parameters in the text: 
+	* {{myCode | ngcMessage:({"par1":"a", "par2":"b"})}}
+	*/
+	ngcMessages.filter('ngcMessage', function(ngcMessagesService, $interpolate) {
+	
+		return function(code, parameters) {
+			var text = '';
+			var message = ngcMessagesService.get(code);
+			if (message == null) {
+				text = code;
+			} else {
+				var text = ngcMessagesService.get(code).text;
+			}
 			if (parameters !== undefined && parameters != null) {
 				text = $interpolate(text)(parameters);
 			}
+			return text;
 		}
-		return text;
-	}
-	
-});
+		
+	});
+
+})(window.angular);

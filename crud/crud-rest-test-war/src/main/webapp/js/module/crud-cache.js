@@ -13,7 +13,7 @@ function CrudColumnValueFormatter($filter) {
 
 application.service('crudCacheService', CrudCacheService);
 
-function CrudCacheService(crudService, applicationCache, applicationContext, translationService) {
+function CrudCacheService(crudService, applicationCache, applicationContext) {
 
 	var crudJsonEndpoint = '../rest/crud'
 
