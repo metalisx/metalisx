@@ -4,9 +4,15 @@
  */
 application.run(function(translationService) {
 
-	translationService.put({'code':'org.metalisx.crud.domain.model.Test', 'text':'Test'});
-	translationService.put({'code':'org.metalisx.crud.domain.model.TestDocument', 'text':'Test document'});
-	translationService.put({'code':'org.metalisx.crud.domain.model.TestTextarea', 'text':'Test textarea'});
+	var translations = [
+	                    {'code':'org.metalisx.crud.domain.model.Test', 'text':'Test'},
+	                    {'code':'org.metalisx.crud.domain.model.TestDocument', 'text':'Test document'},
+	                    {'code':'org.metalisx.crud.domain.model.TestTextarea', 'text':'Test textarea'}
+	                   ];
+	
+	for (var i=0; i<translations.length; i++) {
+		translationService.put(translations[i]);
+	}
 
 })
 
