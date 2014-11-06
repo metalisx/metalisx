@@ -38,8 +38,12 @@
 			applicationContext.contextPath = $.contextPath;
 
 			// Initialize a translation mapping
-			var messagesUrl = applicationContext.contextPath + '/languages/messages.txt'
+			var messagesUrl = applicationContext.contextPath + '/messages/messages_en-us.txt'
 			ngcMessagesService.load(messagesUrl);
+			// Set the language for the message service hard coded instead of 
+			// the using the $locale.id
+			ngcMessagesService.setLanguage('en-us');
+
 		});
 		$.ajaxSetup({cache: false});
 	}) (jQuery);

@@ -1641,60 +1641,244 @@ application.filter('ngcDate', function($filter) {
 	});
 	
 	/**
-	* Service for putting messages into the ngcMessagesCache and getting
-	* a message.
+	* Service for putting messages into the messages cache ngcMessagesCache
+	* and getting a message from the cache.
 	* 
-	* Place the message into the cache by calling the load or put method.
+	* Place the message into the cache by calling the load or put methode.
+	* Retrieve a message by calling the get methode.
 	* 
-	* The load method can be called with a URL. The URL should point to a
+	* The load methode can be called with a URL. The URL should point to a
 	* text file with entries containing a code and a text. The code
 	* is the string prior to the first space and the text is the string
 	* after the first space. Lines prefixed with a #-sign are comments
-	* and are ignored.
-	* Example of such a file:
+	* and are ignored. The filename should contain the language.
+	* When the optional parameter onsuccess is set it will be called
+	* when the loading is successfully finished. 
+	* Example call: 
+	*  ngcMessagesService.load('http://myhost/messages_nl.txt')
+	*  ngcMessagesService.load('http://myhost/messages_en-us.txt')
+	* Example call with onsuccess: 
+	*  ngcMessagesService.load('http://myhost/messages_nl.txt', fucntion(language, messages) {
+	*    // do something
+	*  });
+	* Example of the content in a file:
 	* #some comment
 	* myCode1 Text 1
 	* myCode2 Text 2
 	* 
-	* The put method can be called with an arry of objects or an object. 
-	* The object needs to contain a property code
-	* without spaces with the technical code to identify the text and a 
-	* property text with the human readable text.  
-	* Example array: ngcMessagesService.put([
-	*                   {'code':'myCode1', 'text':'Text 1'},
-	*                   {'code':'myCode2', 'text':'Text 2'}
-	*                  ]);
-	* Example object: ngcMessagesService.put({'code':'myCode1', 'text':'Text 1'});
+	* The put methode can be called with an object for adding
+	* multiple messages or with parameters to add a single message. 
+	* For adding multiple messages the put methode should be called with
+	* an object. This object should contain a property language 
+	* and messages. The property language is a string and the 
+	* property messages is an array of message objects. The message 
+	* object should contain a property code and a property text.
+	* Example multi messages: ngcMessagesService.put({
+	*				'language': 'en-us', 
+	*				'messages': [
+	*								{'code': 'myCode1', 'text': 'Text 1'},
+	*								{'code': 'myCode2', 'text': 'Text 2'}
+	*							]
+	*			});
+	* For adding a single message the put methode should be called with the 
+	* language, code and text.
+	* Example single message: ngcMessagesService.put('en-us', 'myCode1', 'Text 1'); 
 	* 
+	* The get methode can be called with the code of the message and
+	* will return the corresponding text. 
 	*/
-	ngcMessages.service('ngcMessagesService', function NgcMessagesService($cacheFactory, $http, ngcMessagesCache) {
+	ngcMessages.service('ngcMessagesService', function NgcMessagesService(
+			$cacheFactory, $http, $locale, $interpolate, ngcMessagesCache) {
 
-		this.load = function(url) {
+		// Default language
+		var DEFAULT_LANGUAGE = 'default';
+		
+		// Initialize language to the language in the $locale.
+		// Override/set the language by calling the setLanguage on this service.
+		var language = $locale.id;
+		
+		/**
+		 * Method to return the language in the url. If no language is detected
+		 * the DEFAULT_LANGUAGE is returned. 
+		 * Indeed regex is not used.
+		 * Example: 
+		 * For the url http://myhost/messages_nl.txt the return value is: nl
+		 * For the url http://myhost/messages.txt the return value is: default
+		 */
+		function getLanguageFromUrl(url) {
+			var language = url;
+			var parts = null;
+			// Part without query
+			parts = language.split('?');
+			language = parts[0];
+			// Part after last slash
+			parts = language.split('/');
+			if (parts.length >= 1) {
+				language = parts[parts.length-1];
+			}
+			// Part after last backslash
+			parts = language.split('\\');
+			if (parts.length >= 1) {
+				language = parts[parts.length-1];
+			}
+			// Part before last period
+			parts = language.split('.');
+			language = parts[0];
+			// Part after last underscore
+			parts = language.split('_');
+			if (parts.length >= 2) {
+				language = parts[1];
+			} else {
+				language = DEFAULT_LANGUAGE;
+			}
+			return language;
+		}
+		
+		/**
+		 * Always returns an array from the cache.
+		 * When the language is not found in the cache 
+		 * it is added to the cache with an empty array.
+		 */
+		function getMessagesFromCache(language) {
+			var messages = ngcMessagesCache.get(language);
+			if (messages == null) {
+				ngcMessagesCache.put(language, new Array());
+				messages = ngcMessagesCache.get(language);
+			}
+			return messages;
+		}
+		
+		/**
+		 * Add messages from the array to the messages cache.
+		 */
+		function addMessagesMulti(o) {
+			if (!o.language) {
+				console.log("First parameter is an object and is missing the property language.");
+			}
+			if (!o.messages) {
+				console.log("First parameter is an object and is missing the property messages.");
+			}
+			if (!o.messages instanceof Array) {
+				console.log("First parameter is an object and the property messages is not an array.");
+			}
+			var language = o.language;
+			var messages = getMessagesFromCache();
+			var ms = o.messages;
+			for (var i = 0; i < ms.length; i++) {
+				var m = ms[i];
+				if (!m.code) {
+					console.log("Service method put requires property messages in the object of the input parameter.");
+				}
+				if (!m.text) {
+					console.log("Service method put requires property messages in the object of the input parameter.");
+				}
+				messages[m.code] = {'code': m.code, 'text': m.text};
+			}
+			ngcMessagesCache.put(language, messages);
+		}
+
+		/**
+		 * Add message to the messages cache.
+		 */
+		function addMessageSingle(language, code, text) {
+			if (language == null || language == '') {
+				console.log('Language parameter is empty.');
+			}
+			if (code == null || code == '') {
+				console.log('Code parameter is empty.');
+			}
+			if (text == null || text == '') {
+				console.log('Text parameter is empty.');
+			}
+			var messages = getMessagesFromCache(language);
+			messages[code] = {'code': code, 'text': text};
+		}
+
+		/**
+		 * Set the language for the service.
+		 * This will override the language initialization 
+		 * with the $locale.id.
+		 */
+		this.setLanguage = function(l) {
+			language = l;
+		}
+
+		/**
+		 * Load messages from an URL into the messages cache.
+		 * When the optional parameter onsuccess is set it will 
+		 * be called when the loading is successfully finished.
+		 * The onsuccess parameter is a function with parameters
+		 * language and messages. And can be ussed to do 
+		 * action after loading like adding more messages or
+		 * changing messages. 
+		 */
+		this.load = function(url, onsuccess) {
 			if (url != null) {
+				var language = getLanguageFromUrl(url);
 				$http.get(url).success(function(data) {
 					var lines = data.split('\n');
-				    for(var line = 0; line < lines.length; line++){
-				    	var pos = lines[line].indexOf(' ');
-				    	var code = lines[line].substr(0, pos);
-				    	var text = lines[line].substr(pos + 1);
-				    	ngcMessagesCache.put(code, {'code': code, 'text': text});
+					var messages = getMessagesFromCache(language);
+				    for(var i = 0; i < lines.length; i++){
+				    	var line = lines[i];
+				    	if (line.indexOf('#') != 0) {
+					    	var pos = line.indexOf(' ');
+					    	var code = line.substr(0, pos);
+					    	var text = line.substr(pos + 1);
+					    	messages[code] = {'code': code, 'text': text};
+				    	}
+				    }
+				    if (onsuccess) {
+				    	onsuccess(language, messages);
 				    }
 				});
 			}
 		}
 		
-		this.put = function(t) {
-			if (t instanceof Array) {
-				for (var i = 0; i < t.length; i++) {
-					ngcMessagesCache.put(t[i].code, t[i]);
-				}
+		/**
+		 * Add input to the messages cache.
+		 */
+		this.put = function(language, code, text) {
+			if (language instanceof Object) {
+				addMessagesMulti(language);
 			} else {
-				ngcMessagesCache.put(t.code, t);
+				addMessageSingle(language, code, text);
 			}
 		}
 		
-		this.get = function(code) {
-			return ngcMessagesCache.get(code);
+		/**
+		 * Returns the text from the message identified by the code
+		 * and the current language. If the message is not found
+		 * then the code is returned. 
+		 * The parameters is an object and boilerplates 
+		 * like {{<parameters.property>}} in the text are 
+		 * replace with the value of the parameters.property. 
+		 * Example for the use of parameters:
+		 * Given the value for parmaeters: {'name': 'myName'}
+		 * and the message text: Hello my name is {{name}}.
+		 * The return value will be: Hello my name is myName.
+		 */
+		this.get = function(code, parameters) {
+			var messages = ngcMessagesCache.get(language);
+			// If the messages can not be found with the current language
+			// then try if an entry exists with the language from
+			// the DEFAULT_LANGUAGE.
+			if (messages == null) {
+				messages = ngcMessagesCache.get(DEFAULT_LANGUAGE);
+			}
+			var message = null;
+			if (messages != undefined && messages != null) {
+				message = messages[code];
+			}
+			var text = null;
+			if (message == null) {
+				text = code;
+			} else {
+				text = message.text;
+			}
+			if (parameters !== undefined && parameters != null) {
+				text = $interpolate(text)(parameters);
+			}
+			return text;
 		}
 
 	});
@@ -1715,20 +1899,10 @@ application.filter('ngcDate', function($filter) {
 	* Example with to parameters in the text: 
 	* {{myCode | ngcMessage:({"par1":"a", "par2":"b"})}}
 	*/
-	ngcMessages.filter('ngcMessage', function(ngcMessagesService, $interpolate) {
+	ngcMessages.filter('ngcMessage', function(ngcMessagesService) {
 	
 		return function(code, parameters) {
-			var text = '';
-			var message = ngcMessagesService.get(code);
-			if (message == null) {
-				text = code;
-			} else {
-				var text = ngcMessagesService.get(code).text;
-			}
-			if (parameters !== undefined && parameters != null) {
-				text = $interpolate(text)(parameters);
-			}
-			return text;
+			return ngcMessagesService.get(code, parameters);
 		}
 		
 	});
