@@ -1,0 +1,201 @@
+<div class="row">
+	<div class="col-sm-12">
+		<h2>Testing the AngularJS language module's ngcMessagesService</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Method load</h2>
+		<p>Test if the messages are put in the messages cache from a file resource.</p>
+		<br/>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<a href="#" id="loadMessagesEnglishButton" class="btn btn-primary" ng-click="loadMessagesEnglish($event)">Load messages file english</a>
+					<a href="#" id="loadMessagesDutchButton" class="btn btn-primary" ng-click="loadMessagesDutch($event)">Load messages file dutch</a>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 1</label>
+				<div class="col-sm-8">
+					<div class="form-control-static">{{'testLabel1' | ngcMessage}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 2 with parameter</label>
+				<div class="col-sm-8">
+		 			<div class="form-control-static">{{'testLabel2' | ngcMessage:({'loadMessagesParameter': loadMessagesParameter})}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 2 parameter</label>
+				<div class="col-sm-8">
+		 			<input type="text" class="form-control" ng-model="loadMessagesParameter"/>
+				</div>
+			</div>
+	 	</div>
+	 	<p>Code for loading the english messages.</p>
+	 	<pre>
+	 		<code class="prettyprint lang-html">
+var messagesUrl = applicationContext.contextPath + '/messages/messages_en-us.txt';
+ngcMessagesService.load(messagesUrl);
+ngcMessagesService.setLanguage('en-us');
+			</code>
+		</pre>
+		</br></br>
+	 	<p>Code for loading the dutch messages.</p>
+	 	<pre>
+	 		<code class="prettyprint lang-html">
+var messagesUrl = applicationContext.contextPath + '/messages/messages_nl.txt'
+ngcMessagesService.load(messagesUrl);
+ngcMessagesService.setLanguage('nl');
+			</code>
+		</pre>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Method put :: multi messages</h2>
+		<p>Test if multiple messages are put in the messages cache by the put method.</p>
+		<br/>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<a href="#" id="putMultipleMessagesEnglishButton" class="btn btn-primary" ng-click="putMultipleMessagesEnglish($event)">Put multiple messages english</a>
+					<a href="#" id="putMultipleMessagesDutchButton" class="btn btn-primary" ng-click="putMultipleMessagesDutch($event)">Put multiple messages dutch</a>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 3</label>
+				<div class="col-sm-8">
+					<div class="form-control-static">{{'testLabel3' | ngcMessage}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 4 with parameter</label>
+				<div class="col-sm-8">
+		 			<div class="form-control-static">{{'testLabel4' | ngcMessage:({'putMultipleMessagesParameter': putMultipleMessagesParameter})}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 4 parameter</label>
+				<div class="col-sm-8">
+		 			<input type="text" class="form-control" ng-model="putMultipleMessagesParameter"/>
+				</div>
+			</div>
+	 	</div>
+	 	<p>Code for loading the english messages.</p>
+	 	<pre>
+		 	<code class="prettyprint lang-html">
+ngcMessagesService.put({
+	'language' : 'en-us',
+	'messages' : [ {
+		'code' : 'testLabel1',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel2',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel3',
+		'text' : 'Hello'
+	}, {
+		'code' : 'testLabel4',
+		'text' : 'Hello {{putMultipleMessagesParameter}}'
+	}, {
+		'code' : 'testLabel5',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel6',
+		'text' : 'Initial'
+	} ]
+});
+ngcMessagesService.setLanguage('en-us');
+			</code>
+		</pre>
+		</br></br>
+	 	<p>Code for loading the dutch messages.</p>
+	 	<pre>
+		 	<code class="prettyprint lang-html">
+ngcMessagesService.put({
+	'language' : 'nl',
+	'messages' : [ {
+		'code' : 'testLabel1',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel2',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel3',
+		'text' : 'Hallo'
+	}, {
+		'code' : 'testLabel4',
+		'text' : 'Hallo {{putMultipleMessagesParameter}}'
+	}, {
+		'code' : 'testLabel5',
+		'text' : 'Initial'
+	}, {
+		'code' : 'testLabel6',
+		'text' : 'Initial'
+	} ]
+});
+ngcMessagesService.setLanguage('nl');
+			</code>
+		</pre>
+	</div>
+	<div class="col-sm-6">
+		<h2>Method put :: single messages</h2>
+		<p>Test if single messages are put in the messages cache by the put method.</p>
+		<br/>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<a href="#" id="putSingleMessageEnglishButton" class="btn btn-primary" ng-click="putSingleMessageEnglish($event)">Put single message english</a>
+					<a href="#" id="putSingleMessageDutchButton" class="btn btn-primary" ng-click="putSingleMessageDutch($event)">Put single message dutch</a>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 5</label>
+				<div class="col-sm-8">
+					<div class="form-control-static">{{'testLabel5' | ngcMessage}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 6 with parameter</label>
+				<div class="col-sm-8">
+		 			<div class="form-control-static">{{'testLabel6' | ngcMessage:({'putSingleMessageParameter': putSingleMessageParameter})}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Label 6 parameter</label>
+				<div class="col-sm-8">
+		 			<input type="text" class="form-control" ng-model="putSingleMessageParameter"/>
+				</div>
+			</div>
+	 	</div>
+	 	<p>Code for loading the english messages.</p>
+	 	<pre>
+	 		<code class="prettyprint lang-html">
+ngcMessagesService.put('en-us', 'testLabel1', 'Initial');
+ngcMessagesService.put('en-us', 'testLabel2', 'Initial');
+ngcMessagesService.put('en-us', 'testLabel3', 'Initial');
+ngcMessagesService.put('en-us', 'testLabel4', 'Initial');
+ngcMessagesService.put('en-us', 'testLabel5', 'Hello');
+ngcMessagesService.put('en-us', 'testLabel6', 'Hello {{putSingleMessageParameter}}');
+ngcMessagesService.setLanguage('en-us');
+			</code>
+		</pre>
+		</br></br>
+	 	<p>Code for loading the dutch messages.</p>
+	 	<pre>
+	 		<code class="prettyprint lang-html">
+ngcMessagesService.put('nl', 'testLabel1', 'Initial');
+ngcMessagesService.put('nl', 'testLabel2', 'Initial');
+ngcMessagesService.put('nl', 'testLabel3', 'Initial');
+ngcMessagesService.put('nl', 'testLabel4', 'Initial');
+ngcMessagesService.put('nl', 'testLabel5', 'Hallo');
+ngcMessagesService.put('nl', 'testLabel6', 'Hallo {{putSingleMessageParameter}}');
+ngcMessagesService.setLanguage('nl');
+			</code>
+		</pre>
+	</div>
+</div>

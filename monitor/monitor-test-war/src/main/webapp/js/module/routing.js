@@ -61,6 +61,15 @@ application.config(function($routeProvider, $locationProvider) {
 		reloadOnSearch: false
 	})
 	
+	// messages module
+	
+	$routeProvider
+	.when('/messages-module', {
+		templateUrl: contextPath + '/template/messages-module.html',
+		controller: MessagesModuleController,
+		reloadOnSearch: false
+	})
+	
 	$routeProvider
 	.otherwise({
 		redirectTo: redirect

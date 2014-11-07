@@ -1,0 +1,6 @@
+testLabel1 Hallo
+testLabel2 Hallo {{loadMessagesParameter}}
+testLabel3 Initial
+testLabel4 Initial
+testLabel5 Initial
+testLabel6 Initial
