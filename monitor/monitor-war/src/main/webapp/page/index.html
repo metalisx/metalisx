@@ -66,11 +66,25 @@
 	<!-- default -->	
 	<script>
 	(function($){
+
+		// Set application context
 		$.contextPath = '/monitor';
-		application.run(function(applicationContext) {
-			applicationContext.contextPath = $.contextPath;
+
+		// Initialize application
+		var application = angular.module('application', 
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot', 
+					'ngcApplicationRouting', 'ngcLogRequestDynatree', 'ngcRequestDynatree']);
+
+		// Run
+		application.run(function($rootScope, applicationContext, ngcMessagesService) {
+
+		    applicationContext.contextPath = $.contextPath;
+			
 		});
+
+		// Disable jQuery ajax caching
 		$.ajaxSetup({cache: false});
+
 	}) (jQuery);
 	</script>
 </head>

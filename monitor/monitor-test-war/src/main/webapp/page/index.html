@@ -38,16 +38,29 @@
 	<!-- default -->
 	<script>
 	(function($){
+
+		// Set application context
 		$.contextPath = '/monitor-test';
-		application.run(function(applicationContext, ngcMessagesService) {
-			applicationContext.contextPath = $.contextPath;
+
+		// Initialize application
+		var application = angular.module('application', 
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 
+					'ngcApplicationRouting']);
+
+		// Run
+		application.run(function($rootScope, applicationContext, ngcMessagesService) {
+
+		    applicationContext.contextPath = $.contextPath;
 			
-			// Initialize a default translation mapping for the message module page
+			// Initialize a default translation mapping for the message module test page.
 			var messagesUrl = applicationContext.contextPath + '/messages/messages.txt'
 			ngcMessagesService.load(messagesUrl);
 					
 		});
+
+		// Disable jQuery ajax caching
 		$.ajaxSetup({cache: false});
+		
 	}) (jQuery);
 	</script>
 </head>
