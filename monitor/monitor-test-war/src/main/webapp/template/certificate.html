@@ -25,10 +25,13 @@
 			<li>copy <a href="../certificate/server.jks">server.jks</a> to the {JBoss home}/standalone/configuration directory.</li>
 			<li>open the file {JBoss home}/standalone/configuration/standalone.xml</li>
 			<li>add the following code snippet below the connector for http<br/>
-				<code style="white-space:normal">&lt;connector name="https" protocol="HTTP/1.1" socket-binding="https" scheme="https" secure="true"&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;ssl name="https" password="changeit" certificate-key-file="${jboss.server.config.dir}/server.jks" protocol="TLSv1" verify-client="true" ca-certificate-file="${jboss.server.config.dir}/server.jks"/&gt;<br/>
-&lt;/connector&gt;<br/>
-				</code>				
+				<pre>
+					<code ngc-prettyprint>
+&lt;connector name="https" protocol="HTTP/1.1" socket-binding="https" scheme="https" secure="true"&gt;
+    &lt;ssl name="https" password="changeit" certificate-key-file="${jboss.server.config.dir}/server.jks" protocol="TLSv1" verify-client="true" ca-certificate-file="${jboss.server.config.dir}/server.jks"/&gt;
+&lt;/connector&gt;
+					</code>
+				</pre>				
 			</li>
 		</ul>
 		<br/>

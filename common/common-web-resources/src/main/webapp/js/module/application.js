@@ -1488,6 +1488,21 @@ application.directive('ngcCurrency', function($filter, $locale) {
 });
 
 /**
+ * Directive to run the prettyprint of the google prettify plugin
+ * against the element.
+ * 
+ * Requires google-code-prettify javascript prettify.js.
+ */
+application.directive('ngcPrettyprint', function($filter, $locale) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.html(prettyPrintOne(element.html()));
+		}
+	}
+});
+
+/**
  * Filter to return a list from the position start.
  * As opposed to AngularJS provided limitTo filter.
  */
