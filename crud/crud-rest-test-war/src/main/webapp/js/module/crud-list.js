@@ -119,7 +119,6 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 	
 }
 
-
 /**
  * Angular module :: crudColumnValueFormatter
  * 
