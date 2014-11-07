@@ -1,5 +1,5 @@
 function CrudDetailController($scope, $timeout, $compile, $location, $window, $routeParams, templateProvider, crudService, 
-		crudCacheService, crudColumnValueFormatter, applicationContext) {
+		crudCacheService, applicationContext) {
 
 	var scope = $scope;
 	

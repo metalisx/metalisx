@@ -1,50 +1,68 @@
-application.config(function($routeProvider, $locationProvider) {
+/**
+ * Angular module :: ngcApplicationRouting
+ * 
+ * The Angular module ngcApplicationRouting provides the routing
+ * of the application.
+ */
+(function(angular) {
+	
+	'use strict';
 
-	var contextPath = (typeof $.contextPath != 'undefined' && $.contextPath != null ? $.contextPath : '');
+	// Module
+	
+	var ngcApplicationRouting = angular.module('ngcApplicationRouting', []);
 
-	// console
+	// Routings
 	
-	$routeProvider
-	.when('/', {
-		templateUrl: contextPath + '/template/console.html',
-		reloadOnSearch: false
-	})
-
-	// crud
+	ngcApplicationRouting.config(function($routeProvider, $locationProvider) {
 	
-	$routeProvider
-	.when('/crud-list/:entityClass', {
-		templateUrl: contextPath + '/template/crud-list.html',
-		controller: CrudListController,
-		reloadOnSearch: false
-	})
+		var contextPath = (typeof $.contextPath != 'undefined' && $.contextPath != null ? $.contextPath : '');
 	
-	$routeProvider
-	.when('/crud-detail/:entityClass', {
-		templateUrl: contextPath + '/template/crud-detail.html',
-		controller: CrudDetailController,
-		reloadOnSearch: false
-	})
+		// console
+		
+		$routeProvider
+		.when('/', {
+			templateUrl: contextPath + '/template/console.html',
+			reloadOnSearch: false
+		})
 	
-	$routeProvider
-	.when('/crud-detail/:entityClass/:id', {
-		templateUrl: contextPath + '/template/crud-detail.html',
-		controller: CrudDetailController,
-		reloadOnSearch: false
-	})
+		// crud
+		
+		$routeProvider
+		.when('/crud-list/:entityClass', {
+			templateUrl: contextPath + '/template/crud-list.html',
+			controller: CrudListController,
+			reloadOnSearch: false
+		})
+		
+		$routeProvider
+		.when('/crud-detail/:entityClass', {
+			templateUrl: contextPath + '/template/crud-detail.html',
+			controller: CrudDetailController,
+			reloadOnSearch: false
+		})
+		
+		$routeProvider
+		.when('/crud-detail/:entityClass/:id', {
+			templateUrl: contextPath + '/template/crud-detail.html',
+			controller: CrudDetailController,
+			reloadOnSearch: false
+		})
+		
+		$routeProvider
+		.otherwise({
+			redirectTo: redirect
+		});
 	
-	$routeProvider
-	.otherwise({
-		redirectTo: redirect
+		// We use the hashbang otherwise the handeling of pages on the
+		// serverside needs to be changed.
+		// configure html5 to get links working on jsfiddle
+	    // $locationProvider.html5Mode(true);
 	});
-
-	// We use the hashbang otherwise the handeling of pages on the
-	// serverside needs to be changed.
-	// configure html5 to get links working on jsfiddle
-    // $locationProvider.html5Mode(true);
-});
-
-var redirect = function(skip, url) {
-	console.log('RouterProvider -> redirect to: ' + url);
-    window.location = url;
-};
+	
+	var redirect = function(skip, url) {
+		console.log('RouterProvider -> redirect to: ' + url);
+	    window.location = url;
+	};
+	
+})(window.angular);

@@ -1,40 +1,43 @@
-application.service('crudColumnValueFormatter', CrudColumnValueFormatter);
-
-function CrudColumnValueFormatter($filter) {
+/**
+ * Angular module :: crudCacheService
+ * 
+ * The Angular module crudCacheService provides the cache for
+ * the application.
+ */
+(function(angular) {
 	
-	this.format = function(type, value) {
-		if (type == 'date') {
-			return $filter('ngcDate')(value);
-		}
-		return value;
-	};
+	'use strict';
+
+	// Module
 	
-}
+	var crudCacheService = angular.module('crudCacheService', []);
 
-application.service('crudCacheService', CrudCacheService);
-
-function CrudCacheService(crudService, applicationCache, applicationContext) {
-
-	var crudJsonEndpoint = '../rest/crud'
-
-	this.load = function($scope, onsuccess) {
-		if (applicationCache.get('entitiesMetadata') === undefined) {
-			crudService.metadata(crudJsonEndpoint, {onsuccess: function(result) {
-				if (result) {
-					applicationCache.put('entitiesMetadata', result);
-					$scope.entitiesMetadata = applicationCache.get('entitiesMetadata');
-					$scope.$apply();
-					if (onsuccess) {
-						onsuccess();
+	// Services
+	
+	crudCacheService.service('crudCacheService', function(crudService, applicationCache, applicationContext) {
+	
+		var crudJsonEndpoint = '../rest/crud'
+	
+		this.load = function($scope, onsuccess) {
+			if (applicationCache.get('entitiesMetadata') === undefined) {
+				crudService.metadata(crudJsonEndpoint, {onsuccess: function(result) {
+					if (result) {
+						applicationCache.put('entitiesMetadata', result);
+						$scope.entitiesMetadata = applicationCache.get('entitiesMetadata');
+						$scope.$apply();
+						if (onsuccess) {
+							onsuccess();
+						}
 					}
+				}});
+			} else {
+				$scope.entitiesMetadata = applicationCache.get('entitiesMetadata');
+				if (onsuccess) {
+					onsuccess();
 				}
-			}});
-		} else {
-			$scope.entitiesMetadata = applicationCache.get('entitiesMetadata');
-			if (onsuccess) {
-				onsuccess();
 			}
 		}
-	}
-	
-}
+		
+	});
+
+})(window.angular);

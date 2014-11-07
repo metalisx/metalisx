@@ -118,3 +118,33 @@ function CrudListController($scope, $compile, $location, $routeParams, $timeout,
 	init();
 	
 }
+
+
+/**
+ * Angular module :: crudColumnValueFormatter
+ * 
+ * The Angular module crudColumnValueFormatter provides the formater
+ * for the columns in the CRUD list.
+ */
+(function(angular) {
+	
+	'use strict';
+
+	// Module
+	
+	var crudColumnValueFormatter = angular.module('crudColumnValueFormatter', []);
+
+	// Services
+
+	crudColumnValueFormatter.service('crudColumnValueFormatter', function ($filter) {
+		
+		this.format = function(type, value) {
+			if (type == 'date') {
+				return $filter('ngcDate')(value);
+			}
+			return value;
+		};
+		
+	});
+	
+})(window.angular);

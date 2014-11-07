@@ -73,10 +73,11 @@
 		// Initialize application
 		var application = angular.module('application', 
 				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot', 
-					'ngcApplicationRouting', 'ngcLogRequestDynatree', 'ngcRequestDynatree']);
+					'ngcApplicationRouting', 
+					'ngcLogRequestDynatree', 'ngcRequestDynatree']);
 
 		// Run
-		application.run(function($rootScope, applicationContext, ngcMessagesService) {
+		application.run(function(applicationContext, ngcMessagesService) {
 
 		    applicationContext.contextPath = $.contextPath;
 			

@@ -33,19 +33,34 @@
 	<script src="../js/module/metalisx-dynamic-control.js" type="text/javascript"></script>
 	<script>
 	(function($){
-		$.contextPath = '/crud-test';
-		application.run(function(applicationContext, ngcMessagesService) {
-			applicationContext.contextPath = $.contextPath;
 
+		// Set application context
+		$.contextPath = '/crud-test';
+
+		// Initialize application
+		var application = angular.module('application', 
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot', 
+					'ngcApplicationRouting', 
+					'crudCacheService', 'crudColumnValueFormatter', 'dynamicControl']);
+
+		// Run
+		application.run(function(applicationContext, ngcMessagesService) {
+
+		    applicationContext.contextPath = $.contextPath;
+			
 			// Initialize a translation mapping
 			var messagesUrl = applicationContext.contextPath + '/messages/messages_en-us.txt'
 			ngcMessagesService.load(messagesUrl);
+
 			// Set the language for the message service hard coded instead of 
 			// the using the $locale.id
 			ngcMessagesService.setLanguage('en-us');
 
 		});
+
+		// Disable jQuery ajax caching
 		$.ajaxSetup({cache: false});
+
 	}) (jQuery);
 	</script>
 </head>
