@@ -887,7 +887,7 @@
 	    		function addSourceModeEvent(editor) {
 					// Adding key up event to track changes if the editor in source mode
 	    			$('textarea.cke_source', element.parent()).on('keyup', function() {
-						ngModel.$setViewValue(editor.getData());
+	    				ngModel.$setViewValue(editor.getData());
 						// Used to have $apply here, but do not know why. 
 						// Everything seems to work without it.
 						// It is removed as it will trigger all watchers by every keyup.
@@ -956,7 +956,7 @@
 			    			// you do not switch back to the wysiwyg mode your changes are not in de model.
 			    			this.on('mode', function( e ) {
 			    				if (editor.mode == 'source') {
-			    					addSourceModeEvent();
+			    					addSourceModeEvent(editor);
 			    				}
 			    			});
 	
