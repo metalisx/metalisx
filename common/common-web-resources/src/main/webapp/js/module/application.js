@@ -1363,38 +1363,142 @@
 	});
 	
 	/**
-	 * Directive to convert the boolean values false and true of a checkbox 
-	 * element to their respective numbers 0 and 1 in the model and vice versa. 
-	 * If the model contains a null value, it is converted to false for
-	 * the view. If the checkbox contains a null value it is converted
-	 * to 0 for the model.
+	 * Directive for a checkbox to convert model values of different
+	 * formats to the view values of the checkbox and vise versa.
+	 * The type of the model values are set by the attribute 
+	 * ngc-checkbox-model-type. Allowed values for 
+	 * ngc-checkbox-model-type attribute are:
+	 *  - stringNumber
+	 *  - stringBoolean
+	 *  - number
+	 *  - boolean
+	 * If the model type is not set by the ngc-checkbox-model-type
+	 * attribute it is detected by analyzing the data. In case
+	 * detection is used then the model value can only be null 
+	 * if the data has model type number, it is better to always
+	 * use values in the model.
+	 * When model type is stringNumber: 
+	 *  - the model value null is view value false
+	 *  - the model value '1' is view value true
+	 *  - the model value '0' is view value false
+	 * When model type is stringBoolean:
+	 *  - the model value null is view value false
+	 *  - the model value 'true' is view value true
+	 *  - the model value 'false' is view value false
+	 * When model type is number:
+	 *  - the model value null is view value false
+	 *  - the model value 1 is view value true
+	 *  - the model value 0 is view value false
+	 * When model type is boolean:
+	 *  - the model value null is view value false
+	 *  - the model value true is view value true
+	 *  - the model value false is view value false
 	 * 
 	 * The priority of the directive is set so it runs after the build in one.
 	 */
-	ngcModule.directive('ngcCheckboxInteger', function() {
+	ngcModule.directive('ngcCheckbox', function() {
 		return {
 			priority: 1000,
 			restrict: 'A',
 			require: 'ngModel',
 			link: function(scope, element, attrs, ngModel) {
-	
+
+				var modelType = null;
+			
 				// View value to model value
 				ngModel.$parsers.push(function(data) {
-					var value = 0;
-					if (data !== null && typeof data === 'boolean') {
-						value = data ? 1 : 0;
+					var value = null;
+					if (typeof data === 'boolean') {
+						if (modelType == 'stringNumber') {
+							if (data === null) {
+								value = '0';
+							} else {
+								value = data ? '1' : '0';
+							}
+						} else if (modelType === 'stringBoolean') {
+							if (data === null) {
+								value = 'false';
+							} else {
+								value = data ? 'true' : 'false';
+							}
+						} else if (modelType === 'number') {
+							if (data === null) {
+								value = 0;
+							} else {
+								value = data ? 1 : 0;
+							}
+						} else if (modelType === 'boolean') {
+							if (data === null) {
+								value = false;
+							} else {
+								value = data;
+							}
+						}
 					}
 					return value;
 				});
 	
+				// If the model type is not set by the ngc-checkbox-model-type
+				// attribute it is detected by analyzing the data. In case
+				// detection is used then the model value can only be null 
+				// if the data has model type number.
+				function determineModelType(data) {
+					if (modelType === null) {
+						if (data !== null) {
+							if (typeof data === 'string') {
+								if (data === '1' || data === '0') {
+									modelType = 'stringNumber'
+								} else if (data.toLowerCase() === 'true' || 
+											data.toLowerCase() === 'false') {
+									modelType = 'stringBoolean';
+								}
+							} else if (typeof data === 'number') {
+								modelType = 'number';
+							} else if (typeof data === 'boolean') {
+								modelType = 'boolean';
+							}
+						} else {
+							modelType = 'number'
+						}
+					}
+				}
+				
 				// Model value to view value
 				ngModel.$formatters.push(function(data) {
 					var value = false;
-					if (data !== null && typeof data === 'number') {
-						value = data === 1 ? true : false;
+					if (data !== undefined) {
+						determineModelType(data);
+						if (data !== null) {
+							if (modelType == 'stringNumber') {
+								if (data !== null) {
+									value = data === '1' ? true : false;
+								}
+							} else if (modelType === 'stringBoolean') {
+								if (data !== null) {
+									value = data.toLowerCase() === 'true' ? true : false;
+								}
+							} else if (modelType === 'number') {
+								if (data !== null) {
+									value = data === 1 ? true : false;
+								}
+							} else if (modelType === 'boolean') {
+								if (data !== null) {
+									value = data;
+								}
+							}
+						}
 					}
 					return value;
 				});
+				
+				if (attrs['ngcCheckboxModelType']) {
+					modelType = attrs.ngcCheckboxModelType;
+					if (modelType != 'stringNumber' && modelType != 'stringBoolean' && 
+							modelType != 'number' && modelType != 'boolean') {
+						alert('Invalid value ' + modelType + ' for attribute ngc-checkbox-model-type. ' +
+								'Allowed values are stringNumber, stringBoolean, number and boolean');
+					}
+				}
 				
 			}
 		}
