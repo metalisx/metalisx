@@ -1,4 +1,3 @@
-Git Test
 MetalIsX
 
 The projects are created to:
