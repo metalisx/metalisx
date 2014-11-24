@@ -68,9 +68,9 @@ Import the projects as Maven projects by selecting the
 sub folder of a section. It is not possible to load all 
 projects at once from the pom in this directory.
 
-0.3 WildFly 8.1.0
+0.3 WildFly 8.2.0
 
-Download WildFly 8.1.0 Final and unzip the file.
+Download WildFly 8.2.0 Final and unzip the file.
 
 Open Eclipse
 
@@ -136,7 +136,7 @@ Chrome and Internet Explorer 8+.
 
 3.2 Application Server
 
-The monitor web application is developed for the WildFly 8.1.0.Final
+The monitor web application is developed for the WildFly 8.2.0.Final
 application server.
 
 The monitor web application uses:
