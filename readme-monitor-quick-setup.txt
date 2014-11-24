@@ -4,7 +4,7 @@ MetalIsX
 
 You need to follow the actions in this chapter for quickly 
 enabling all functionality of the monitor application and 
-to configure the Monitor application in Wildfly 8.1.0.Final.
+to configure the Monitor application in Wildfly 8.2.0.Final.
 
 2 Build
 
@@ -90,7 +90,7 @@ Install and configure Wildfly 8.2.0.Final
 
 4.1 Datasource
 
-Instructions to configure WildFly 8.1.0.Final standalone 
+Instructions to configure WildFly 8.2.0.Final standalone 
 with the required jdbc/monitorDS datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
@@ -115,7 +115,8 @@ with the required jdbc/monitorDS datasource:
 
 4.2 Logger
 
-Instructions to configure a seperated log file for the monitor application:
+Instructions to configure WildFly 8.2.0.Final standalone with
+a seperated log file for the monitor application:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the logging
  - add in the subsystem the following file handler:
