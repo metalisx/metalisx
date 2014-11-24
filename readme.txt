@@ -299,11 +299,11 @@ because a filter can be used to set the username
 and organizatoin in the MonitorContext to personalize
 the request.
 
-4 WildFly 8.1.0.Final
+4 WildFly 8.2.0.Final
 
 4.1 Datasource
 
-Instructions to configure WildFly 8.1.0.Final standalone 
+Instructions to configure WildFly 8.2.0.Final standalone 
 with the required jdbc/monitorDS datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
@@ -328,7 +328,8 @@ with the required jdbc/monitorDS datasource:
 
 4.2 Logger
 
-Instructions to configure a seperated log file for the monitor application:
+Instructions to configure WildFly 8.2.0.Final standalone with
+a seperated log file for the monitor application:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the logging
  - add in the subsystem the following file handler:
