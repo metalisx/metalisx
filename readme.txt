@@ -146,7 +146,7 @@ The monitor web application uses:
 
 The monitor web application should run on other application
 servers but in the pom the artifacts which are provided by
-WildFly 8.1.0.Final as modules are marked as provided. They
+WildFly 8.2.0.Final as modules are marked as provided. They
 might not be available on other application servers.
 
 3.3 Datasource
