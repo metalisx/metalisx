@@ -33,7 +33,7 @@
 						<!-- Silencing the broken code in getActiveConfiguration(), see
 						     https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java
 						 -->
-						<arquillian.launch>jboss7</arquillian.launch>
+						<arquillian.launch>wildFly8</arquillian.launch>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>

@@ -12,7 +12,7 @@
      
     <container qualifier="jboss7" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-8.1.0.Final</property>
+            <property name="jbossHome">target/wildfly-8.2.0.Final</property>
 			<property name="managementPort">10090</property>
 			<!--
 				 For debugging you can use the settings below, 
