@@ -23,27 +23,6 @@ input[type="text"].realtimeInterval {
 	width: 100%;
 	margin: 2px;
 }
-.requests .tree .content pre,
-.requests .tree .content iframe {
-	width: 1110px;
-	max-height: 400px;
-	margin-left: 40px;
-}
-.requests .tree .content iframe {
-	height: 400px;
-}
-.requests .tree .content.partContent pre,
-.requests .tree .content.partContent iframe {
-	width: 1080px;
-}
-.requests .tree .content.certificate pre {
-	width: 1070px;
-}
-.requests .tree .content pre {
-	border: 1px solid #DDD;
-	white-space: no-wrap;
-	overflow: scroll;
-}
 .requestDetail {
 	float: left;
 	width: 100%;
@@ -59,6 +38,14 @@ input[type="text"].realtimeInterval {
 	min-width: 60px;
 	text-align: right;
 	padding-right: 10px;
+}
+.requestDetail .tree .content {
+	margin-left: 40px;
+}
+.requestDetail .tree .content pre,
+.requestDetail .tree .content iframe {
+	width: 100%;
+	max-height: 400px;
 }
 .summaryDetail {
 	float: left;
