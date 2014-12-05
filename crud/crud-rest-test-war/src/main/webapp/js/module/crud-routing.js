@@ -31,21 +31,21 @@
 		$routeProvider
 		.when('/crud-list/:entityClass', {
 			templateUrl: contextPath + '/template/crud-list.html',
-			controller: CrudListController,
+			controller: 'CrudListController',
 			reloadOnSearch: false
 		})
 		
 		$routeProvider
 		.when('/crud-detail/:entityClass', {
 			templateUrl: contextPath + '/template/crud-detail.html',
-			controller: CrudDetailController,
+			controller: 'CrudDetailController',
 			reloadOnSearch: false
 		})
 		
 		$routeProvider
 		.when('/crud-detail/:entityClass/:id', {
 			templateUrl: contextPath + '/template/crud-detail.html',
-			controller: CrudDetailController,
+			controller: 'CrudDetailController',
 			reloadOnSearch: false
 		})
 		

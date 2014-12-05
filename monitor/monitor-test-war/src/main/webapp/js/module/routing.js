@@ -47,7 +47,7 @@
 		$routeProvider
 		.when('/webservice', {
 			templateUrl: contextPath + '/template/webservice.html',
-			controller: WebserviceController,
+			controller: 'WebserviceController',
 			reloadOnSearch: false
 		})
 		
@@ -56,7 +56,7 @@
 		$routeProvider
 		.when('/messages', {
 			templateUrl: contextPath + '/template/messages.html',
-			controller: MessagesController,
+			controller: 'MessagesController',
 			reloadOnSearch: false
 		})
 		
@@ -65,7 +65,7 @@
 		$routeProvider
 		.when('/input-field', {
 			templateUrl: contextPath + '/template/input-field.html',
-			controller: InputFieldController,
+			controller: 'InputFieldController',
 			reloadOnSearch: false
 		})
 	
@@ -82,7 +82,7 @@
 		$routeProvider
 		.when('/messages-module', {
 			templateUrl: contextPath + '/template/messages-module.html',
-			controller: MessagesModuleController,
+			controller: 'MessagesModuleController',
 			reloadOnSearch: false
 		})
 		

@@ -15,25 +15,31 @@
 	
 	/**
 	 * Directive to set a navbar with a template.
+	 * HTML attributes:
+	 *   ngc-navbar
+	 *   ngc-navbar-active-item
 	 * Add the ngc-navbar attribute to the element and set as value the html template with
 	 * the navbar.
-	 * Set the attribute ngc-navbar-active-item with the value of the active item. You need
-	 * to add some AngularJS code to the html template to make the item active, for instance
-	 * to add the active class.
+	 * Set the attribute ngc-navbar-active-item with the value of the active item. The value
+	 * will be set in the scope property ngcNavbarActiveItem. You need to add some AngularJS 
+	 * code to the HTML template to make the item active, for instance by adding the active class.
 	 */
 	ngcNavbar.directive('ngcNavbar', function (templateProvider, applicationContext) {
 		var defaultTemplateUrl = applicationContext.contextPath + '/console/template/navbar.html';
 	    return {
 			restrict: 'A',
-			scope: {
-	    		ngcNavbar: '@',
-				ngcNavbarActiveItem: '@'
-	    	},
 	    	link:function (scope, element, attrs, ngModel) {
-	        	var templateUrl = scope.ngcNavbar;
+	    		var templateUrl = '';
+				if (attrs['ngcNavbar']) {
+					templateUrl = attrs.ngcNavbar;
+				}
 	        	if (!templateUrl || templateUrl == '') {
-	        		templateUrl = defaultTemplateUrl;
-	        	}
+					templateUrl = defaultTemplateUrl;
+				}
+	        	// If there is an active item then it will be set on the scope.
+				if (attrs['ngcNavbarActiveItem']) {
+					scope.ngcNavbarActiveItem = attrs.ngcNavbarActiveItem;
+				}
 	        	templateProvider.compile(templateUrl, element, scope);
 	        }
 	    };
@@ -41,17 +47,19 @@
 	
 	/**
 	 * Directive to set a side navbar with a template.
+	 * HTML attributes:
+	 *   ngc-side-navbar
 	 * Add the ngc-side-nav attribute to the element and set as value the html template with
 	 * the side navbar.
 	 */
 	ngcNavbar.directive('ngcSideNav', function (templateProvider) {
 	    return {
 			restrict: 'A',
-			scope: {
-	    		ngcSideNav: '@'
-	    	},
 	    	link:function (scope, element, attrs, ngModel) {
 	        	var templateUrl = scope.ngcSideNav;
+				if (attrs['ngcSideNav']) {
+					templateUrl = attrs.ngcSideNav;
+				}
 	        	if (!templateUrl || templateUrl == '') {
 	        		alert('Missing value for ngc-side-nav, it should contain the link to a tempalte');
 	        	} else {
@@ -64,25 +72,25 @@
 	/**
 	 * Directive to render the element as active by matching the href to the 
 	 * $location.path, $location.absUrl or a list of alternative urls.
-	 * When this attribute is set on a hyperlink, the url path in the href of the
-	 * element is matched against the beginning of $location.path(the current url path). 
-	 * If $location.path is empty, the $location.absPath(), without the protocol, 
-	 * hostname and port, is used as current url path. The matching is done to the 
-	 * beginning of the current url because it can contain some extra information 
-	 * like state. If it is a match the value of the attribute is set as class, 
-	 * otherwise it is removed as class. If the attribuate has not a value, the 
-	 * class 'active' is used. No attribute value is required when using Bootstrap, 
-	 * because Bootstrap uses the 'active' class.
-	 * The attribute ngc-active-link-alternatives can be added to provide a 
-	 * comma seperated list of url's which also activates this element.
+	 * Attributes:
+	 *   ngc-active-link
+	 *   ngc-active-link-alternatives
+	 * When the ngc-active-link attribute is set on a hyperlink, the url path in 
+	 * the href of the element is matched against the beginning of 
+	 * $location.path(the current url path). If $location.path is empty, the 
+	 * $location.absPath(), without the protocol, hostname and port, is used as 
+	 * current url path. The matching is done to the beginning of the current url 
+	 * because it can contain some extra information like state. If it is a match 
+	 * the value of the attribute is set as class, otherwise it is removed as 
+	 * class. If the attribuate has not a value, the class 'active' is used. No 
+	 * attribute value is required when using Bootstrap, because Bootstrap uses 
+	 * the 'active' class. The attribute ngc-active-link-alternatives can be 
+	 * added to provide a comma seperated list of url's which also activates this 
+	 * element.
 	 */
 	ngcNavbar.directive('ngcActiveLink', ['$location', function(location) {
 		return {
 			restrict: 'A',
-			scope: {
-	    		ngcActiveLink: '@',
-	    		ngcActiveLinkAlternatives: '@'
-	    	},
 			link: function(scope, element, attrs, controller) {
 	    		var activeLinkClass = 'active';
 	    		var activeLinkAlternatives = null;
@@ -127,15 +135,19 @@
 		};
 	}]);
 	
+
+	// Controller
+	
+	ngcNavbar.controller('NavbarController', function NavbarController($scope, $cookies) {
+		
+			// raw check, just for rendering purpose
+			var isAuthenticated = ($cookies['cca'] !== undefined && $cookies['cca'] != null) ? true : false;
+	
+			$scope.isAuthenticated = function() {
+				return isAuthenticated;
+			}
+			
+	});
+	
 })(window.angular);
 
-function NavbarController($scope, $cookies) {
-	
-	// raw check, just for rendering purpose
-	var isAuthenticated = ($cookies['cca'] !== undefined && $cookies['cca'] != null) ? true : false;
-
-	$scope.isAuthenticated = function() {
-		return isAuthenticated;
-	}
-	
-}

@@ -1,40 +1,49 @@
-function LogRequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
-		applicationContext) {
-
-	var treeEndpoint = '../rest/logs/request/tree/';
-
-	$scope.entity = null;
+(function(angular) {
 	
-	// Init
+	'use strict';
+
+	// Module
 	
-	function init() {
-		$scope.initEntity();
-	}
+	var logRequestController = angular.module('logRequestController', []);
 
-	// Entity
+	// Controller
 	
-	$scope.initEntity = function() {
-		var requestId = $routeParams.requestId;
-		$scope.getEntity(requestId);
-	}
-
-	$scope.getEntity = function(requestId) {
-		crudService.get(treeEndpoint + requestId, null, {onsuccess: function(result) {
-    		$scope.entity = result.item;
-    		$scope.$apply();
-    	}});
-    }
+	logRequestController.controller('LogRequestController', 
+		function LogRequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
+				applicationContext) {
+		
+			var treeEndpoint = '../rest/logs/request/tree/';
+		
+			$scope.entity = null;
+			
+			// Init
+			
+			function init() {
+				$scope.initEntity();
+			}
+		
+			// Entity
+			
+			$scope.initEntity = function() {
+				var requestId = $routeParams.requestId;
+				$scope.getEntity(requestId);
+			}
+		
+			$scope.getEntity = function(requestId) {
+				crudService.get(treeEndpoint + requestId, null, {onsuccess: function(result) {
+		    		$scope.entity = result.item;
+		    		$scope.$apply();
+		    	}});
+		    }
+			
+			init();
+		
+		}
+		
+	);
 	
-	init();
-
-}
-
-function RequestRenderer() {
-
-	var $container = $('#requestDetail');
-
-}
-
+})(window.angular);
+		
 /**
  * Angular module :: ngcLogRequestDynatree
  * 

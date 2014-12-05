@@ -11,7 +11,7 @@
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li ng-repeat="entityMetadata in $parent.$parent.entitiesMetadata"
+				<li ng-repeat="entityMetadata in $parent.entitiesMetadata"
 					id="navbarItem{{entityMetadata.entityClass}}">
 						<a href="index.html#/crud-list/{{entityMetadata.entityClass}}">{{entityMetadata.entityClass | ngcMessage}}</a>
 				</li>

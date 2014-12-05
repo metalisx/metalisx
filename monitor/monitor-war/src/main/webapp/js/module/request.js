@@ -1,42 +1,57 @@
-function RequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
-		applicationContext) {
-
-	var requestUrl = applicationContext.contextPath + '/rest/requests/list-item/';
-	var resendEndpoint = applicationContext.contextPath + '/rest/requests/request/resend/';
-
-	$scope.entity = null;
-
-	// Init
+(function(angular) {
 	
-	function init() {
-		$scope.initEntity();
-	}
-	
-	// Entity
-	
-	$scope.initEntity = function() {
-		var id = $routeParams.id;
-		$scope.getEntity(id);
-	}
+	'use strict';
 
-	$scope.getEntity = function(id) {
-    	crudService.get(requestUrl + id, null, {onsuccess: function(result) {
-    		$scope.entity = result.item;
-    		$scope.$apply();
-    	}});
-    }
-
-	// Actions
+	// Module
 	
-	$scope.resend = function($event) {
-		$event.stopPropagation();
-		$event.preventDefault();
-		crudService.get(resendEndpoint + $scope.entity.id, null);
-	};
-	
-	init();
-}
+	var requestController = angular.module('requestController', []);
 
+	// Controller
+	
+	requestController.controller('RequestController', 
+		function RequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
+				applicationContext) {
+		
+			var requestUrl = applicationContext.contextPath + '/rest/requests/list-item/';
+			var resendEndpoint = applicationContext.contextPath + '/rest/requests/request/resend/';
+		
+			$scope.entity = null;
+		
+			// Init
+			
+			function init() {
+				$scope.initEntity();
+			}
+			
+			// Entity
+			
+			$scope.initEntity = function() {
+				var id = $routeParams.id;
+				$scope.getEntity(id);
+			}
+		
+			$scope.getEntity = function(id) {
+		    	crudService.get(requestUrl + id, null, {onsuccess: function(result) {
+		    		$scope.entity = result.item;
+		    		$scope.$apply();
+		    	}});
+		    }
+		
+			// Actions
+			
+			$scope.resend = function($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+				crudService.get(resendEndpoint + $scope.entity.id, null);
+			};
+			
+			init();
+		}
+		
+	);
+	
+})(window.angular);
+		
 /**
  * Angular module :: ngcRequestDynatree
  * 

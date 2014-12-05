@@ -1,3 +1,0 @@
-org.metalisx.crud.domain.model.Test Test
-org.metalisx.crud.domain.model.TestDocument Test document
-org.metalisx.crud.domain.model.TestTextarea Test textarea

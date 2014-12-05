@@ -31,7 +31,7 @@
 		$routeProvider
 		.when('/admin', {
 			templateUrl: contextPath + '/template/admin.html',
-			controller: AdminController,
+			controller: 'AdminController',
 			reloadOnSearch: false
 		})
 		
@@ -39,7 +39,7 @@
 		$routeProvider
 		.when('/log-file-listeners', {
 			templateUrl: contextPath + '/template/log-file-listeners.html',
-			controller: LogFileListenersController,
+			controller: 'LogFileListenersController',
 			reloadOnSearch: false
 		})
 	
@@ -47,7 +47,7 @@
 		$routeProvider
 		.when('/log-file-load', {
 			templateUrl: contextPath + '/template/log-file-load.html',
-			controller: LogFileLoadController,
+			controller: 'LogFileLoadController',
 			reloadOnSearch: false
 		})
 	
@@ -55,17 +55,17 @@
 		$routeProvider
 		.when('/logs', {
 			templateUrl: contextPath + '/template/logs.html',
-			controller: LogsController,
+			controller: 'LogsController',
 			reloadOnSearch: false
 		})
 		.when('/logs/log/:id', {
 			templateUrl: contextPath + '/template/log.html',
-			controller: LogController,
+			controller: 'LogController',
 			reloadOnSearch: false
 		})
 		.when('/logs/log-request/:requestId', {
 			templateUrl: contextPath + '/template/log-request.html',
-			controller: LogRequestController,
+			controller: 'LogRequestController',
 			reloadOnSearch: false
 		})
 	
@@ -73,12 +73,12 @@
 		$routeProvider
 		.when('/requests', {
 			templateUrl: contextPath + '/template/requests.html',
-			controller: RequestsController,
+			controller: 'RequestsController',
 			reloadOnSearch: false
 		})
 		.when('/requests/request/:id', {
 			templateUrl: contextPath + '/template/request.html',
-			controller: RequestController,
+			controller: 'RequestController',
 			reloadOnSearch: false
 		})
 		
@@ -86,14 +86,14 @@
 		$routeProvider
 		.when('/settings', {
 			templateUrl: contextPath + '/template/settings.html',
-			controller: SettingsController,
+			controller: 'SettingsController',
 			reloadOnSearch: false
 		})
 		
 		$routeProvider
 		.when('/summary', {
 			templateUrl: contextPath + '/template/summary.html',
-			controller: SummaryController,
+			controller: 'SummaryController',
 			reloadOnSearch: false
 		})
 	

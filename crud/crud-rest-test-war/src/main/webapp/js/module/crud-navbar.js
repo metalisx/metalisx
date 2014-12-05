@@ -1,10 +1,22 @@
-function CrudMenuController($scope, $timeout, $compile, templateProvider, 
-		crudCacheService) {
+(function(angular) {
+	
+	'use strict';
 
-	function init() {
-		crudCacheService.load($scope);
-	}
+	// Module
 	
-	init();
+	var crudNavbarController = angular.module('crudNavbarController', []);
+
+	// Controller
 	
-}
+	crudNavbarController.controller('CrudNavbarController', 
+		function($scope, $timeout, $compile, templateProvider, crudCacheService) {
+	
+			function init() {
+				crudCacheService.load($scope);
+			}
+			
+			init();
+		
+		});
+
+})(window.angular);

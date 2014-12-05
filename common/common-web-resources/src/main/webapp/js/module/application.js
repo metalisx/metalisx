@@ -1024,8 +1024,11 @@
 	    			var metalisxDataTable = element.metalisxDataTable(filter, scope.ngcDataTableSettings);
 	    			dataTable = metalisxDataTable.getDataTable();
 	    			if (callback) {
+	    				// The dataTable is passed to the callback as in an object.
+	    				// This to prevent the Angular error: 
+	    				//   Referencing DOM nodes in Angular expressions is disallowed
 	    				callback({
-	    					dataTable: dataTable
+	    					dataTable: { 'dataTable': dataTable }
 	    				})
 	    			}
 	    			// Destroy the datatable when the element is removed from the DOM.
@@ -1785,16 +1788,19 @@
 	* Service for putting messages into the messages cache ngcMessagesCache
 	* and getting a message from the cache.
 	* 
-	* Place the message into the cache by calling the load or put methode.
-	* Retrieve a message by calling the get methode.
+	* Place the message into the cache by calling the load or put method.
+	* Retrieve a message by calling the get method.
 	* 
-	* The load methode can be called with a URL. The URL should point to a
+	* The load method can be called with a URL. The URL should point to a
 	* text file with entries containing a code and a text. The code
 	* is the string prior to the first space and the text is the string
 	* after the first space. Lines prefixed with a #-sign are comments
 	* and are ignored. The filename should contain the language.
 	* When the optional parameter onsuccess is set it will be called
-	* when the loading is successfully finished. 
+	* when the loading is successfully finished.
+	* Using the load method will is executed asynchronous and as such
+	* the messages are not directly available after the load method returns.
+	* If this is required then you need to use the put method. 
 	* Example call: 
 	*  ngcMessagesService.load('http://myhost/messages_nl.txt')
 	*  ngcMessagesService.load('http://myhost/messages_en-us.txt')
@@ -1807,9 +1813,9 @@
 	* myCode1 Text 1
 	* myCode2 Text 2
 	* 
-	* The put methode can be called with an object for adding
+	* The put method can be called with an object for adding
 	* multiple messages or with parameters to add a single message. 
-	* For adding multiple messages the put methode should be called with
+	* For adding multiple messages the put method should be called with
 	* an object. This object should contain a property language 
 	* and messages. The property language is a string and the 
 	* property messages is an array of message objects. The message 
@@ -1821,11 +1827,11 @@
 	*								{'code': 'myCode2', 'text': 'Text 2'}
 	*							]
 	*			});
-	* For adding a single message the put methode should be called with the 
+	* For adding a single message the put method should be called with the 
 	* language, code and text.
 	* Example single message: ngcMessagesService.put('en-us', 'myCode1', 'Text 1'); 
 	* 
-	* The get methode can be called with the code of the message and
+	* The get method can be called with the code of the message and
 	* will return the corresponding text. 
 	*/
 	ngcMessages.service('ngcMessagesService', function NgcMessagesService(
@@ -1951,7 +1957,7 @@
 		 * The onsuccess parameter is a function with parameters
 		 * language and messages. And can be ussed to do 
 		 * action after loading like adding more messages or
-		 * changing messages. 
+		 * changing messages.
 		 */
 		this.load = function(url, onsuccess) {
 			if (url != null) {
@@ -2043,10 +2049,17 @@
 	* {{myCode | ngcMessage:({"par1":"a", "par2":"b"})}}
 	*/
 	ngcMessages.filter('ngcMessage', function(ngcMessagesService) {
-	
-		return function(code, parameters) {
+
+		function message(code, parameters) {
 			return ngcMessagesService.get(code, parameters);
 		}
+
+		// Setting $stateful is required to make it a stateful 
+		// filter. This will trigger an automatic refresh 
+		// when loading a new resource. 
+		message.$stateful = true;
+		
+		return message;
 		
 	});
 
