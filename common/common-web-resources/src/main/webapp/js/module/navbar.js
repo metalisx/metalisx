@@ -56,7 +56,7 @@
 	    return {
 			restrict: 'A',
 	    	link:function (scope, element, attrs, ngModel) {
-	        	var templateUrl = scope.ngcSideNav;
+	        	var templateUrl = '';
 				if (attrs['ngcSideNav']) {
 					templateUrl = attrs.ngcSideNav;
 				}
@@ -95,10 +95,10 @@
 	    		var activeLinkClass = 'active';
 	    		var activeLinkAlternatives = null;
 				if (attrs['ngcActiveLink'] != null && attrs['ngcActiveLink'] != '') {
-	    			activeLinkClass = scope.ngcActiveLink;
+	    			activeLinkClass = attrs.ngcActiveLink;
 	    		}
 				if (attrs['ngcActiveLinkAlternatives'] != null && attrs['ngcActiveLinkAlternatives'] != '') {
-					var a = scope.ngcActiveLinkAlternatives.replace(' ','');
+					var a = attrs.ngcActiveLinkAlternatives.replace(' ','');
 					activeLinkAlternatives = a.split(',');
 	    		}
 				var path = attrs.href;
