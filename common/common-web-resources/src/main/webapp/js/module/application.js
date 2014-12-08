@@ -622,15 +622,13 @@
 					}).on('typeahead:selected', function(obj, datum, name) {
 						if (callback) {
 							callback({
-								typeahead: $typeahead,
-								datum: datum
+								typeahead: { 'typeahead': $typeahead, datum: datum}
 							});
 						}
 					}).on('typeahead:closed', function() {
 						if (callback) {
 							callback({
-								typeahead: $typeahead,
-								datum: null
+								typeahead: { 'typeahead': $typeahead, datum: null}
 							});
 						}
 					});
