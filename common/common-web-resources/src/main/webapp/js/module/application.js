@@ -1329,43 +1329,6 @@
 	});
 	
 	/**
-	 * Directive to convert the empty string value of a select element to
-	 * a null value for the model and vice versa.
-	 * 
-	 * Do not use it when the directive ngcSelectInteger is used on the same element.
-	 * 
-	 * The priority of the directive is set so it runs after the build in one.
-	 */
-	ngcModule.directive('ngcSelectString', function() {
-	    return {
-			priority: 1000,
-			restrict: 'A',
-	        require: 'ngModel',
-	        link: function(scope, element, attrs, ngModel) {
-	
-	    		// View value to model value
-		    	ngModel.$parsers.push(function (data) {
-		    		var value = null;
-		    		if (data !== null && data !== '') {
-		    			value = data;
-		    		}
-		    		return value;
-		        });
-		
-				// Model value to view value
-				ngModel.$formatters.push(function(data) {
-					var value = '';
-					if (data !== null) {
-						value = data;
-					}
-					return value;
-				});
-				
-	        }
-	    };
-	});
-	
-	/**
 	 * Directive for a checkbox to convert model values of different
 	 * formats to the view values of the checkbox and vise versa.
 	 * The type of the model values are set by the attribute 
@@ -1528,11 +1491,12 @@
 	    		// View value to model value
 				ngModel.$parsers.push(function(data) {
 					var value = null;
-					if (data != null) {
+					if (data != null && data != '') {
 						var dateParts = data.split("-");
 						if (dateParts.length = 3) {
 							value = data + ' 00:00:00';
 						} else {
+							value = null;
 							ngModel.$setValidity('Incorrect date format.', false);
 						}
 					}
