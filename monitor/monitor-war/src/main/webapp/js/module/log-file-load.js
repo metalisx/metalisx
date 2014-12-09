@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var logFileLoadController = angular.module('logFileLoadController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	logFileLoadController.controller('LogFileLoadController', 
+	application.controller('LogFileLoadController', 
 		function LogFileLoadController($scope, crudService) {
 		
 			var restEndpoint = '../rest/load';

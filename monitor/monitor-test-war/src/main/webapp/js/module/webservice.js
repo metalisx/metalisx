@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var webserviceController = angular.module('webserviceController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	webserviceController.controller('WebserviceController', 
+	application.controller('WebserviceController', 
 		function WebserviceController($scope, crudService) {
 		
 			var resultContainerId = 'resultContainer';

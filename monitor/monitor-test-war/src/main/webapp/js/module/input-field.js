@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var inputFieldController = angular.module('inputFieldController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	inputFieldController.controller('InputFieldController', 
+	application.controller('InputFieldController', 
 		function InputFieldController($scope, crudService) {
 		
 			var resultContainerId = 'resultContainer';

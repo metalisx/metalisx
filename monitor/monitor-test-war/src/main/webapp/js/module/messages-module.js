@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var messagesModuleController = angular.module('messagesModuleController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	messagesModuleController.controller('MessagesModuleController', 
+	application.controller('MessagesModuleController', 
 		function MessagesModuleController($scope, applicationContext, ngcMessagesService) {
 		
 			$scope.loadMessagesParameter = "your name";

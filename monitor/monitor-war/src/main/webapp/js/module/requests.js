@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var requestsController = angular.module('requestsController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	requestsController.controller('RequestsController', 
+	application.controller('RequestsController', 
 		function RequestsController($scope, $compile, $http, $location, $routeParams, $timeout, $filter,
 					crudService, utilsService, applicationContext) {
 		

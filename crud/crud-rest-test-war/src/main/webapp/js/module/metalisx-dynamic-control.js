@@ -10,7 +10,7 @@
 
 	// Module
 	
-	var dynamicControl = angular.module('dynamicControl', []);
+	var application = angular.module('application');
 
 	// Services
 	
@@ -24,7 +24,7 @@
 	 *     $rootScope.metalisxDynamicControlTemplateUrl = 'yourUrl';
 	 *   });
 	 */
-	dynamicControl.run(function($rootScope) {
+	application.run(function($rootScope) {
 	
 		if (!$rootScope.metalisxDynamicControlTemplateUrl) {
 			$rootScope.metalisxDynamicControlTemplateUrl = '../js/module/metalisx-dynamic-control.tpl';
@@ -64,7 +64,7 @@
 	 * easiest way. Unfortunately these script tags should be in the HTML code and
 	 * as such located in the HTML block with the ng-app attribute.
 	 */
-	dynamicControl.directive('dynamicControl', function(dynamicControlTemplateSelector, templateCompile,
+	application.directive('dynamicControl', function(dynamicControlTemplateSelector, templateCompile,
 			applicationContext) {
 		return {
 			restrict: 'E',
@@ -81,7 +81,7 @@
 	    };
 	});
 	
-	dynamicControl.directive('dynamicControlGroup', function(dynamicControlTemplateSelector, templateCompile) {
+	application.directive('dynamicControlGroup', function(dynamicControlTemplateSelector, templateCompile) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -95,7 +95,7 @@
 	    };
 	});
 	
-	dynamicControl.directive('dynamicControlPanel', function(dynamicControlTemplateSelector, templateCompile) {
+	application.directive('dynamicControlPanel', function(dynamicControlTemplateSelector, templateCompile) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -112,7 +112,7 @@
 	    };
 	});
 	
-	dynamicControl.service('dynamicControlTemplateLoaderService', function($rootScope, $injector) {
+	application.service('dynamicControlTemplateLoaderService', function($rootScope, $injector) {
 		
 		this.loadTemplates = function() {
 			/**
@@ -131,7 +131,7 @@
 		
 	});
 	
-	dynamicControl.service('dynamicControlTemplateSelector', function($templateCache, dynamicControlTemplateLoaderService) {
+	application.service('dynamicControlTemplateSelector', function($templateCache, dynamicControlTemplateLoaderService) {
 	
 		// Crude check if the templates are present in the $templateCache.
 		if (!$templateCache.get('dynamic-control-input.html')) {
@@ -167,7 +167,7 @@
 	
 	// Filters
 	
-	dynamicControl.filter('primary', function() {
+	application.filter('primary', function() {
 		return function(entities, isPrimary) {
 			var list = new Array();
 			angular.forEach(entities, function(value, key) {

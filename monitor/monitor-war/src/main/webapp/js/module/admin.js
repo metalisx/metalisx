@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var adminController = angular.module('adminController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	adminController.controller('AdminController', 
+	application.controller('AdminController', 
 		function AdminController($scope, crudService) {
 		
 			var clearMonitorRequestsUrl = '../rest/admin/requests/clean';

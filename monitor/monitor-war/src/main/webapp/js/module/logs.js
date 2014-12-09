@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var logsController = angular.module('logsController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	logsController.controller('LogsController', 
+	application.controller('LogsController', 
 		function LogsController($scope, $compile, $http, $location, $routeParams, $timeout, $filter,
 					crudService, utilsService, applicationContext) {
 		

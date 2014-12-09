@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var logFileListenersController = angular.module('logFileListenersController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	logFileListenersController.controller('LogFileListenersController', 
+	application.controller('LogFileListenersController', 
 		function LogFileListenersController($scope, crudService) {
 		
 			var restEndpoint = '../rest/listener';

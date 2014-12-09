@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var requestController = angular.module('requestController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	requestController.controller('RequestController', 
+	application.controller('RequestController', 
 		function RequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
 				applicationContext) {
 		
@@ -68,11 +68,11 @@
 
 	// Module
 	
-	var ngcRequestDynatree = angular.module('ngcRequestDynatree', []);
+	var application = angular.module('application');
 
 	// Directives
 
-	ngcRequestDynatree.directive('ngcRequestDynatree', function($filter, applicationContext) {
+	application.directive('ngcRequestDynatree', function($filter, applicationContext) {
 		return {
 			restrict: 'A',
 			require: 'ngModel',

@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var logRequestController = angular.module('logRequestController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	logRequestController.controller('LogRequestController', 
+	application.controller('LogRequestController', 
 		function LogRequestController($scope, $compile, $http, $location, $window, $routeParams, crudService, 
 				applicationContext) {
 		
@@ -60,11 +60,11 @@
 
 	// Module
 	
-	var ngcLogRequestDynatree = angular.module('ngcLogRequestDynatree', []);
+	var application = angular.module('application');
 
 	// Directives
 	
-	ngcLogRequestDynatree.directive('ngcLogRequestDynatree', function(applicationContext) {
+	application.directive('ngcLogRequestDynatree', function(applicationContext) {
 		return {
 			restrict: 'A',
 			require: 'ngModel',

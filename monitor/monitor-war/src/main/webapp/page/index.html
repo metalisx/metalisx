@@ -49,9 +49,33 @@
 	<!-- default -->
 	<script src="/monitor/js/module/application.js" type="text/javascript"></script>
 	<script src="/monitor/js/module/navbar.js" type="text/javascript"></script>
-	<script src="/monitor/js/module/routing.js" type="text/javascript"></script>
+
+	<!-- default -->	
+	<script>
+	(function($){
+
+		// Set application context
+		$.contextPath = '/monitor';
+
+		// Disable jQuery ajax caching
+		$.ajaxSetup({cache: false});
+
+		// Initialize application
+		var application = angular.module('application', 
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot']);
+
+		// Run
+		application.run(function(applicationContext, ngcMessagesService) {
+
+		    applicationContext.contextPath = $.contextPath;
+			
+		});
+
+	}) (jQuery);
+	</script>
 
 	<!-- extra -->
+	<script src="/monitor/js/module/routing.js" type="text/javascript"></script>
 	<script src="/monitor/js/module/admin.js" type="text/javascript"></script>
 	<script src="/monitor/js/module/log-file-listeners.js" type="text/javascript"></script>
 	<script src="/monitor/js/module/log-file-load.js" type="text/javascript"></script>
@@ -63,41 +87,6 @@
 	<script src="/monitor/js/module/settings.js" type="text/javascript"></script>
 	<script src="/monitor/js/module/summary.js" type="text/javascript"></script>
 
-	<!-- default -->	
-	<script>
-	(function($){
-
-		// Set application context
-		$.contextPath = '/monitor';
-
-		// Initialize application
-		var application = angular.module('application', 
-				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot', 
-					'adminController', 
-					'logController',
-					'logFileListenersController',
-					'logFileLoadController',
-					'logRequestController',
-					'logsController',
-					'requestController',
-					'requestsController',
-					'settingsController',
-					'summaryController',
-					'ngcApplicationRouting', 
-					'ngcLogRequestDynatree', 'ngcRequestDynatree']);
-
-		// Run
-		application.run(function(applicationContext, ngcMessagesService) {
-
-		    applicationContext.contextPath = $.contextPath;
-			
-		});
-
-		// Disable jQuery ajax caching
-		$.ajaxSetup({cache: false});
-
-	}) (jQuery);
-	</script>
 </head>
 <body>
 

@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var crudDetailController = angular.module('crudDetailController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	crudDetailController.controller('CrudDetailController', 
+	application.controller('CrudDetailController', 
 		function CrudDetailController($scope, $timeout, $compile, $location, $window, $routeParams, templateProvider, crudService, 
 				crudCacheService, applicationContext) {
 		

@@ -10,11 +10,11 @@
 
 	// Module
 	
-	var crudCacheService = angular.module('crudCacheService', []);
+	var application = angular.module('application');
 
 	// Services
 	
-	crudCacheService.service('crudCacheService', function(crudService, applicationCache, applicationContext) {
+	application.service('crudCacheService', function(crudService, applicationCache, applicationContext) {
 	
 		var crudJsonEndpoint = '../rest/crud'
 	

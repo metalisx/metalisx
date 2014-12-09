@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var hierarchyLoggingController = angular.module('hierarchyLoggingController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	hierarchyLoggingController.controller('HierarchyLoggingController', 
+	application.controller('HierarchyLoggingController', 
 		function HierarchyLoggingController($scope, crudService) {
 		
 			var resultContainerId = 'resultContainer';
@@ -34,11 +34,11 @@
 
 	// Module
 	
-	var domainServiceLoggingController = angular.module('domainServiceLoggingController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	domainServiceLoggingController.controller('DomainServiceLoggingController', 
+	application.controller('DomainServiceLoggingController', 
 		function DomainServiceLoggingController($scope, crudService) {
 		
 			var $data = $('#domainServiceLoggingData', $scope.$element);

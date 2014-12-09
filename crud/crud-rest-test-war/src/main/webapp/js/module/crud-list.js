@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var crudListController = angular.module('crudListController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	crudListController.controller('CrudListController', 
+	application.controller('CrudListController', 
 		function($scope, $compile, $location, $routeParams, $timeout, templateProvider, crudService, 
 				crudCacheService, crudColumnValueFormatter, applicationContext) {
 		
@@ -144,11 +144,11 @@
 
 	// Module
 	
-	var crudColumnValueFormatter = angular.module('crudColumnValueFormatter', []);
+	var application = angular.module('application');
 
 	// Services
 
-	crudColumnValueFormatter.service('crudColumnValueFormatter', function ($filter) {
+	application.service('crudColumnValueFormatter', function ($filter) {
 		
 		this.format = function(type, value) {
 			if (type == 'date') {

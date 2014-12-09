@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var summaryController = angular.module('summaryController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	summaryController.controller('SummaryController', 
+	application.controller('SummaryController', 
 		function SummaryController($scope, $compile, $http, $location, $routeParams, $timeout,
 					crudService, utilsService, applicationContext) {
 		

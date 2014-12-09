@@ -10,11 +10,11 @@
 
 	// Module
 	
-	var ngcApplicationRouting = angular.module('ngcApplicationRouting', []);
+	var application = angular.module('application');
 
 	// Routings
 	
-	ngcApplicationRouting.config(function($routeProvider, $locationProvider) {
+	application.config(function($routeProvider, $locationProvider) {
 	
 		var contextPath = (typeof $.contextPath != 'undefined' && $.contextPath != null ? $.contextPath : '');
 	

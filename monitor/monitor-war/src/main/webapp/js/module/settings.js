@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var settingsController = angular.module('settingsController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	settingsController.controller('SettingsController', 
+	application.controller('SettingsController', 
 		function SettingsController($scope, $compile, $http, $location, $routeParams,
 					templateProvider, crudService, utilsService, applicationContext) {
 		

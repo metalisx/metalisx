@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var messagesController = angular.module('messagesController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	messagesController.controller('MessagesController', 
+	application.controller('MessagesController', 
 		function MessagesController($scope, crudService) {
 		
 			$scope.getMessagesDefaultContainer = function($event) {

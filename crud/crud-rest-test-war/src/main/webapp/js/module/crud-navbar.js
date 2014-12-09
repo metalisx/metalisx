@@ -4,11 +4,11 @@
 
 	// Module
 	
-	var crudNavbarController = angular.module('crudNavbarController', []);
+	var application = angular.module('application');
 
 	// Controller
 	
-	crudNavbarController.controller('CrudNavbarController', 
+	application.controller('CrudNavbarController', 
 		function($scope, $timeout, $compile, templateProvider, crudCacheService) {
 	
 			function init() {
