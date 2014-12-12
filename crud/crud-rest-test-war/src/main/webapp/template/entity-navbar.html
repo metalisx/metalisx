@@ -7,13 +7,13 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a href="index.html#/" class="navbar-brand">CRUD rest</a>
+			<a href="index.html#/" class="navbar-brand">CRUD for entities</a>
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li ng-repeat="entityMetadata in $parent.entitiesMetadata"
 					id="navbarItem{{entityMetadata.entityClass}}">
-						<a href="index.html#/crud-list/{{entityMetadata.entityClass}}">{{entityMetadata.entityClass | ngcMessage}}</a>
+						<a href="index.html#/entities/{{entityMetadata.entityClass}}">{{entityMetadata.entityClass | ngcMessage}}</a>
 				</li>
 			</ul>
 		</div>

@@ -39,7 +39,7 @@
 
 		// Initialize application
 		var application = angular.module('application', 
-				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcFlot']);
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcCrud', 'ngcFlot']);
 
 		// Run
 		application.run(function(applicationContext, ngcMessagesService) {
@@ -59,11 +59,11 @@
 	}) (jQuery);
 	</script>
 
-	<script src="../js/module/crud-list.js" type="text/javascript"></script>
-	<script src="../js/module/crud-detail.js" type="text/javascript"></script>
-	<script src="../js/module/crud-navbar.js" type="text/javascript"></script>
-	<script src="../js/module/crud-cache.js" type="text/javascript"></script>
-	<script src="../js/module/crud-routing.js" type="text/javascript"></script>
+	<script src="../js/module/entities.js" type="text/javascript"></script>
+	<script src="../js/module/entity.js" type="text/javascript"></script>
+	<script src="../js/module/entity-navbar.js" type="text/javascript"></script>
+	<script src="../js/module/entity-cache.js" type="text/javascript"></script>
+	<script src="../js/module/entity-routing.js" type="text/javascript"></script>
 	<script src="../js/module/metalisx-dynamic-control.js" type="text/javascript"></script>
 
 </head>
@@ -71,7 +71,7 @@
 
 <div class="container-fluid" ng-app="application">
 
-	<div class="navbarContainer" ng-controller="CrudNavbarController" ngc-navbar="../template/crud-navbar.html" ngc-navbar-active-item=""></div>
+	<div class="navbarContainer" ng-controller="EntityNavbarController" ngc-navbar="../template/entity-navbar.html" ngc-navbar-active-item=""></div>
 
 	<div class="row">
 		<div class="col-sm-12">

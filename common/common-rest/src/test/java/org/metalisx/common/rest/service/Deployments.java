@@ -50,7 +50,7 @@ public class Deployments {
 		        .addClasses(EntityFieldTypeMapper.class, MetadataProvider.class)
 		        .addClasses(DateParameter.class)
 		        .addClasses(RestJsonProvider.class)
-		        .addClasses(AbstractRestService.class, RestException.class)
+		        .addClasses(AbstractEntityRestService.class, RestException.class)
 		        .addClasses(RestServiceUtils.class)
 		        // test classes
 		        .addClasses(InitializeDatabase.class, User.class, RestApplication.class,  CrudRestService.class)

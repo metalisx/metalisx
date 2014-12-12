@@ -8,11 +8,11 @@
 
 	// Controller
 	
-	application.controller('CrudNavbarController', 
-		function($scope, $timeout, $compile, templateProvider, crudCacheService) {
+	application.controller('EntityNavbarController', 
+		function($scope, $timeout, $compile, templateProvider, entityCacheService) {
 	
 			function init() {
-				crudCacheService.load($scope);
+				entityCacheService.load($scope);
 			}
 			
 			init();

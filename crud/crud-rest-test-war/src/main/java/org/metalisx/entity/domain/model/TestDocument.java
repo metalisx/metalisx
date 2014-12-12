@@ -1,4 +1,4 @@
-package org.metalisx.crud.domain.model;
+package org.metalisx.entity.domain.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

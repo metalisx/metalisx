@@ -1,9 +1,3 @@
-/**
- * Angular module :: ngcApplicationRouting
- * 
- * The Angular module ngcApplicationRouting provides the routing
- * of the application.
- */
 (function(angular) {
 	
 	'use strict';
@@ -26,26 +20,26 @@
 			reloadOnSearch: false
 		})
 	
-		// crud
+		// Entity
 		
 		$routeProvider
-		.when('/crud-list/:entityClass', {
-			templateUrl: contextPath + '/template/crud-list.html',
-			controller: 'CrudListController',
+		.when('/entities/:entityClass', {
+			templateUrl: contextPath + '/template/entities.html',
+			controller: 'EntitiesController',
 			reloadOnSearch: false
 		})
 		
 		$routeProvider
-		.when('/crud-detail/:entityClass', {
-			templateUrl: contextPath + '/template/crud-detail.html',
-			controller: 'CrudDetailController',
+		.when('/entity/:entityClass', {
+			templateUrl: contextPath + '/template/entity.html',
+			controller: 'EntityController',
 			reloadOnSearch: false
 		})
 		
 		$routeProvider
-		.when('/crud-detail/:entityClass/:id', {
-			templateUrl: contextPath + '/template/crud-detail.html',
-			controller: 'CrudDetailController',
+		.when('/entity/:entityClass/:id', {
+			templateUrl: contextPath + '/template/entity.html',
+			controller: 'EntityController',
 			reloadOnSearch: false
 		})
 		

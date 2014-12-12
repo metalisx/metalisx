@@ -1,4 +1,4 @@
-package org.metalisx.crud.rest.application;
+package org.metalisx.entity.rest.application;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

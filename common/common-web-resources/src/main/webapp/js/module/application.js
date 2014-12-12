@@ -156,118 +156,6 @@
 	});
 	
 	/**
-	 * To make rest calls uniform across applications a pattern
-	 * is developed. The re-occurring rest calls are combined 
-	 * in this AngularJS service.
-	 * 
-	 * A base url is provided as parameter for the method and
-	 * depending on the call the url path is extended according
-	 * to the Json object requested from the server.
-	 * 
-	 * Protocol - Path - Information
-	 *  GET  - /metatdata     - returns metadata JSON object of an entity
-	 *  POST - /page/metadata - returns metadata JSON object for a page containing entities
-	 *  POST - /inital/data   - returns a JSON object containing all information
-	 *                          needed to display an entity.
-	 *                          Useful when retrieving an entity, and showing
-	 *                          a property of the entity as a listbox.
-	 *                          To display the options in the listbox, we can use this
-	 *                          call to retrieve these list. Multiple if required.
-	 *                          This is done to prevent the entity to clutter with 
-	 *                          secondary information.
-	 *  POST - /page          - returns a JSON object containing a page with entities
-	 *  GET  - /filter        - returns a new filter DTO JSON object of a server side filter DTO.
-	 *                          This way the filter object for filtering a page or list can be
-	 *                          build on the server, so no hack or weird JavaScript is required.
-	 *  GET  - /new-entity    - returns a new entity JSON object of a server side entity.
-	 *                          This way the entity can be build on the server, so no
-	 *                          hacks or weird JavaScript is required.
-	 *  POST - /list          - returns a JSON object containing a list of entities
-	 *  GET  - /              - returns an entity
-	 *  POST - /              - update an entity
-	 *  PUT  - /              - insert an entity 
-	 *  DEL  - /              - deletes an entity
-	 *  
-	 *  The getPageEndpoint is a helper function to build the correct
-	 *  rest url for retrieving a page. This was required to include the jQuery
-	 *  DataTable in this pattern.
-	 *  
-	 *  The server side needs to implement the code handling the protocol and
-	 *  path. To use this service does not mean all needs to be implemented, only
-	 *  implement the one you need.
-	 */
-	ngcModule.service('crudService', function() {
-	
-		var restMetadataEndpoint = '/metadata';
-		var restPageMetadataEndpoint = '/page/metadata';
-		var restPageEndpoint = '/page';
-		var restFilterEndpoint = '/filter';
-		var restNewEntityEndpoint = '/new-entity';
-		var restListEndpoint = '/list';
-		var restInitialDataEndpoint = '/initial/data';
-	
-		function dataToUrlPath(data) {
-			var value = '';
-			if (data != null) {
-				for(var property in data){
-				    value = value + '/' + data[property];
-				}
-			}
-			return value;
-		}
-	
-		/** Returns the rest page endpoint, so it can be used by jQuery DataTable. */ 
-		this.getPageEndpoint = function(url) {
-			return url + restPageEndpoint;
-		};
-		
-		this.metadata = function(url,  options) {
-			$.metalisxDataProvider.get(url + restMetadataEndpoint, null, options);
-		};
-	
-		this.pageMetadata = function(url, options) {
-			$.metalisxDataProvider.get(url + restPageMetadataEndpoint, null, options);
-		};
-		
-		this.getInitialData = function(url, data, options) {
-			$.metalisxDataProvider.post(url + restInitialDataEndpoint, data, options);
-		};
-		
-		this.getFilter = function(url, options) {
-			$.metalisxDataProvider.get(url + restFilterEndpoint, null, options);
-		};
-		
-		this.getNewEntity = function(url, options) {
-			$.metalisxDataProvider.get(url + restNewEntityEndpoint, null, options);
-		};
-		
-		this.postNewEntity = function(url, data, options) {
-			$.metalisxDataProvider.post(url + restNewEntityEndpoint, data, options);
-		};
-		
-		this.getList = function(url, data, options) {
-			$.metalisxDataProvider.post(url + restListEndpoint, data, options);
-		};
-		
-		this.get = function(url, data, options) {
-			$.metalisxDataProvider.get(url + dataToUrlPath(data), null, options);
-		};
-		
-		this.del = function(url, data, options) {
-			$.metalisxDataProvider.del(url + dataToUrlPath(data), null, options);
-		};
-		
-		this.post = function(url, data, options) {
-			$.metalisxDataProvider.post(url, data, options);
-		};
-		
-		this.put = function(url, data, options) {
-			$.metalisxDataProvider.put(url, data, options);
-		};
-	
-	});
-	
-	/**
 	 * Utils service.
 	 * For defining some helper functions so we do not need jQuery in
 	 * the controllers.
@@ -1713,6 +1601,433 @@
 		
 	});
 
+	/**
+	 * Filter to return the formatted value according to the
+	 * type. It is a convenient filter for when the type is known.
+	 * If type is 'data' the ngcDate filter is used to
+	 * convert the value to a date.
+	 * If type has another value then the input is return as output.
+	 */
+	ngcModule.filter('ngcGenericFormatter', function ($filter) {
+		
+		function format(type, value) {
+			if (type == 'date') {
+				return $filter('ngcDate')(value);
+			}
+			return value;
+		};
+		
+		return function(type, value) {
+			return format(type, value);
+		};
+		
+	});
+	
+})(window.angular);
+
+/**
+ * Angular module :: ngcCrud
+ * 
+ * The Angular module ngcCrud gives support for CRUD operations
+ * by exposing a service and controllers.
+ */
+(function(angular) {
+	
+	'use strict';
+
+	// Module
+	
+	var ngcCrud = angular.module('ngcCrud', []);
+	
+	// Services
+	
+	/**
+	 * Service for accessing a REST service.
+	 * 
+	 * This service implements the most common rest calls.
+	 * 
+	 * The server side needs to implement the code handling the protocol and
+	 * path. The server is not required To use this service does not mean all 
+	 * needs to be implemented, only implement the one you need.
+	 *  
+	 * Every method requires a url parameter. This contains the base URL 
+	 * of the REST service and depending on the method called an HTTP 
+	 * header is set with the protocol and some method will extend
+	 * the base URL with an additional context path.
+	 * 
+	 * Protocol - Additional context path - Information
+	 *  GET  - /metatdata     - returns metadata JSON object of an entity
+	 *  POST - /page/metadata - returns metadata JSON object for a page containing entities
+	 *  POST - /inital/data   - returns a JSON object containing all information
+	 *                          needed to display an entity.
+	 *                          Useful when retrieving an entity, and showing
+	 *                          a property of the entity as a listbox.
+	 *                          To display the options in the listbox, we can use this
+	 *                          call to retrieve these list. Multiple if required.
+	 *                          This is done to prevent the entity to clutter with 
+	 *                          secondary information.
+	 *  POST - /page          - returns a JSON object containing a page with entities
+	 *  GET  - /filter        - returns a new filter DTO JSON object of a server side filter DTO.
+	 *                          This way the filter object for filtering a page or list can be
+	 *                          build on the server, so no hack or weird JavaScript is required.
+	 *  GET  - /new-entity    - returns a new entity JSON object of a server side entity.
+	 *                          This way the entity can be build on the server, so no
+	 *                          hacks or weird JavaScript is required.
+	 *  POST - /list          - returns a JSON object containing a list of entities
+	 *  GET  - /              - returns an entity
+	 *  POST - /              - update an entity
+	 *  PUT  - /              - insert an entity 
+	 *  DEL  - /              - deletes an entity
+	 *  
+	 *  Method getPageEndpoint
+	 *  The getPageEndpoint is a helper function to build the correct
+	 *  rest url for retrieving a page. This was required to include the jQuery
+	 *  DataTable in this pattern.
+	 */
+	ngcCrud.service('crudService', function() {
+	
+		var restMetadataEndpoint = '/metadata';
+		var restPageMetadataEndpoint = '/page/metadata';
+		var restPageEndpoint = '/page';
+		var restFilterEndpoint = '/filter';
+		var restNewEntityEndpoint = '/new-entity';
+		var restListEndpoint = '/list';
+		var restInitialDataEndpoint = '/initial/data';
+	
+		function dataToUrlPath(data) {
+			var value = '';
+			if (data != null) {
+				for(var property in data){
+				    value = value + '/' + data[property];
+				}
+			}
+			return value;
+		}
+	
+		/** Returns the rest page endpoint, so it can be used by jQuery DataTable. */ 
+		this.getPageEndpoint = function(url) {
+			return url + restPageEndpoint;
+		};
+		
+		this.metadata = function(url,  options) {
+			$.metalisxDataProvider.get(url + restMetadataEndpoint, null, options);
+		};
+	
+		this.pageMetadata = function(url, options) {
+			$.metalisxDataProvider.get(url + restPageMetadataEndpoint, null, options);
+		};
+		
+		this.getInitialData = function(url, data, options) {
+			$.metalisxDataProvider.post(url + restInitialDataEndpoint, data, options);
+		};
+		
+		this.getFilter = function(url, options) {
+			$.metalisxDataProvider.get(url + restFilterEndpoint, null, options);
+		};
+		
+		this.getNewEntity = function(url, options) {
+			$.metalisxDataProvider.get(url + restNewEntityEndpoint, null, options);
+		};
+		
+		this.postNewEntity = function(url, data, options) {
+			$.metalisxDataProvider.post(url + restNewEntityEndpoint, data, options);
+		};
+		
+		this.getList = function(url, data, options) {
+			$.metalisxDataProvider.post(url + restListEndpoint, data, options);
+		};
+		
+		this.get = function(url, data, options) {
+			$.metalisxDataProvider.get(url + dataToUrlPath(data), null, options);
+		};
+		
+		this.del = function(url, data, options) {
+			$.metalisxDataProvider.del(url + dataToUrlPath(data), null, options);
+		};
+		
+		this.post = function(url, data, options) {
+			$.metalisxDataProvider.post(url, data, options);
+		};
+		
+		this.put = function(url, data, options) {
+			$.metalisxDataProvider.put(url, data, options);
+		};
+	
+	});
+	
+	// Controllers
+
+	/** 
+	 * Controller for retrieving a list with objects.
+	 * This controller assumes that the object contains the property id.
+	 * 
+	 * It should be used in conjunction with the ngcDataTable directive.
+	 * The parameter settings should contain the properties:
+	 *  - restEndpoint
+	 *  - crudDetailUrl
+	 *  - sorting
+	 *  - columns
+	 *  
+	 * settings.restEndpoint
+	 * This is the endpoint for retrieving the list of items for the dataTable
+	 * from the server and for deleting an item from the list. 
+	 * When retrieving the list of items the HTTP method is set to POST 
+	 * and the URL format is:
+	 *  <restEndpoint> 
+	 * When deleting an item the HTTP method is set to DELETE and the URL 
+	 * format is:
+	 *  <restEndpoint>/<id>
+	 * 
+	 * settings.crudDetailUrl
+	 * This is the URL which is loaded when the user clicks on a row in 
+	 * the list. The id of the object is added to the url:
+	 *  <crudDetailUrl>/<id>
+	 * Example: http://localhost/rest/user/1
+	 * 
+	 * settings.sorting And settings.columns are properties which should be populated
+	 * according to the dataTable.
+	 * 
+	 */
+	ngcCrud.controller('CrudListController', 
+		function($scope, $compile, $timeout, $location, crudService, settings) {
+
+			var internalSettings = {
+				restEndpoint: null,
+				crudDetailUrl: null,
+				key: 'id',
+				getSorting: function(data) { return null; },
+				getColumns: function(data) { return null; },
+				renderDeleteColumn: true
+			}
+			internalSettings = $.extend(internalSettings, settings || {});
+			
+			if (settings.restEndpoint == null) {
+				throw "Missing value in settings.restEndpint";
+			}
+	
+			$scope.dataTableEnabled = false;
+			$scope.dataTableSettings = null;
+			
+			// Init DataTable
+			
+			function initDataTable() {
+				crudService.pageMetadata(internalSettings.restEndpoint, {onsuccess: function(data) {
+		
+					var sorting = internalSettings.getSorting(data);
+					var columns = internalSettings.getColumns(data);
+					
+					if (internalSettings.renderDeleteColumn) {
+						columns[columns.length] = {
+								data: null,
+								sortable: false,
+								render: function (data, type, full, meta) {
+									return '<a href="#" ng-click="del(\'' + data[internalSettings.key] + '\', $event)">X</a>';
+								}
+							};
+					}
+					var onRowClick = null;
+					
+					// If the settings.crudDetailUrl is set then the navigation to the detial page is
+					// enabled when the user clicks on the row.
+					if (settings.crudDetailUrl != null) {
+						onRowClick = function(nRow, aData, iDataIndex) {
+							$scope.$apply(function() {
+								$location.path(internalSettings.crudDetailUrl + '/' + aData[internalSettings.key]);
+							});
+						}
+					}
+					
+					$scope.dataTableSettings = {
+						onRowClick: onRowClick,
+						onsuccessRow: function(nRow, aData, iDataIndex) {
+							var html = $(nRow).html();
+							$(nRow).html(
+								$compile(html)($scope)
+							);
+						},
+						"dataTableSettings": {
+							"ajax": crudService.getPageEndpoint(internalSettings.restEndpoint),
+							"sorting": sorting,
+					        "columns": columns
+						}
+					};
+					
+					$scope.dataTableEnabled = true;
+					$scope.$apply();
+		
+				}});
+			};
+		
+			// Routing
+	
+			$scope.$on('$routeUpdate', function(next, current) {
+				$scope.refreshDataTable($scope);
+			});
+			
+			// Actions
+			
+			$scope.del = function(id, $event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+				var keyObject = {}
+				keyObject[internalSettings.key] = id;
+				crudService.del(internalSettings.restEndpoint, keyObject, {onsuccess: function(data) {
+					$scope.refreshDataTable($scope);
+				}});
+			};
+			
+			$scope.newEntity = function($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+				$location.path(internalSettings.crudDetailUrl);
+			}
+			
+			// Helpers
+			
+			$scope.refreshDataTable = function() {
+				$timeout(function() {
+					// When it is true then set it to false, so the watch event in the directive is triggered.
+					if ($scope.dataTableEnabled === true) {
+						$scope.dataTableEnabled = false;
+						$scope.$apply();
+					}
+					$scope.dataTableEnabled = true;
+					$scope.$apply();
+				});
+			};
+			
+			// Init
+			
+			initDataTable();
+
+	});
+	
+	
+	/** 
+	 * Controller for adding or updating an object.
+	 * This controller assumes that the object contains the property id.
+	 * 
+	 * It should be used in conjunction with the ngcDataTable directive.
+	 * The parameter settings should contain the properties:
+	 *  - restEndpoint
+	 *  - getItem
+	 *  
+	 * settings.restEndpoint
+	 * This is the endpoint for adding or updating the item. 
+	 * When adding the item the HTTP method is set to PUT 
+	 * and the URL format is:
+	 *  <restEndpoint>
+	 * When updating the item the HTTP method is set to POST 
+	 * and the URL format is:
+	 *  <restEndpoint>/<id>
+	 * 
+	 *  settings.key
+	 *  This is the property name in the item which identifies
+	 *  the item. It is also the name of the property in the 
+	 *  $routeParams which is used for retrieving the item
+	 *  when using an update.
+	 *  
+	 * settings.getItem
+	 * This is a function for returning the object in the returned
+	 * result of the endpoint call. The returned object is send to 
+	 * the server when adding or updating. It returns default the 
+	 * result of the endpoint call. If the item is located deeper
+	 * in the hierarchy of the result then you need to alter the 
+	 * return value of this method.
+	 */
+	ngcCrud.controller('CrudDetailController', 
+		function($scope, $window, $routeParams, crudService, settings) {
+		
+			var internalSettings = {
+				restEndpoint: null,
+				key: 'id',
+				getItem: function(data) { return data; }
+			}
+			internalSettings = $.extend(internalSettings, settings || {});
+
+			if (settings.restEndpoint == null) {
+				throw "Missing value in settings.restEndpint";
+			}
+
+			$scope.entity = null;
+			
+			// Init detail
+			
+			function initDetail() {
+				var id = $routeParams[internalSettings.key];
+				$scope.initEntity(id);
+			}
+			
+			// Entity
+			
+			$scope.initEntity = function(id) {
+				if (id != null) {
+					$scope.getEntity(id);
+				} else {
+					$scope.getNewEntity();
+				}
+			}
+		
+			$scope.getEntity = function (id) {
+				var keyObject = {}
+				keyObject[internalSettings.key] = id;
+				crudService.get(internalSettings.restEndpoint, keyObject, { onsuccess: function(result) {
+					$scope.entity = result;
+					$scope.$apply();
+				}});
+			}
+			
+			$scope.getNewEntity = function() {
+				crudService.getNewEntity(internalSettings.restEndpoint, {onsuccess: function(result) {
+					if (result && !result.exception && !result.validationerror) {
+						$scope.entity = result;
+						$scope.$apply();
+					}
+				}});
+			};
+		
+			// Actions
+			
+			$scope.save = function($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+				var item = internalSettings.getItem($scope.entity);
+				if (item[internalSettings.key] == null) {
+					$scope.put();
+				} else {
+					$scope.post();
+				}
+			}
+			
+			$scope.put = function() {
+				crudService.put(internalSettings.restEndpoint, internalSettings.getItem($scope.entity), {onsuccess: function(result) {
+					if (result && !result.exception && !result.validationerror) {
+						$scope.entity = null;
+						$window.history.back();
+					}
+				}});
+			};
+		
+			$scope.post = function() {
+				crudService.post(internalSettings.restEndpoint, internalSettings.getItem($scope.entity), {onsuccess: function(result) {
+					if (result && !result.exception && !result.validationerror) {
+						$window.history.back();
+					}
+				}});
+			};
+			
+			$scope.cancel = function($event) {
+				$event.stopPropagation();
+				$event.preventDefault();
+				$window.history.back();
+			};
+
+			// Init
+			
+			initDetail();
+			
+	});	
+			
 })(window.angular);
 
 /**

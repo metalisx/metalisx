@@ -1,17 +1,16 @@
-package org.metalisx.crud.domain.model;
-
-import java.util.Date;
+package org.metalisx.entity.domain.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.metalisx.common.domain.model.AbstractEntity;
 
 @Entity
-public class Test extends AbstractEntity {
+public class TestTextarea extends AbstractEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,9 +21,10 @@ public class Test extends AbstractEntity {
 	@NotNull
     private String name;
 
-    private Date date;
-
-    public Test() {
+	@Lob
+    private String text;
+    
+    public TestTextarea() {
     }
 
     public Long getId() {
@@ -43,12 +43,12 @@ public class Test extends AbstractEntity {
         return name;
     }
 
-    public Date getDate() {
-        return date;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public void setText(String text) {
+		this.text = text;
+	}
 
 }

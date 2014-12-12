@@ -1,7 +1,7 @@
 /**
- * Angular module :: crudCacheService
+ * Angular module :: entityCrudCacheService
  * 
- * The Angular module crudCacheService provides the cache for
+ * The Angular module entityCrudCacheService provides the cache for
  * the application.
  */
 (function(angular) {
@@ -14,9 +14,9 @@
 
 	// Services
 	
-	application.service('crudCacheService', function(crudService, applicationCache, applicationContext) {
+	application.service('entityCacheService', function(crudService, applicationCache, applicationContext) {
 	
-		var crudJsonEndpoint = '../rest/crud'
+		var crudJsonEndpoint = applicationContext.contextPath + '/rest/entity'
 	
 		this.load = function($scope, onsuccess) {
 			if (applicationCache.get('entitiesMetadata') === undefined) {
