@@ -220,7 +220,9 @@
 			$message.append(text);
 			if (detail) {
 				$detail = $('<a class="' + settings.messageDetailClass + '" href="#">Detail</a>')
-					.click(function() {
+					.click(function(event) {
+						event.stopPropagation();
+						event.preventDefault();
 						if ($('.' + settings.messageIframeClass, $container).size() == 0) {
 							$message.append('<iframe width="100%" height="' + settings.messageInnerContainerHeight + 
 										'" class="' + settings.messageIframeClass + '"/>');
