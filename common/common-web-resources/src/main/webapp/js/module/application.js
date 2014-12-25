@@ -1446,6 +1446,7 @@
 						if ($locale.NUMBER_FORMATS.DECIMAL_SEP == ',') {
 							v.replace('.', ',');
 						}
+						// Second argument is set to '', so no currency symbol is returned
 						value = $filter('ngcCurrency')(v, '');
 					}
 					return value;
@@ -1496,8 +1497,18 @@
 	 */
 	ngcModule.filter('ngcCurrency', function($filter, $sce) {
 		return function(input, type) {
-			var t = (type === 'undefined') ? '' : type;
-			return $sce.trustAsHtml($filter('currency')(input, t));
+			return $sce.trustAsHtml($filter('currency')(input, type));
+		}
+	});
+	
+	/**
+	 * Filter to return the percentage.
+	 * Used as a single point for percentage handling so it 
+	 * can be modified without much hassle.
+	 */
+	ngcModule.filter('ngcPercentage', function($filter) {
+		return function(input, decimals) {
+			return $filter('number')(input) + ' %';
 		}
 	});
 	
