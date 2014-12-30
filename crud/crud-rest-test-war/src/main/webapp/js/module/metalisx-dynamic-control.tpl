@@ -55,9 +55,9 @@
 		<span class="glyphicon glyphicon-floppy-save"></span>
 	</a>
 	<input style="float:left" id="{{ngcField.name}}" type="file" class="control-label" ng-disabled="ngcField.isPrimaryKey"
-		ngc-file-upload
-		ngc-file-upload-document="ngcEntity.item[ngcField.name]" 
-		ngc-file-upload-filename="ngcEntity.item['filename']" 
-		ngc-file-upload-mime-type="ngcEntity.item['mimeType']"
+		ngc-file-selector
+		ngc-file-selector-document="ngcEntity.item[ngcField.name]" 
+		ngc-file-selector-filename="ngcEntity.item['filename']" 
+		ngc-file-selector-mime-type="ngcEntity.item['mimeType']"
 		ngc-focus ngc-focus-enabled="{{ngcFocusEnabled}}"/>
 </script>

@@ -623,39 +623,49 @@
 	//})(jQuery)
 	
 	/**
-	 * Directive for file upload with HTML 5 functionality.
+	 * Directive for populating specified models with the 
+	 * file data and metadata of a selected file in an
+	 * input field of type file.
+	 *  
+	 * This directive will not send the file, it will  
+	 * converts the file data to a base64 representation by using
+	 * HTML 5 functionality. This way it can be send as a plain 
+	 * JSON object to the server by anthoer process/controller.
+	 * The server can then store the base64 or convert it to the 
+	 * original file.
+	 *  
+	 * A limit is set on the size of the file data because it is
+	 * placed in a plain JSON object as base64.
 	 * 
 	 * If a file is selected the following actions are executed.
 	 * The filename is placed in the model property specified by 
-	 * ngc-file-upload-filename.
+	 * ngc-file-selector-filename.
 	 * The mime type is placed in the model property specified by 
-	 * ngc-file-upload-mime-type.
+	 * ngc-file-selector-mime-type.
 	 * The data is converted with readAsDataUrl to base64 and placed
-	 * in the property specified by ngc-file-upload-document.
+	 * in the property specified by ngc-file-selector-document.
 	 * 
-	 * The ngc-file-upload-file-limit is an optional attribute to limit the size
-	 * of the uploaded file. It is specified in bytes and default set to 5242880.
-	 * 
-	 * The model is updated with the base64 representation of the file.
+	 * The ngc-file-selector-file-limit is an optional attribute to limit the size
+	 * of the file data. It is specified in bytes and default set to 5242880.
 	 */
-	ngcModule.directive('ngcFileUpload', function ($timeout, messagesProvider) {
+	ngcModule.directive('ngcFileSelector', function ($timeout, messagesProvider) {
 		
 	    return {
 			restrict: 'A',
-			scope: {ngcFileUploadDocument:'=',
-					ngcFileUploadFilename:'=',
-					ngcFileUploadMimeType:'=',
-					ngcFileUploadFileLimit:'='},
+			scope: {ngcFileSelectorDocument:'=',
+					ngcFileSelectorFilename:'=',
+					ngcFileSelectorMimeType:'=',
+					ngcFileSelectorFileLimit:'='},
 	        link:function (scope, element, attrs) {
 	
 	        	if (!(window.File && window.FileReader)) {
-	        		console.log('Uploading files will not work because the File APIs are not supported in the browser.');
+	        		console.log('File selector will not work because the File APIs are not supported in the browser.');
 	       		}
 	        	
 	        	var fileLimit = 5242880;
 	        	
-				if (attrs['ngcFileUploadFileLimit']) {
-	    			fileLimit = scope.ngcFileUploadFileLimit;
+				if (attrs['ngcFileSelectorFileLimit']) {
+	    			fileLimit = scope.ngcFileSelectorFileLimit;
 				}
 				
 				function handleFileSelect(evt) {
@@ -669,18 +679,18 @@
 	        		reader.onload = function(e) {
 	        			if (fileLimit != null && file.size > fileLimit) {
 	        				messagesProvider.message(
-	        						'Can not upload file. Maximum file size allowed is ' + fileLimit + ' bytes.',
+	        						'Can not select file. Maximum file size allowed is ' + fileLimit + ' bytes.',
 	        						{'level': 'error'});
 	        			} else {
 		        			if (reader.readyState === FileReader.DONE) {
-			        			if (attrs['ngcFileUploadDocument']) {
-			            			scope.ngcFileUploadDocument = reader.result;
+			        			if (attrs['ngcFileSelectorDocument']) {
+			            			scope.ngcFileSelectorDocument = reader.result;
 			        			}
-			        			if (attrs['ngcFileUploadFilename']) {
-			        				scope.ngcFileUploadFilename = file.name;
+			        			if (attrs['ngcFileSelectorFilename']) {
+			        				scope.ngcFileSelectorFilename = file.name;
 			        			}
-			        			if (attrs['ngcFileUploadMimeType']) {
-			        				scope.ngcFileUploadMimeType = file.type;
+			        			if (attrs['ngcFileSelectorMimeType']) {
+			        				scope.ngcFileSelectorMimeType = file.type;
 			        			}
 			    				scope.$apply();
 		        			} else {
