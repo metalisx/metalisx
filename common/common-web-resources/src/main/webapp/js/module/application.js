@@ -119,7 +119,11 @@
 		};
 		
 	});
-	
+
+	/** 
+	 * Service containing the getTemplate method for retrieving
+	 * a HTML resource.
+	 */
 	ngcModule.service('templateService', function($http) {
 		var time = '?time=' + (new Date()).getTime();
 		this.getTemplate = function(templateUrl, onsuccess) {
@@ -133,6 +137,10 @@
 		};
 	});
 	
+	/**
+	 * Service containing the compile method for placing a HTML snippet 
+	 * in a DOM element. 
+	 */
 	ngcModule.service('templateCompile', function($compile, $rootScope) {
 		this.compile = function(html, element, scope) {
 			element.html($.trim(html));
@@ -144,6 +152,10 @@
 		};
 	});
 	
+	/**
+	 * Service containing the method compile for retrieving a HTML resource 
+	 * and placing it in a DOM element.
+	 */
 	ngcModule.service('templateProvider', function(templateService, templateCompile) {
 		this.compile = function(templateUrl, element, scope, onsuccess) {
 			templateService.getTemplate(templateUrl, function(html) {
