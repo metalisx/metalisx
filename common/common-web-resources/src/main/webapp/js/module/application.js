@@ -1586,9 +1586,9 @@
 	/**
 	 * Filter to return a display date in the 
 	 * format: dd-MM-yyyy HH:mm:ss.SSS
-	 * The parameter date can be a string or number.
-	 * If the parameter date is a string the format 
-	 * should be: yyyy-MM-ddTHH:mm:ss.SSS
+	 * The parameter date can be of type date, string or number.
+	 * If the parameter date is a string the format should 
+	 * be: yyyy-MM-ddTHH:mm:ss.SSS
 	 */
 	ngcModule.filter('ngcDate', function($filter) {
 		
