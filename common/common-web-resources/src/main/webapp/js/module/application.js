@@ -725,7 +725,7 @@
 	/**
 	 * Directive to append an icon to the field. When clicked a popup window
 	 * with a filebrowser is opened. On selecting a filename in the popup the
-	 * filename is set in the field an the model.
+	 * filename is set in the field and the model.
 	 * Set the ngc-filebrowser-url attribute to override the default url, for
 	 * example: /filebrowser/filebrowser.html
 	 */
