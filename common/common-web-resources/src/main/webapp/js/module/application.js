@@ -2103,7 +2103,7 @@
 	*  ngcMessagesService.load('http://myhost/messages_nl.txt')
 	*  ngcMessagesService.load('http://myhost/messages_en-us.txt')
 	* Example call with onsuccess: 
-	*  ngcMessagesService.load('http://myhost/messages_nl.txt', fucntion(language, messages) {
+	*  ngcMessagesService.load('http://myhost/messages_nl.txt', function(language, messages) {
 	*    // do something
 	*  });
 	* Example of the content in a file:
