@@ -1680,8 +1680,8 @@
 	 * This service implements the most common rest calls.
 	 * 
 	 * The server side needs to implement the code handling the protocol and
-	 * path. The server is not required To use this service does not mean all 
-	 * needs to be implemented, only implement the one you need.
+	 * path. The server is not required to implement all possibilities, only 
+	 * implement the one you need.
 	 *  
 	 * Every method requires a url parameter. This contains the base URL 
 	 * of the REST service and depending on the method called an HTTP 
@@ -2490,6 +2490,155 @@
 	    				initFlot();
 	    			}
 	    		}
+	        }
+	    };
+	    
+	});
+
+})(window.angular);
+
+
+/**
+ * Angular module :: ngcBlock
+ * 
+ * The Angular module ngcBlock is used to block the
+ * user input. It listens to the block event for blocking
+ * the user input and to the unblock event for unblocking.
+ * 
+ * A element with the id block is created and a style is
+ * set on the element blocking the element for user input.
+ * 
+ * ngcBlockSettings Is the property containing the block settings.
+ * You only need to specify the settings you like to change.
+ * 
+ * Setting blockId
+ * blockId Setting is set as value for the id attribute of 
+ * the created DIV element when it has a value. By default 
+ * it is null.
+ * 
+ * Setting blockClass
+ * blockClass Setting is set as value for the class attribute of
+ * the created DIV element when it has a value. By default
+ * it is null.
+ *
+ * Setting blockStyle
+ * blockStyle Setting is set as value for the style attribute of
+ * the created DIV element when it has a value. By default it
+ * contains the following style: 
+ * 
+ * Example on overruling the default style by providing a style class.
+ * Set the setting blockClass to block. And include in the HTML
+ * page the style, make sure you set the url to an existing
+ * image:
+ * .block {
+ *   display: none;
+ *   z-index: 10000;
+ *   width: 100%;
+ *   height: 100%;
+ *   top: 0px;
+ *   left: 0px;
+ *   padding: 0px;
+ *   margin: 0px;
+ *   border: 0px;
+ *   position: fixed;
+ *   background: url('../img/loading.gif') no-repeat center center;
+ * }
+ * 
+ */
+(function(angular) {
+	
+	'use strict';
+
+	// Module
+	
+	var ngcBlock = angular.module('ngcBlock', []);
+	
+	// Directives
+	
+	/**
+	 * Directive for blocking user input.
+	 */
+	ngcBlock.directive('ngcBlock', function(crudService) {
+		
+	    return {
+			restrict: 'A',
+			scope: {ngcBlockSettings:'='},
+	        link:function (scope, element, attrs) {
+
+	        	var imageUrl = 'data:image/gif;base64,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\u003d\u003d';
+				var settings = {
+	        			offset: 58,
+	        			blockId: null,
+	        			blockClass: null,
+	        			blockStyle: "display: none;" +
+		        					" z-index: 10000;" +
+		        					" width: 100%;" +
+		        					" height: 100%;" +
+		        					" top: 0px;" +
+		        					" left: 0px;" +
+		        					" padding: 0px;" +
+		        					" margin: 0px;" +
+		        					" border: 0px;" +
+		        					" position: fixed;" +
+		        					" background: url('" + imageUrl + "') no-repeat center center;"
+					};
+				
+				if (attrs['ngcBlockSettings'] != null && attrs['ngcBlockSettings'] != '') {
+					settings = $.extend(settings, scope.ngcBlockSettings || {});
+	    		}
+
+				var $block = null;
+
+				var blockInProgress = false;
+				
+				function block() {
+					if (!blockInProgress) {
+						blockInProgress = true;
+		        		$block = $('<div id="' + settings.blockId + '" class="' + settings.blockClass + '">');
+		        		if (settings.blockId != null) {
+		        			$block.attr('id', settings.blockId);
+		        		}
+		        		if (settings.blockClass != null) {
+		        			$block.addClass(settings.blockClass);
+		        		} else {
+		        			$block.attr('style', settings.blockStyle);
+		        		}
+		        		element.append($block);
+		        	    $block.show();
+					}
+	        	};
+
+	        	function unblock(options) {
+	        		if ($block != null) {
+	        			$block.remove();
+	        		}
+	        		blockInProgress = false;
+	        	};
+
+	        	var keyOffFunction = null;
+	        	var blockEventOffFunction = scope.$on('block', function() {
+	        		$('body').on('keydown keypress', function() {
+		        		// Do nothing
+		        		console.log('key');
+		        		return false;
+		        	});
+
+	        		console.log('block');
+	        		block();
+	        	});
+	
+	        	var unblockEventOffFunction = scope.$on('unblock', function() {
+	        		console.log('unblock');
+	        		unblock();
+	        	});
+	        	
+				// Destroy the events when the element is destroyed.
+				element.on("$destroy", function() {
+	        		console.log('destroy');
+	        		blockEventOffFunction();
+	        		unblockEventOffFunction();
+		        });
+
 	        }
 	    };
 	    

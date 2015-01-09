@@ -1,0 +1,24 @@
+<div class="row" onload="prettyPrint();">
+	<div class="col-sm-12">
+		<h2>Testing the AngularJS block module's ngcBlock</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6" ngc-enter="#blockButton" ngc-block>
+		<h2>Test block</h2>
+		<p>Activating the button will block the user input.call. After 10 seconds it is automatically unblocked.</p>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Some field</label>
+				<div class="col-sm-8">
+					<input id="name" class="form-control" type="text" name="name" ngc-focus/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<a href="#" id="blockButton" class="btn btn-primary" ng-click="block($event)">Block</a>
+			 	</div>
+			</div>
+		</div>
+	</div>
+</div>

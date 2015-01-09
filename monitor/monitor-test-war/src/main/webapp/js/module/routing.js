@@ -86,6 +86,15 @@
 			reloadOnSearch: false
 		})
 		
+		// block module
+		
+		$routeProvider
+		.when('/block-module', {
+			templateUrl: contextPath + '/template/block-module.html',
+			controller: 'BlockModuleController',
+			reloadOnSearch: false
+		})
+		
 		$routeProvider
 		.otherwise({
 			redirectTo: redirect
