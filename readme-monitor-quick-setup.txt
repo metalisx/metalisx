@@ -48,7 +48,7 @@ Enable your project to use the Monitor artifacts:
 Add the order for the request servlet filter and profiler servlet filter
 to the web.xml
  - open the web.xml
- - add the absolute-order snippet:
+ - add the absolute-ordering snippet:
 	<absolute-ordering>
 		<others/>
 		<name>monitorRequestServletFilter</name>
