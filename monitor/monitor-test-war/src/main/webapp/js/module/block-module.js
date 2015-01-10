@@ -14,8 +14,10 @@
 			$scope.block = function($event) {
 				$event.stopPropagation();
 				$event.preventDefault();
-				$scope.$broadcast('block', $event);
-				$
+				$scope.$broadcast('ngc.block', $event);
+				$timeout(function() {
+					$scope.$broadcast('ngc.unblock', $event);
+				}, 2000);
 			};
 		
 		}
