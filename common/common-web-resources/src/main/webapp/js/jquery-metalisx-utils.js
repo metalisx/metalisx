@@ -56,7 +56,6 @@
 	$.metalisxBlock = function(options) {
 
 		var settings = $.extend(true, {
-			offset: 58,
 			blockId: 'block',
 			blockClass: 'block'
 		}, options || {});
