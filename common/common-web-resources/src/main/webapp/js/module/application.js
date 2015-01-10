@@ -2546,7 +2546,7 @@
  *   margin: 0px;
  *   border: 0px;
  *   position: fixed;
- *   background: url('../img/loading.gif') no-repeat center center;
+ *   background: url('/img/loading.gif') no-repeat center center;
  * }
  * 
  */
