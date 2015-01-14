@@ -39,7 +39,7 @@
 
 		// Initialize application
 		var application = angular.module('application', 
-				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcCrud', 'ngcFlot']);
+				['ngRoute', 'ngCookies', 'ngcModule', 'ngcNavbar', 'ngcMessages', 'ngcCrud', 'ngcFlot', 'ngcTemplate', 'ngcAlert']);
 
 		// Run
 		application.run(function(applicationContext, ngcMessagesService) {
@@ -76,7 +76,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 
-			<div id="messagesContainer" class="messagesContainer"></div>
+			<div id="messagesContainer" class="messagesContainer" ngc-alert></div>
 		
 		 	<div class="contentContainer">
 		 	

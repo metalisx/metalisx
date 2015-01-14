@@ -108,65 +108,6 @@
 		
 	});
 	
-	ngcModule.service('messagesProvider', function() {
-		
-		this.message = function(message, options) {
-			$.metalisxMessages(message, options);
-		};
-		
-		this.messages = function(messages, options) {
-			$.metalisxMessages(messages, options);
-		};
-		
-	});
-
-	/** 
-	 * Service containing the getTemplate method for retrieving
-	 * a HTML resource.
-	 */
-	ngcModule.service('templateService', function($http) {
-		var time = '?time=' + (new Date()).getTime();
-		this.getTemplate = function(templateUrl, onsuccess) {
-			// For some reason the $http sometimes failed to execute the Ajax call 
-			// so switched to the $.metalisxDataProvider.
-			$.metalisxDataProvider.get(templateUrl + time, null, {
-				contentType: null,
-				dataType: 'html',
-				onsuccess: onsuccess
-			});		
-		};
-	});
-	
-	/**
-	 * Service containing the compile method for placing a HTML snippet 
-	 * in a DOM element. 
-	 */
-	ngcModule.service('templateCompile', function($compile, $rootScope) {
-		this.compile = function(html, element, scope) {
-			element.html($.trim(html));
-			$compile(element.contents())(scope);
-			var phase = $rootScope.$$phase;
-			if (phase != '$apply' && phase != '$digest') {
-				scope.$digest();
-			}
-		};
-	});
-	
-	/**
-	 * Service containing the method compile for retrieving a HTML resource 
-	 * and placing it in a DOM element.
-	 */
-	ngcModule.service('templateProvider', function(templateService, templateCompile) {
-		this.compile = function(templateUrl, element, scope, onsuccess) {
-			templateService.getTemplate(templateUrl, function(html) {
-				templateCompile.compile(html, element, scope);
-				if (onsuccess) {
-					onsuccess();
-				}
-			});
-		};
-	});
-	
 	/**
 	 * Utils service.
 	 * For defining some helper functions so we do not need jQuery in
@@ -624,16 +565,6 @@
 	    };
 	});
 	
-	//(function($){
-	//	  $.event.special.destroyed = {
-	//	    remove: function(o) {
-	//	      if (o.handler) {
-	//	        o.handler()
-	//	      }
-	//	    }
-	//	  }
-	//})(jQuery)
-	
 	/**
 	 * Directive for populating specified models with the 
 	 * file data and metadata of a selected file in an
@@ -660,7 +591,7 @@
 	 * The ngc-file-selector-file-limit is an optional attribute to limit the size
 	 * of the file data. It is specified in bytes and default set to 5242880.
 	 */
-	ngcModule.directive('ngcFileSelector', function ($timeout, messagesProvider) {
+	ngcModule.directive('ngcFileSelector', function ($timeout, $rootScope, ngcAlertProvider) {
 		
 	    return {
 			restrict: 'A',
@@ -690,8 +621,7 @@
 	        		var reader = new FileReader();
 	        		reader.onload = function(e) {
 	        			if (fileLimit != null && file.size > fileLimit) {
-	        				messagesProvider.message(
-	        						'Can not select file. Maximum file size allowed is ' + fileLimit + ' bytes.',
+	        				$rootScope.$broadcast('ngc.alert', 'Can not select file. Maximum file size allowed is ' + fileLimit + ' bytes.',
 	        						{'level': 'error'});
 	        			} else {
 		        			if (reader.readyState === FileReader.DONE) {
@@ -706,7 +636,7 @@
 			        			}
 			    				scope.$apply();
 		        			} else {
-		        				messagesProvider.message('File loading failed. ' + reader.error,
+		        				$rootScope.$broadcast('ngc.alert', 'File loading failed. ' + reader.error,
 		        						{'level': 'error'});
 		        			}
 	        			}
@@ -2653,4 +2583,249 @@
 	    
 	});
 
+})(window.angular);
+
+
+(function(angular) {
+	
+	'use strict';
+
+	// Module
+	
+	var ngcTemplate = angular.module('ngcTemplate', []);
+
+	/** 
+	 * Service containing the getTemplate method for retrieving
+	 * a HTML resource.
+	 */
+	ngcTemplate.service('templateService', function($http) {
+		var time = '?time=' + (new Date()).getTime();
+		this.getTemplate = function(templateUrl, onsuccess) {
+			// For some reason the $http sometimes failed to execute the Ajax call 
+			// so switched to the $.metalisxDataProvider.
+			$.metalisxDataProvider.get(templateUrl + time, null, {
+				contentType: null,
+				dataType: 'html',
+				onsuccess: onsuccess
+			});		
+		};
+	});
+	
+	/**
+	 * Service containing the compile method for placing a HTML snippet 
+	 * in a DOM element. 
+	 */
+	ngcTemplate.service('templateCompile', function($compile, $rootScope) {
+		this.compile = function(html, element, scope) {
+			element.html($.trim(html));
+			$compile(element.contents())(scope);
+			var phase = $rootScope.$$phase;
+			if (phase != '$apply' && phase != '$digest') {
+				scope.$digest();
+			}
+		};
+	});
+	
+	/**
+	 * Service containing the method compile for retrieving a HTML resource 
+	 * and placing it in a DOM element.
+	 */
+	ngcTemplate.service('templateProvider', function(templateService, templateCompile) {
+		this.compile = function(templateUrl, element, scope, onsuccess) {
+			templateService.getTemplate(templateUrl, function(html) {
+				templateCompile.compile(html, element, scope);
+				if (onsuccess) {
+					onsuccess();
+				}
+			});
+		};
+	});
+	
+})(window.angular);
+
+/**
+ * Angular module :: ngcAlert
+ * 
+ * The Angular module ngcAlert gives basic support for rendering
+ * alerts recieved from the server or from the event ngc.alert.
+ */
+(function(angular) {
+	
+	'use strict';
+
+	// Module
+	
+	var ngcAlert = angular.module('ngcAlert', []);
+
+	// Services
+	
+	ngcAlert.service('ngcAlertProvider', function() {
+		
+		this.alert = function(message, options) {
+			$.metalisxMessages(message, options);
+		};
+		
+		this.alerts = function(messages, options) {
+			$.metalisxMessages(messages, options);
+		};
+		
+	});
+
+	// Directives
+	
+	ngcAlert.directive('ngcAlert', function(ngcAlertProvider) {
+
+	    return {
+			restrict: 'A',
+			scope: {ngcAlertTargetId:'@',
+				    ngcAlertLevel: '@',
+				    ngcAlertClean: '@',
+				    ngcAlertLocation: '@'},
+	        link:function (scope, element, attrs) {
+
+	        	var targetId = null; // show all alerts
+	        	var level = 'info';
+	        	var clean = true;
+	        	var location = 'first';
+	        	
+				if (attrs['ngcAlertTargetId'] != null && attrs['ngcAlertTargetId'] != '') {
+					targetId = scope.ngcAlertTargetId;
+	    		}
+
+				if (attrs['ngcAlertLevel'] != null && attrs['ngcAlertLevel'] != '') {
+					level = scope.ngcAlertLevel;
+	    		}
+				
+				if (attrs['ngcAlertClean'] != null && attrs['ngcAlertClean'] != '') {
+					clean = scope.ngcAlertClean;
+	    		}
+
+				if (attrs['ngcAlertLocation'] != null && attrs['ngcAlertLocation'] != '') {
+					location = scope.ngcAlertLocation;
+	    		}
+
+				var options = {};
+				var settings = $.extend(true, {
+					messagesContainerId: 'messagesContainer',
+					messagesContainerClass: 'messagesContainer',
+					messagesContainerForElementClass: 'messagesContainerForElement',
+					messageInnerContainerClass: 'messageInnerContainer',
+					messageDetailClass: 'messageDetail',
+					messageIframeClass: 'messageIframe',
+					messageInnerContainerHeight: '400px',
+					templateAlert: '<div class="{{alert.level}}">{{alert.mesage}}</div>',
+					templateDetailLink: '<a class="{{settings.alertDetailClass}}" href="#">Detail</a>',
+					templateDetailIframe: '<iframe width="100%" height="{{settings.alertInnerContainerHeight}}" class="{{settings.alertIframeClass}}"/>',
+					templateDetailPlainText: '<div style="white-space: pre">{{lert.detail}}</div>'
+				}, options || {});
+				
+				function renderAlert(alert) {
+					if (alert.message == null || alert.message == '') {
+						return;
+					}
+
+					// Check if the alert is for this element
+	        		if (targetId != null && targetId != alert.id) {
+	        			return;
+	        		}
+					
+	        		var $container = element;
+	        		
+					var alertMessage = alert.message;
+					var alertDetail = null;
+					if (alert.detail != null) {
+						alertDetail = alert.detail;
+					}
+					var alertLevel = null;
+					if (alert.level != null) {
+						alertLevel = alert.level;
+					} else {
+						alertLevel = level;
+					}
+
+					if (settings.clean) {
+						element.empty();
+					}
+
+					var $alert = settings.templateAlert; 
+					
+					var $alert = $('<div/>').addClass('alert');
+					if (location == 'first') {
+						$container.prepend($alert);
+					} else if (location == 'last') {
+						$container.append($alert);
+					} else {
+						alert('Unknown location ' + location);
+					}
+					
+					if (alertLevel.toLowerCase() == 'success') {
+						$alert.addClass('alert-success');
+					} else if (alertLevel.toLowerCase() == 'error') {
+						$alert.addClass('alert-danger');
+					} else if (alertLevel.toLowerCase() == 'info') {
+						$alert.addClass('alert-info');
+					}
+
+					$alert.append(alertMessage);
+					if (alertDetail) {
+						$alertDetail = $('<a class="' + settings.alertDetailClass + '" href="#">Detail</a>')
+							.click(function(event) {
+								event.stopPropagation();
+								event.preventDefault();
+								if ($('.' + settings.alertIframeClass, $container).size() == 0) {
+									$alert.append('<iframe width="100%" height="' + settings.alertInnerContainerHeight + 
+												'" class="' + settings.alertIframeClass + '"/>');
+									var body = '';
+									// If the detail starts with specific HTML characters we assume the detail is in HTML,
+									// otherwise we assume it is text and we preserve spaces.
+									if (alertDetail != null && 
+											(alertDetail.indexOf('<!') == 0 || alertDetail.indexOf('<?') == 0 ||
+													alertDetail.toLowerCase().indexOf('<html') == 0)) {
+										body = alertDetail;
+									} else {
+										body = '<div style="white-space: pre">' + alertDetail + '</div>';
+									}
+									$('.' + settings.alertIframeClass, $alert).contents().find('html').html(body);
+								} else {
+									$('.' + settings.alertIframeClass, $alert).remove();
+								}
+							});
+						$alert.append($alertDetail);
+					}
+					$container.show();
+					
+				}
+					
+				function processAlert(value) {
+					if (value instanceof Array) { // Handle list of alert objects
+						$.each(value, function(index, alert) {
+							renderAlert(alert);
+						});
+					} else if (value instanceof Object) { // Handle single alert object
+						renderAlert(value);
+					} else { // Handle it as a String
+						var alert = {};
+						alert.id = null;
+						alert.message = value;
+						alert.level = level;
+						renderAlert(alert);
+					}
+				}
+				
+	        	var renderAlertEventOffFunction = scope.$on('ngc.alert', function(event, alert) {
+	        		console.log(alert);
+	        		processAlert(alert);
+	        	});
+
+				// Destroy the events when the element is destroyed.
+				element.on("$destroy", function() {
+	        		renderAlertEventOffFunction();
+		        });
+
+	        }
+	    };
+		
+	});
+	
+	
 })(window.angular);

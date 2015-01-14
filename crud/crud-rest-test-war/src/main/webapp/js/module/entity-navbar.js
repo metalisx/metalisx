@@ -9,7 +9,7 @@
 	// Controller
 	
 	application.controller('EntityNavbarController', 
-		function($scope, $timeout, $compile, templateProvider, entityCacheService) {
+		function($scope, entityCacheService) {
 	
 			function init() {
 				entityCacheService.load($scope);

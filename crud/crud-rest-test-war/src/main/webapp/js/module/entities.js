@@ -8,7 +8,6 @@
 
 	application.controller('EntitiesController', 
 		function($scope, $compile, $location, $routeParams, $timeout, $controller, $filter, 
-				templateProvider, 
 				crudService, 
 				entityCacheService, applicationContext) {
 		
