@@ -2646,8 +2646,15 @@
 /**
  * Angular module :: ngcAlert
  * 
- * The Angular module ngcAlert gives basic support for rendering
- * alerts recieved from the server or from the event ngc.alert.
+ * The Angular module ngcAlert gives support for rendering alerts received 
+ * from the event ngc.alert.
+ * 
+ * To add an alert to the container call the event: ngc.alert
+ * Example: $rootScope.$broadcast('ngc.alert', 'Some text here.', {'level': 'error'});
+ *
+ * To clear the container call the event: ngc.alert.clear
+ * Example: $rootScope.$broadcast('ngc.alert.clear');
+ *
  */
 (function(angular) {
 	
@@ -2673,7 +2680,7 @@
 
 	// Directives
 	
-	ngcAlert.directive('ngcAlert', function(ngcAlertProvider) {
+	ngcAlert.directive('ngcAlert', function(ngcAlertProvider, $rootScope, $compile, templateCompile) {
 
 	    return {
 			restrict: 'A',
@@ -2706,50 +2713,84 @@
 
 				var options = {};
 				var settings = $.extend(true, {
-					messagesContainerId: 'messagesContainer',
-					messagesContainerClass: 'messagesContainer',
-					messagesContainerForElementClass: 'messagesContainerForElement',
-					messageInnerContainerClass: 'messageInnerContainer',
-					messageDetailClass: 'messageDetail',
-					messageIframeClass: 'messageIframe',
-					messageInnerContainerHeight: '400px',
-					templateAlert: '<div class="{{alert.level}}">{{alert.mesage}}</div>',
-					templateDetailLink: '<a class="{{settings.alertDetailClass}}" href="#">Detail</a>',
-					templateDetailIframe: '<iframe width="100%" height="{{settings.alertInnerContainerHeight}}" class="{{settings.alertIframeClass}}"/>',
-					templateDetailPlainText: '<div style="white-space: pre">{{lert.detail}}</div>'
+					levelClasses: { // Mapper of the level in a message to the corresponding Bootstrap CSS class 
+						'success': 'alert alert-success',
+						'error': 'alert alert-danger',
+						'info': 'alert alert-info'
+					},
+					templateAlert: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}</div>',
+					templateAlertWithDetail: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}' +
+												'<a class="alertDetailLink" href="#" ng-click="showDetail($event)">Detail</a>' +
+												'<iframe width="100%" height="400px" class="alertDetailIframe" ng-show="isShowDetail"/>' +
+												'</div>',
+					templateAlertWithDetailAsText: '<div class="alertDetail" style="white-space: pre">{{alert.detail}}</div>'
 				}, options || {});
 				
-				function renderAlert(alert) {
-					if (alert.message == null || alert.message == '') {
+				function renderAlert(currentAlert) {
+					if (currentAlert.message == null || currentAlert.message == '') {
 						return;
 					}
 
 					// Check if the alert is for this element
-	        		if (targetId != null && targetId != alert.id) {
+	        		if (targetId != null && targetId != currentAlert.id) {
 	        			return;
 	        		}
 					
 	        		var $container = element;
 	        		
-					var alertMessage = alert.message;
-					var alertDetail = null;
-					if (alert.detail != null) {
-						alertDetail = alert.detail;
+	        		// Create the alert for the scope
+	        		var alert = {};
+					alert.message = currentAlert.message;
+					alert.detail = null;
+					if (currentAlert.detail != null) {
+						alert.detail = currentAlert.detail;
 					}
-					var alertLevel = null;
-					if (alert.level != null) {
-						alertLevel = alert.level;
+					alert.level = null;
+					if (currentAlert.level != null) {
+						alert.level = currentAlert.level;
 					} else {
-						alertLevel = level;
+						alert.level = level;
 					}
+					alert.levelClass = settings.levelClasses[alert.level];
 
+					// Add the alert to the scope
+	        		scope.alert = alert;
+
+	        		// Check if the container should be cleaned
 					if (settings.clean) {
 						element.empty();
 					}
 
-					var $alert = settings.templateAlert; 
-					
-					var $alert = $('<div/>').addClass('alert');
+					// Get the html
+					var html = null; 
+					if (alert.detail == null) {
+						html = settings.templateAlert;
+					} else {
+						html = settings.templateAlertWithDetail;
+
+						// The content of detail is assumed to be HTML if it starts with specific 
+						// HTML characters, otherwise normal text is assumed and the spaces needs 
+						// to be preserved. The test for HTML characters is crude.
+						var body = null;
+						if (alert.detail.indexOf('<!') == 0 || alert.detail.indexOf('<?') == 0 ||
+								alert.detail.toLowerCase().indexOf('<html') == 0) {
+							body = alert.detail;
+						} else {
+							body = '<div style="white-space: pre">' + alert.detail + '</div>';
+						}
+
+						// Set the code to show the detail on the scope
+						scope.isShowDetail = false;
+						scope.showDetail = function($event) {
+							$event.stopPropagation();
+							$event.preventDefault();
+							scope.isShowDetail = !scope.isShowDetail;
+							$('iframe', $alert).contents().find('html').html(body);
+						}
+					}
+
+					// Add the new alert to the element, compile it and apply the scope
+					var $alert = $(html);
 					if (location == 'first') {
 						$container.prepend($alert);
 					} else if (location == 'last') {
@@ -2757,66 +2798,37 @@
 					} else {
 						alert('Unknown location ' + location);
 					}
+					$compile($alert)(scope);
+					scope.$apply();
 					
-					if (alertLevel.toLowerCase() == 'success') {
-						$alert.addClass('alert-success');
-					} else if (alertLevel.toLowerCase() == 'error') {
-						$alert.addClass('alert-danger');
-					} else if (alertLevel.toLowerCase() == 'info') {
-						$alert.addClass('alert-info');
-					}
-
-					$alert.append(alertMessage);
-					if (alertDetail) {
-						$alertDetail = $('<a class="' + settings.alertDetailClass + '" href="#">Detail</a>')
-							.click(function(event) {
-								event.stopPropagation();
-								event.preventDefault();
-								if ($('.' + settings.alertIframeClass, $container).size() == 0) {
-									$alert.append('<iframe width="100%" height="' + settings.alertInnerContainerHeight + 
-												'" class="' + settings.alertIframeClass + '"/>');
-									var body = '';
-									// If the detail starts with specific HTML characters we assume the detail is in HTML,
-									// otherwise we assume it is text and we preserve spaces.
-									if (alertDetail != null && 
-											(alertDetail.indexOf('<!') == 0 || alertDetail.indexOf('<?') == 0 ||
-													alertDetail.toLowerCase().indexOf('<html') == 0)) {
-										body = alertDetail;
-									} else {
-										body = '<div style="white-space: pre">' + alertDetail + '</div>';
-									}
-									$('.' + settings.alertIframeClass, $alert).contents().find('html').html(body);
-								} else {
-									$('.' + settings.alertIframeClass, $alert).remove();
-								}
-							});
-						$alert.append($alertDetail);
-					}
 					$container.show();
-					
 				}
 					
 				function processAlert(value) {
 					if (value instanceof Array) { // Handle list of alert objects
-						$.each(value, function(index, alert) {
-							renderAlert(alert);
+						$.each(value, function(index, currentAlert) {
+							renderAlert(currentAlert);
 						});
 					} else if (value instanceof Object) { // Handle single alert object
 						renderAlert(value);
 					} else { // Handle it as a String
-						var alert = {};
-						alert.id = null;
-						alert.message = value;
-						alert.level = level;
-						renderAlert(alert);
+						var currentAlert = {};
+						currentAlert.id = null;
+						currentAlert.message = value;
+						currentAlert.level = level;
+						renderAlert(currentAlert);
 					}
 				}
-				
+
+				// Create the event listeners
 	        	var renderAlertEventOffFunction = scope.$on('ngc.alert', function(event, alert) {
-	        		console.log(alert);
 	        		processAlert(alert);
 	        	});
 
+	        	var clearEventOffFunction = scope.$on('ngc.alert.clear', function(event, alert) {
+	        		element.empty();
+	        	});
+	        	
 				// Destroy the events when the element is destroyed.
 				element.on("$destroy", function() {
 	        		renderAlertEventOffFunction();
