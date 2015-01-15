@@ -8,15 +8,15 @@
 
 	// Controller
 
-	application.controller('BlockModuleController', 
-		function BlockModuleController($scope, $timeout) {
+	application.controller('BlockController', 
+		function BlockController($scope, $rootScope, $timeout) {
 		
 			$scope.block = function($event) {
 				$event.stopPropagation();
 				$event.preventDefault();
-				$scope.$broadcast('ngc.block', $event);
+				$rootScope.$broadcast('ngc.block');
 				$timeout(function() {
-					$scope.$broadcast('ngc.unblock', $event);
+					$rootScope.$broadcast('ngc.unblock');
 				}, 2000);
 			};
 		

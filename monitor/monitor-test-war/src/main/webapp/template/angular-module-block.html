@@ -20,5 +20,20 @@
 			 	</div>
 			</div>
 		</div>
+		<div>
+		 	<p>Code for blocking the user input.</p>
+		 	<pre>
+		 		<code ngc-prettyprint>
+$rootScope.$broadcast('ngc.block');
+				</code>
+			</pre>
+			</br></br>
+		 	<p>Code for releasing the blocking of user input.</p>
+		 	<pre>
+		 		<code ngc-prettyprint>
+$rootScope.$broadcast('ngc.unblock');
+				</code>
+			</pre>
+		</div>	 	
 	</div>
 </div>

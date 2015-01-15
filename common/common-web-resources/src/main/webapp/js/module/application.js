@@ -623,6 +623,10 @@
 	        			if (fileLimit != null && file.size > fileLimit) {
 	        				$rootScope.$broadcast('ngc.alert', 'Can not select file. Maximum file size allowed is ' + fileLimit + ' bytes.',
 	        						{'level': 'error'});
+	        				scope.ngcFileSelectorDocument = null;
+	        				scope.ngcFileSelectorFilename = null;
+	        				scope.ngcFileSelectorMimeType = null;
+	        				element.val(null);
 	        			} else {
 		        			if (reader.readyState === FileReader.DONE) {
 			        			if (attrs['ngcFileSelectorDocument']) {
@@ -2433,10 +2437,18 @@
  * 
  * The Angular module ngcBlock is used to block the
  * user input. It listens to the ngc.block event for blocking
- * the user input and to the ngc.unblock event for unblocking.
- * The listeners are activated when placing the ngc-block
- * attribute on an HTML element. It can be set on any HTML
+ * the user input and to the ngc.unblock event for releasing the
+ * block. The event listeners are activated when placing the 
+ * ngc-block attribute on an HTML element. It can be set on any HTML
  * element but it is the easiest way to set it on the body element.
+ * The best way to trigger the event is by using $broadcast on the 
+ * $rootScope, so it will visit all child scopes.
+ *  
+ * Example on blocking the user input:
+ *  $rootScope.$broadcast('ngc.block');
+ * 
+ * Example on releasing the blocking of user input:
+ *  $rootScope.$broadcast('ngc.unblock');
  * 
  * When the ngc.block event is triggered, a DIV element 
  * is created to overlap the page.
@@ -2646,15 +2658,95 @@
 /**
  * Angular module :: ngcAlert
  * 
- * The Angular module ngcAlert gives support for rendering alerts received 
- * from the event ngc.alert.
+ * The Angular module ngcAlert gives support for rendering alerts. It adds alerts 
+ * received by the event ngc.alert. It will clean the element when received the
+ * ngc.alert.clean event. The best way to trigger the event is by using
+ * $broadcast on the $rootScope, so it will visit all child scopes.
  * 
- * To add an alert to the container call the event: ngc.alert
- * Example: $rootScope.$broadcast('ngc.alert', 'Some text here.', {'level': 'error'});
+ * Example for adding an alert by triggering the event: ngc.alert
+ * $rootScope.$broadcast('ngc.alert', 'Some text here.', {'level': 'error'});
  *
- * To clear the container call the event: ngc.alert.clear
- * Example: $rootScope.$broadcast('ngc.alert.clear');
+ * Example for clearing the element by triggering the event: ngc.alert.clean
+ * $rootScope.$broadcast('ngc.alert.clean');
  *
+ * Using the ngc.alert event 
+ * Call the event by executing:
+ *  $rootScope.$broadcast('ngc.alert', object);
+ * The first parameter is the event where this element is listening for.
+ * The second parameter can contain three different objects:
+ *  1. a text
+ *  2. a alert object
+ *  3. a list of alert objects. 
+ * 
+ * An alert object contains the following properties
+ *  - id
+ *  - message
+ *  - detail
+ *  - level
+ * The id property is optional and when present it should contain the id of 
+ * an existing HTML element with the ngc-alert directive.
+ * The message is required and contains the text for the alert.
+ * The detail is optional. But when present a hyperlink is added after the 
+ * message and by clicking this hyperlink a iframe is rendered below the
+ * message containg the detail. The detail can contain a HTML page or just
+ * text.
+ * The level property is a optional property and takes precedence over the 
+ * default level of the directive.
+ * 
+ * ngcAlertTargetId Is the property containing the id of the alerts it
+ * needs to render. By setting the value the directive will only render
+ * the alert if it contains a property id which is the same as the value
+ * in this attribute. By default it is null which means all alerts are
+ * rendered. 
+ * 
+ * ngcAlertLevel Is the default level for the alerts. If alerts received
+ * by the event do not contain a level property then the level of the
+ * alert is set to the level specified by this attribute. Because the
+ * level is used to map to a CSS class it needs to be present in the 
+ * settings.levelClasses.
+ * 
+ * ngcAlertClean Is the property containing the value for cleaning.
+ * Allowed values are true and false. If the value is true then the 
+ * element is cleand before placing the alerts. If the value is false then
+ * the alerts added by an earlier event are kept.
+ * 
+ * ngcAlertLocation Is the property containing the location for the alert.
+ * Allowed values are first and last. If the value is first then the 
+ * alert is placed in front of other alerts. If the value is last then
+ * the alert is placed after other alerts. The value is by default first.
+ * 
+ * ngcAlertSettings Is the property containing the alert settings.
+ * You only need to specify the settings you like to change.
+ * 
+ * Setting levelClasses
+ * This setting contains an object for mapping the level to a CSS class. The 
+ * class is set on the DIV element containing the message. By default it will 
+ * map the level to a Bootstrap style.
+ *  level: success -> class: alert alert-success
+ *  level: error -> class: alert alert-danger
+ *  level: info -> class: alert alert-info
+ * 
+ * Setting templateAlert
+ * This setting contains the HTML snippet for messages without
+ * a detail. By default it uses the scope variables 
+ * alert.levelClass and alert.message.
+ * 
+ * Setting templateAlertWithDetail
+ * This setting contains the HTML snippet for messages with
+ * a detail. By default is uses the scope variables
+ * alert.levelClass, alert.message and alert.detail. It 
+ * also uses the scope method showDetail for showing and
+ * hiding of the detail.
+ * 
+ * Setting templateAlertWithDetailAsText
+ * This setting contains the HTML snippet for the detail
+ * in messages which are text and not HTML. By default this snippet
+ * preserves the spaces in the detail and uses the scope variable 
+ * alert.detail.
+ * 
+ * Requires the Twitter Bootstrap styles alert-success, alert-danger 
+ * and alert-info or you need to define them yourself in a style sheet
+ * or you need to overrule the setting levelClasses.
  */
 (function(angular) {
 	
@@ -2684,17 +2776,32 @@
 
 	    return {
 			restrict: 'A',
-			scope: {ngcAlertTargetId:'@',
+			scope: {ngcAlertTargetId: '@',
 				    ngcAlertLevel: '@',
 				    ngcAlertClean: '@',
-				    ngcAlertLocation: '@'},
+				    ngcAlertLocation: '@',
+				    ngcAlertSettings: '='},
 	        link:function (scope, element, attrs) {
 
-	        	var targetId = null; // show all alerts
+	        	var targetId = null; // if null then all alerts are shown in this element
 	        	var level = 'info';
-	        	var clean = true;
+	        	var clean = 'true';
 	        	var location = 'first';
 	        	
+				var settings = {
+						levelClasses: { // Map for translating the level in a message to the corresponding Bootstrap CSS class 
+							'success': 'alert alert-success',
+							'error': 'alert alert-danger',
+							'info': 'alert alert-info'
+						},
+						templateAlert: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}</div>',
+						templateAlertWithDetail: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}' +
+													'<a class="alertDetailLink" href="#" ng-click="showDetail($event)">Detail</a>' +
+													'<iframe width="100%" height="400px" class="alertDetailIframe" ng-show="isShowDetail"/>' +
+													'</div>',
+						templateAlertWithDetailAsText: '<div class="alertDetail" style="white-space: pre">{{alert.detail}}</div>'
+					};
+					
 				if (attrs['ngcAlertTargetId'] != null && attrs['ngcAlertTargetId'] != '') {
 					targetId = scope.ngcAlertTargetId;
 	    		}
@@ -2705,34 +2812,30 @@
 				
 				if (attrs['ngcAlertClean'] != null && attrs['ngcAlertClean'] != '') {
 					clean = scope.ngcAlertClean;
+					if (clean != 'true' && clean != 'false') {
+						alert('The allowed values for ngc-alert-clean attribute are true and false, provided value was ' + clean + '.');
+					}
 	    		}
 
 				if (attrs['ngcAlertLocation'] != null && attrs['ngcAlertLocation'] != '') {
 					location = scope.ngcAlertLocation;
+					if (location != 'first' && clean != 'last') {
+						alert('The allowed values for ngc-alert-location attribute are first and last, provided value was ' + location + '.');
+					}
 	    		}
 
-				var options = {};
-				var settings = $.extend(true, {
-					levelClasses: { // Mapper of the level in a message to the corresponding Bootstrap CSS class 
-						'success': 'alert alert-success',
-						'error': 'alert alert-danger',
-						'info': 'alert alert-info'
-					},
-					templateAlert: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}</div>',
-					templateAlertWithDetail: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}' +
-												'<a class="alertDetailLink" href="#" ng-click="showDetail($event)">Detail</a>' +
-												'<iframe width="100%" height="400px" class="alertDetailIframe" ng-show="isShowDetail"/>' +
-												'</div>',
-					templateAlertWithDetailAsText: '<div class="alertDetail" style="white-space: pre">{{alert.detail}}</div>'
-				}, options || {});
-				
+				if (attrs['ngcAlertSettings'] != null && attrs['ngcAlertSettings'] != '') {
+					settings = $.extend(settings, scope.ngcAlertSettings || {});
+	    		}
+
 				function renderAlert(currentAlert) {
-					if (currentAlert.message == null || currentAlert.message == '') {
+					if (currentAlert == null || currentAlert.message == null || currentAlert.message == '') {
 						return;
 					}
 
 					// Check if the alert is for this element
-	        		if (targetId != null && targetId != currentAlert.id) {
+	        		if ((targetId != null && targetId != currentAlert.id) ||
+	        				(targetId == null && currentAlert.id != null)) {
 	        			return;
 	        		}
 					
@@ -2752,14 +2855,6 @@
 						alert.level = level;
 					}
 					alert.levelClass = settings.levelClasses[alert.level];
-
-					// Add the alert to the scope
-	        		scope.alert = alert;
-
-	        		// Check if the container should be cleaned
-					if (settings.clean) {
-						element.empty();
-					}
 
 					// Get the html
 					var html = null; 
@@ -2789,7 +2884,7 @@
 						}
 					}
 
-					// Add the new alert to the element, compile it and apply the scope
+					// Add the alert to the element
 					var $alert = $(html);
 					if (location == 'first') {
 						$container.prepend($alert);
@@ -2798,13 +2893,25 @@
 					} else {
 						alert('Unknown location ' + location);
 					}
-					$compile($alert)(scope);
-					scope.$apply();
+					
+					// Create a child scope with the alert and compile it to the html
+					var alertScope = scope.$new();
+					alertScope.alert = alert;
+					$compile($alert)(alertScope);
+					var phase = $rootScope.$$phase;
+					if (phase != '$apply' && phase != '$digest') {
+						scope.$digest();
+					}
 					
 					$container.show();
 				}
 					
 				function processAlert(value) {
+	        		// Check if the container should be cleaned
+					if (clean == 'true') {
+						element.empty();
+					}
+
 					if (value instanceof Array) { // Handle list of alert objects
 						$.each(value, function(index, currentAlert) {
 							renderAlert(currentAlert);
@@ -2825,13 +2932,14 @@
 	        		processAlert(alert);
 	        	});
 
-	        	var clearEventOffFunction = scope.$on('ngc.alert.clear', function(event, alert) {
+	        	var cleanEventOffFunction = scope.$on('ngc.alert.clean', function(event, alert) {
 	        		element.empty();
 	        	});
 	        	
 				// Destroy the events when the element is destroyed.
 				element.on("$destroy", function() {
 	        		renderAlertEventOffFunction();
+	        		cleanEventOffFunction();
 		        });
 
 	        }

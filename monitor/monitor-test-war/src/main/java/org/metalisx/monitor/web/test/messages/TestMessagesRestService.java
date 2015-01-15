@@ -13,9 +13,9 @@ import org.metalisx.common.rest.dto.MessagesDto;
 public class TestMessagesRestService {
 
     @GET
-    @Path("/testMessagesDefaultContainer")
+    @Path("/testAlertDefaultContainer")
     @Produces(MediaType.APPLICATION_JSON)
-    public MessagesDto testMessagesDefaultContainer() {
+    public MessagesDto testAlertDefaultContainer() {
         MessagesDto messagesDto = new MessagesDto();
         messagesDto.add(new MessageDto("hello error", null, "error"));
         messagesDto.add(new MessageDto("hello info", null, "info"));
@@ -24,32 +24,47 @@ public class TestMessagesRestService {
     }
 
     @GET
-    @Path("/testSingleMessageNamedContainer")
+    @Path("/testSingleAlertTargetContainer")
     @Produces(MediaType.APPLICATION_JSON)
-    public MessageDto testSingleMessageNamedContainer() {
-        return new MessageDto("singleMessageContainer", "hello info", null, "info");
+    public MessageDtoWrapper testSingleAlertTargetContainer() {
+    	MessageDto messageDto = new MessageDto("singleAlertContainer", "hello info", null, "info"); 
+        return new MessageDtoWrapper(messageDto);
     }
 
     @GET
-    @Path("/testMessagesNamedContainer")
+    @Path("/testAlertTargetContainer")
     @Produces(MediaType.APPLICATION_JSON)
-    public MessagesDto testMessagesNamedContainer() {
+    public MessagesDto testAlertTargetContainer() {
         MessagesDto messagesDto = new MessagesDto();
-        messagesDto.add(new MessageDto("messagesNamedContainer", "hello error", null, "error"));
-        messagesDto.add(new MessageDto("messagesNamedContainer", "hello info", null, "info"));
-        messagesDto.add(new MessageDto("messagesNamedContainer", "hello success", null, "success"));
+        messagesDto.add(new MessageDto("alertContainer", "hello error", null, "error"));
+        messagesDto.add(new MessageDto("alertContainer", "hello info", null, "info"));
+        messagesDto.add(new MessageDto("alertContainer", "hello success", null, "success"));
         return messagesDto;
     }
 
     @GET
-    @Path("/testMessagesMultipleNamedContainers")
+    @Path("/testAlertMultipleTargetContainers")
     @Produces(MediaType.APPLICATION_JSON)
-    public MessagesDto testMessagesMultipleNamedContainers() {
+    public MessagesDto testAlertMultipleTargetContainers() {
         MessagesDto messagesDto = new MessagesDto();
-        messagesDto.add(new MessageDto("messagesNamedContainerA", "hello error for container A", null, "error"));
-        messagesDto.add(new MessageDto("messagesNamedContainerB", "hello info for containber B", null, "info"));
-        messagesDto.add(new MessageDto("messagesNamedContainerA", "hello success for container A", null, "success"));
+        messagesDto.add(new MessageDto("alertContainerA", "hello error for container A", null, "error"));
+        messagesDto.add(new MessageDto("alertContainerB", "hello info for containber B", null, "info"));
+        messagesDto.add(new MessageDto("alertContainerA", "hello success for container A", null, "success"));
         return messagesDto;
     }
 
+    public class MessageDtoWrapper {
+    	
+    	private MessageDto message;
+    	
+    	public MessageDtoWrapper(MessageDto messageDto) {
+    		this.message = messageDto;
+    	}
+    	
+    	public MessageDto getMessage() {
+    		return message;
+    	}
+    	
+    }
+    
 }

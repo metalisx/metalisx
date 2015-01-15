@@ -1,0 +1,45 @@
+<div ngc-alert style="width:100%;border 1px solid red;"></div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alerts with default alert container</h2>
+		<p>Test if the alerts returned by the REST service are displayed correctly in the default alert container. 
+		Activating the buttons will show alerts for success, error and info.</p>
+		<br/>
+ 		<p><a href="#" id="alertDefaultContainerButton" class="btn btn-primary" ng-click="getAlertDefaultContainer($event)">Test</a></p>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test single alert with specified target alert container</h2>
+		<p>Test if the single alert returned by the REST service is displayed correctly in the target alert container. 
+		Activating the buttons will show a info alert.</p>
+		<br/>
+ 		<p><a href="#" id="singleAlertTargetContainerButton" class="btn btn-primary" ng-click="getSingleAlertTargetContainer($event)">Test</a></p>
+ 		<br/>
+		<div id="singleAlertContainer" class="alertContainer" ngc-alert ngc-alert-target-id="singleAlertContainer"></div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alerts with specified target alert container</h2>
+		<p>Test if the alerts returned by the REST service are displayed correctly in the target alert container. 
+		Activating the buttons will show alerts for success, error and info.</p>
+		<br/>
+ 		<p><a href="#" id="alertNamedContainerButton" class="btn btn-primary" ng-click="getAlertTargetContainer($event)">Test</a></p>
+ 		<br/>
+		<div id="alertContainer" class="alertContainer"></div>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test alerts with multiple specified target alert containers</h2>
+		<p>Test if the alerts returned by the REST service are displayed correctly in the target alert containers. 
+		Activating the buttons will show alerts for success, error and info.</p>
+		<br/>
+ 		<p><a href="#" id="alertMultpleNamedContainersButton" class="btn btn-primary" ng-click="getAlertMultipleTargetContainers($event)">Test</a></p>
+		<div class="row">
+			<div class="col-sm-6">
+				<div id="alertContainerA" class="alertContainer"></div>
+			</div>
+			<div class="col-sm-6">
+				<div id="alertContainerB" class="alterContainer"></div>
+			</div>
+		</div>
+	</div>
+</div>

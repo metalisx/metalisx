@@ -502,6 +502,10 @@
 		}
 	};
 	
+	function containsError(message) {
+		return message.message && message.level && message.level.toLowerCase() == 'error';
+	}
+	
 	function dataProvider(url, requestData, options) {
 
 		var settings = $.extend({
@@ -552,13 +556,21 @@
 			success: function(result) {
 				var executeOnsuccess = true;
 				if (result) {
-					if (settings.handleResponseMessages && result.messages && result.messages.length > 0) {
-						$.metalisxMessages(result.messages);
-						$.each(result.messages, function(index, message) {
-							if (message.message && message.level && message.level.toLowerCase() == 'error') {
+					if (settings.handleResponseMessages) {
+						if (result.messages && result.messages.length > 0) {
+							$.metalisxMessages(result.messages);
+							$.each(result.messages, function(index, message) {
+								if (containsError(message)) {
+									executeOnsuccess = false;
+								}
+							});
+						} else if (result.message) {
+							var message = result.message;
+							$.metalisxMessages(message);
+							if (containsError(message)) {
 								executeOnsuccess = false;
 							}
-						});
+						}
 					}
 				} else if (settings.type.toUpperCase() != 'HEAD') {
 					executeOnsuccess = false;

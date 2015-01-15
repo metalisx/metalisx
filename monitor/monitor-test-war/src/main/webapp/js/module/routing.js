@@ -51,15 +51,6 @@
 			reloadOnSearch: false
 		})
 		
-		// messages
-		
-		$routeProvider
-		.when('/messages', {
-			templateUrl: contextPath + '/template/messages.html',
-			controller: 'MessagesController',
-			reloadOnSearch: false
-		})
-		
 		// input field
 		
 		$routeProvider
@@ -77,21 +68,30 @@
 			reloadOnSearch: false
 		})
 		
+		// alert module
+		
+		$routeProvider
+		.when('/alert', {
+			templateUrl: contextPath + '/template/angular-module-alert.html',
+			controller: 'AlertController',
+			reloadOnSearch: false
+		})
+		
 		// messages module
 		
 		$routeProvider
-		.when('/messages-module', {
-			templateUrl: contextPath + '/template/messages-module.html',
-			controller: 'MessagesModuleController',
+		.when('/messages', {
+			templateUrl: contextPath + '/template/angular-module-messages.html',
+			controller: 'MessagesController',
 			reloadOnSearch: false
 		})
 		
 		// block module
 		
 		$routeProvider
-		.when('/block-module', {
-			templateUrl: contextPath + '/template/block-module.html',
-			controller: 'BlockModuleController',
+		.when('/block', {
+			templateUrl: contextPath + '/template/angular-module-block.html',
+			controller: 'BlockController',
 			reloadOnSearch: false
 		})
 		

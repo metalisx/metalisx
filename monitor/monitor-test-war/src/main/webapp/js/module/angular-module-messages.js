@@ -8,8 +8,8 @@
 
 	// Controller
 	
-	application.controller('MessagesModuleController', 
-		function MessagesModuleController($scope, applicationContext, ngcMessagesService) {
+	application.controller('MessagesController', 
+		function MessagesController($scope, applicationContext, ngcMessagesService) {
 		
 			$scope.loadMessagesParameter = "your name";
 			$scope.putMultipleMessagesParameter = "your name";
