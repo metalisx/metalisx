@@ -2796,7 +2796,7 @@
 						},
 						templateAlert: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}</div>',
 						templateAlertWithDetail: '<div class="alertMessage {{alert.levelClass}}">{{alert.message}}' +
-													'<a class="alertDetailLink" href="#" ng-click="showDetail($event)">Detail</a>' +
+													'&nbsp;<a class="alertDetailLink" href="#" ng-click="showDetail($event, alert)">Detail</a>' +
 													'<iframe width="100%" height="400px" class="alertDetailIframe" ng-show="isShowDetail"/>' +
 													'</div>',
 						templateAlertWithDetailAsText: '<div class="alertDetail" style="white-space: pre">{{alert.detail}}</div>'
@@ -2856,6 +2856,10 @@
 					}
 					alert.levelClass = settings.levelClasses[alert.level];
 
+					// Create a child scope with the alert object 
+					var alertScope = scope.$new();
+					alertScope.alert = alert;
+
 					// Get the html
 					var html = null; 
 					if (alert.detail == null) {
@@ -2863,23 +2867,25 @@
 					} else {
 						html = settings.templateAlertWithDetail;
 
-						// The content of detail is assumed to be HTML if it starts with specific 
-						// HTML characters, otherwise normal text is assumed and the spaces needs 
-						// to be preserved. The test for HTML characters is crude.
-						var body = null;
-						if (alert.detail.indexOf('<!') == 0 || alert.detail.indexOf('<?') == 0 ||
-								alert.detail.toLowerCase().indexOf('<html') == 0) {
-							body = alert.detail;
-						} else {
-							body = '<div style="white-space: pre">' + alert.detail + '</div>';
-						}
-
-						// Set the code to show the detail on the scope
-						scope.isShowDetail = false;
-						scope.showDetail = function($event) {
+						// Set the code to show the detail on the alertScope
+						alertScope.isShowDetail = false;
+						alertScope.showDetail = function($event, alert) {
 							$event.stopPropagation();
 							$event.preventDefault();
-							scope.isShowDetail = !scope.isShowDetail;
+							
+							alertScope.isShowDetail = !alertScope.isShowDetail;
+
+							// The content of detail is assumed to be HTML if it starts with specific 
+							// HTML characters, otherwise normal text is assumed and the spaces needs 
+							// to be preserved. The test for HTML characters is crude.
+							var body = null;
+							if (alert.detail.indexOf('<!') == 0 || alert.detail.indexOf('<?') == 0 ||
+									alert.detail.toLowerCase().indexOf('<html') == 0) {
+								body = alert.detail;
+							} else {
+								body = '<div style="white-space: pre">' + alert.detail + '</div>';
+							}
+							
 							$('iframe', $alert).contents().find('html').html(body);
 						}
 					}
@@ -2894,9 +2900,7 @@
 						alert('Unknown location ' + location);
 					}
 					
-					// Create a child scope with the alert and compile it to the html
-					var alertScope = scope.$new();
-					alertScope.alert = alert;
+					// Ccompile the alert object with the alert HTML snippet
 					$compile($alert)(alertScope);
 					var phase = $rootScope.$$phase;
 					if (phase != '$apply' && phase != '$digest') {
@@ -2911,14 +2915,13 @@
 					if (clean == 'true') {
 						element.empty();
 					}
-
 					if (value instanceof Array) { // Handle list of alert objects
 						$.each(value, function(index, currentAlert) {
 							renderAlert(currentAlert);
 						});
 					} else if (value instanceof Object) { // Handle single alert object
 						renderAlert(value);
-					} else { // Handle it as a String
+					} else { // Handle a String as alert
 						var currentAlert = {};
 						currentAlert.id = null;
 						currentAlert.message = value;
@@ -2932,7 +2935,7 @@
 	        		processAlert(alert);
 	        	});
 
-	        	var cleanEventOffFunction = scope.$on('ngc.alert.clean', function(event, alert) {
+	        	var cleanEventOffFunction = scope.$on('ngc.alert.clean', function(event) {
 	        		element.empty();
 	        	});
 	        	

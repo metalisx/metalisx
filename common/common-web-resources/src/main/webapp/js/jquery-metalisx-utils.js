@@ -115,6 +115,15 @@
 	 * correct and you miss the message. Use this solution if you want a message coupled to another
 	 * element.
 	 * 
+	 * To style the default class you can add the following styles to the page:
+	 * .messagesContainer {
+	 *   display: none;
+	 *   width: 100%;
+	 * }
+	 * .messagesContainer.messagesContainerForElement {
+	 *   margin-top: 4px;
+	 * }
+	 * 
 	 * Requires the Twitter Bootstrap styles alert-success, alert-danger and alert-info or you
 	 * need to define them yourself.
 	 */
