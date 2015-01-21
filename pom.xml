@@ -16,17 +16,17 @@
 	</prerequisites>
 
 	<properties>
+		<jdk>1.8</jdk>
+		<encoding>UTF-8</encoding>
 		<maven.version.min>3.0.4</maven.version.min>
 		<version.org.jboss.arquillian>1.1.5.Final</version.org.jboss.arquillian>
 		<version.org.jboss.arquillian.drone>1.3.1.Final</version.org.jboss.arquillian.drone>
 		<version.org.jboss.arquillian.graphene>2.1.0.Alpha1</version.org.jboss.arquillian.graphene>
 		<version.org.wildfly.arquillian>8.2.0.Final</version.org.wildfly.arquillian>
-		<jdk>1.8</jdk>
 		<maven.compiler.source>${jdk}</maven.compiler.source>
-		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-		<encoding>UTF-8</encoding>
+		<maven.compiler.target>${jdk}</maven.compiler.target>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 	</properties>
 
 	<scm>
@@ -44,13 +44,29 @@
 
 	<repositories>
 		<repository>
-			<id>repository.jboss.com</id>
-			<name>JBoss repository</name>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
 			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+			<releases>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</releases>  
+			<snapshots>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</snapshots>
 		</repository>
 		<repository>
 			<id>jboss</id>
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<releases>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</releases>  
+			<snapshots>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</snapshots>
 		</repository>
 
 		<!-- required for the artifact org.seleniumhq.selenium:selenium-api:jar:2.31.0 -->
@@ -81,16 +97,43 @@
 
 	<pluginRepositories>
 		<pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+			<layout>default</layout>  
+			<releases>
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</releases>  
+			<snapshots>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
 			<id>maven2-repository.dev.java.net</id>
 			<url>http://download.java.net/maven/2/</url>
+			<releases>
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</releases>  
+			<snapshots>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
 			<id>codehaus snapshot repository</id>
 			<name>Codehaus repository</name>
 			<url>http://snapshots.repository.codehaus.org/</url>
 			<releases>
-				<enabled>true</enabled>
-			</releases>
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</releases>  
+			<snapshots>  
+				<enabled>true</enabled>  
+				<updatePolicy>never</updatePolicy>  
+			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -150,7 +193,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.8</version>
+					<version>2.9</version>
 					<configuration>
 						<wtpversion>2.0</wtpversion>
 						<downloadSources>true</downloadSources>
@@ -160,57 +203,57 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.4</version>
+					<version>2.9</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>2.12.4</version>
+					<version>2.18.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>2.3.1</version>
+					<version>2.5.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.4</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.3.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-scm-plugin</artifactId>
-					<version>1.7</version>
+					<version>1.9.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.1.2</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.17</version>
+					<version>2.18.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.6</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -443,28 +486,28 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>4.3.5.Final</version>
+				<version>4.3.7.Final</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>4.3.5.Final</version>
+				<version>4.3.7.Final</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>5.1.0.Final</version>
+				<version>5.1.3.Final</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jaxrs</artifactId>
-				<version>3.0.8.Final</version>
+				<version>3.0.10.Final</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -482,34 +525,41 @@
 			</dependency>
 
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.8.1</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.1</version>
+				<version>2.4</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.10</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
-				<version>2.1</version>
+				<version>2.3.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<scope>test</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
-				<version>1.6</version>
+				<version>1.7</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers</artifactId>
-				<version>1.6</version>
+				<version>1.7</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>asm-debug-all</artifactId>
@@ -527,25 +577,19 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
-				<version>4.3.2</version>
+				<version>4.3.3</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.3.5</version>
+				<version>4.3.6</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpmime</artifactId>
-				<version>4.3.5</version>
-			</dependency>
-
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.9</version>
+				<version>4.3.6</version>
 			</dependency>
 
 			<dependency>
@@ -565,7 +609,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cobertura-maven-plugin</artifactId>
-						<version>2.5.2</version>
+						<version>2.6</version>
 						<configuration>
 							<instrumentation>
 								<excludes>
@@ -593,7 +637,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>javancss-maven-plugin</artifactId>
-						<version>2.0</version>
+						<version>2.1</version>
 						<configuration>
 							<failOnViolation>true</failOnViolation>
 							<ccnLimit>12</ccnLimit>
@@ -612,7 +656,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
-						<version>2.8</version>
+						<version>2.13</version>
 						<configuration>
 							<failOnViolation>true</failOnViolation>
 							<failsOnError>true</failsOnError>
@@ -632,7 +676,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-pmd-plugin</artifactId>
-						<version>2.5</version>
+						<version>3.3</version>
 						<configuration>
 							<failOnViolation>true</failOnViolation>
 							<sourceEncoding>${encoding}</sourceEncoding>
@@ -652,13 +696,13 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-site-plugin</artifactId>
-						<version>3.0</version>
+						<version>3.4</version>
 						<configuration>
 							<reportPlugins>
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-project-info-reports-plugin</artifactId>
-									<version>2.4</version>
+									<version>2.8</version>
 									<reportSets>
 										<reportSet>
 											<reports>
@@ -680,19 +724,19 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-javadoc-plugin</artifactId>
-									<version>2.8</version>
+									<version>2.10.1</version>
 									<configuration>
 									</configuration>
 								</plugin>
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-jxr-plugin</artifactId>
-									<version>2.3</version>
+									<version>2.5</version>
 								</plugin>
 								<plugin>
 									<groupId>org.codehaus.mojo</groupId>
 									<artifactId>cobertura-maven-plugin</artifactId>
-									<version>2.5.2</version>
+									<version>2.6</version>
 									<configuration>
 										<aggregate>true</aggregate>
 										<formats>
@@ -704,12 +748,12 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-surefire-report-plugin</artifactId>
-									<version>2.6</version>
+									<version>2.18.1</version>
 								</plugin>
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-checkstyle-plugin</artifactId>
-									<version>2.8</version>
+									<version>2.13</version>
 									<configuration>
 										<configLocation>checkstyle.xml</configLocation>
 										<encoding>${encoding}</encoding>
@@ -721,7 +765,7 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-pmd-plugin</artifactId>
-									<version>2.5</version>
+									<version>3.3</version>
 									<configuration>
 										<sourceEncoding>${encoding}</sourceEncoding>
 										<targetJdk>${jdk}</targetJdk>
@@ -733,12 +777,12 @@
 								<plugin>
 									<groupId>org.codehaus.mojo</groupId>
 									<artifactId>javancss-maven-plugin</artifactId>
-									<version>2.0</version>
+									<version>2.1</version>
 								</plugin>
 								<plugin>
 									<groupId>org.codehaus.mojo</groupId>
 									<artifactId>jdepend-maven-plugin</artifactId>
-									<version>2.0-beta-2</version>
+									<version>2.0</version>
 								</plugin>
 								<plugin>
 									<groupId>org.codehaus.mojo</groupId>
