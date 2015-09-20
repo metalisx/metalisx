@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipException;
 
@@ -29,6 +28,8 @@ import org.metalisx.common.rest.client.AbstractRestClient;
 import org.metalisx.common.rest.dto.entity.EntitiesDto;
 import org.metalisx.common.rest.dto.entity.EntityDto;
 import org.metalisx.common.rest.dto.entity.EntityFieldDto;
+
+import com.google.gson.internal.LinkedTreeMap;
 
 @RunAsClient
 @RunWith(Arquillian.class)
@@ -79,7 +80,7 @@ public class CrudRestServiceTest {
 	@SuppressWarnings("unchecked")
 	public void getUser() throws Exception {
 		EntityDto entityDto = restClient.get(2L);
-		HashMap<String, Object> item = (HashMap<String, Object>) entityDto.getItem();
+		LinkedTreeMap<String, Object> item = (LinkedTreeMap<String, Object>) entityDto.getItem();
 		assertNotNull(entityDto.getMetadata());
 		List<EntityFieldDto> entityFieldDtos = entityDto.getMetadata().getFields();
 		assertNotNull(entityFieldDtos);
@@ -88,7 +89,7 @@ public class CrudRestServiceTest {
 		assertEquals("id", entityFieldDtos.get(0).getName());
 		assertEquals(1, entityFieldDtos.get(1).getIndex());
 		assertEquals("name", entityFieldDtos.get(1).getName());
-		assertNotNull(entityDto);
+		assertNotNull(entityDto.getItem());
 		assertEquals(2, ((Double) item.get("id")).intValue());
 		assertEquals("Bruce", item.get("name"));
 	}
@@ -112,7 +113,7 @@ public class CrudRestServiceTest {
 		assertNotNull(entitiesDto.getItems());
 		ArrayList<Object> items = (ArrayList<Object>) entitiesDto.getItems();
 		assertEquals(1, items.size());
-		HashMap<String, Object> item0 = (HashMap<String, Object>) items.get(0);
+		LinkedTreeMap<String, Object> item0 = (LinkedTreeMap<String, Object>) items.get(0);
 		assertEquals(1, ((Double) item0.get("id")).intValue());
 		assertEquals("Peter Parker", item0.get("name"));
 	}

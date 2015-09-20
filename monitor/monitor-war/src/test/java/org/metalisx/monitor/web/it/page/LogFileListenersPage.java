@@ -1,9 +1,9 @@
 package org.metalisx.monitor.web.it.page;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.metalisx.monitor.web.it.utils.WebDriverUtils;
@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LogFileListenersPage extends AbstractPage {
 
-    private static final String PAGE = "page/log-file-listeners.html";
+    private static final String PAGE = "page/index.html#/log-file-listeners";
     private static final String ID_START_LISTENER = "startListener";
     private static final String XPATH_NAVBAR = "//div[contains(@class,'navbar')]";
     private static final String XPATH_STOP = "//div[contains(@id,'fileListeners')]//a";
@@ -39,7 +39,7 @@ public class LogFileListenersPage extends AbstractPage {
         WebDriverUtils.renderWait(getDriver());
         getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_STOP)));
         String result = getDriver().findElement(By.xpath(XPATH_STOP)).getText();
-        Assert.assertEquals("Stop", result);
+        assertEquals("Stop", result);
     }
 
 }

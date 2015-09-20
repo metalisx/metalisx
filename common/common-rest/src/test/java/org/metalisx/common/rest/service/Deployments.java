@@ -40,6 +40,7 @@ public class Deployments {
 		        .addAsLibraries(resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile())
 		        .addAsLibraries(resolverStage.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
 		        .addAsLibraries(resolverStage.resolve("com.google.code.gson:gson").withTransitivity().asFile())
+                .addAsLibraries(resolverStage.resolve("org.apache.tika:tika-core").withTransitivity().asFile())
 		        .addAsLibraries(resolverStage.resolve("org.apache.httpcomponents:httpclient").withTransitivity().asFile())
 		        .addClasses(DataTableFilterDtoToQueryLimitConverter.class,
 		        		DataTableFilterDtoToQueryOrderByConverter.class)

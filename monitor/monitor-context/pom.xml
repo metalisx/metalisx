@@ -28,12 +28,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<forkMode>once</forkMode>
-					<argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
+					<argLine>-Xmx512m</argLine>
 					<systemPropertyVariables>
-						<!-- Silencing the broken code in getActiveConfiguration(), see
-						     https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java
-						 -->
-						<arquillian.launch>wildFly8</arquillian.launch>
+						<arquillian.launch>wildFly9</arquillian.launch>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -53,7 +50,7 @@
 								<artifactItem>
 									<groupId>org.wildfly</groupId>
 									<artifactId>wildfly-dist</artifactId>
-									<version>${version.org.wildfly.arquillian}</version>
+									<version>${version.org.wildfly}</version>
 									<type>zip</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.build.directory}</outputDirectory>
@@ -78,12 +75,12 @@
 						<configuration>
 							<overwrite>true</overwrite>
 							<outputDirectory>
-								${basedir}/target/jboss-as-${version.org.jboss.as.arquillian}
+								${basedir}/target/wildfly-${version.org.wildfly}
 							</outputDirectory>
 							<resources>
 								<resource>
 									<directory>
-										src/test/resources/jboss-as-${version.org.jboss.as.arquillian}
+										src/test/resources/wildfly-${version.org.wildfly}
 									</directory>
 								</resource>
 							</resources>

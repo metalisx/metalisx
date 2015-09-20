@@ -1,5 +1,8 @@
 package org.metalisx.monitor.profiler.servlet.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,8 +11,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -52,7 +53,7 @@ public class ProfilerFilterTest {
             stringBuilder.append(line);
         }
         bufferedReader.close();
-        Assert.assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
+        assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
     }
 
     /**
@@ -73,11 +74,11 @@ public class ProfilerFilterTest {
             	}
             }
             bufferedReader.close();
-            Assert.assertEquals(1, lines.size());
+            assertEquals(1, lines.size());
             int lineIndex = 0;
-            String expectedRegularExpression = ".+ " + "\\[SessionId: .+, RequestId: .+, Organisatie: , "
-                    + "Gebruikersnaam: ] \\(Depth: 1\\) http://127.0.0.1:8180/ProfilerFilterTest/test, time: .+ms";
-            Assert.assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
+            String expectedRegularExpression = ".+ " + "\\[SessionId: .+, RequestId: .+, ParentRequestId: , Organisatie: , "
+                    + "Gebruikersnaam: ] \\(Depth: 1\\) http://127.0.0.1:8080/ProfilerFilterTest/test, time: .+ms";
+            assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
                     + "] but was [" + lines.get(lineIndex) + "]", lines.get(lineIndex).matches(expectedRegularExpression));
         }
     }

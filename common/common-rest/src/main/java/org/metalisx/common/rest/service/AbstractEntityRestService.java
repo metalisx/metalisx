@@ -318,4 +318,14 @@ public abstract class AbstractEntityRestService {
     	return found;
     }
     
+	/**
+	 * Add the full name of the entity class to the white list of entity classes. 
+	 * Entity classes in the white list are managed by the rest service.
+	 * Convenience method to add the entityClass by method call instead of
+	 * directly adding it to the entityClasses property of the class.
+	 */
+    public void addEntityClassToWhiteList(String entityClass) {
+    	entityClasses.add(entityClass);
+    }
+    
 }

@@ -59,8 +59,8 @@ section first.
 
 0.2 Eclipse
 
-Download and install Eclipse (currently Luna R)
-Luna contains m2e.
+Download and install Eclipse (currently Mars R)
+Mars contains m2e.
 
 Open Eclipse
 
@@ -68,21 +68,20 @@ Import the projects as Maven projects by selecting the
 sub folder of a section. It is not possible to load all 
 projects at once from the pom in this directory.
 
-0.3 WildFly 8.2.0
+0.3 WildFly 9.0.1
 
-Download WildFly 8.2.0 Final and unzip the file.
+Download WildFly 9.0.1 Final and unzip the file.
 
 Open Eclipse
 
-Install the JBoss Tools (Luna) from the Eclipse Market Place
+Install the JBoss Tools (currently 4.3.0.Beta2) from the Eclipse Market Place
 
-Create a new Serer, with server type WildFly 8.x and
+Create a new Serer, with server type WildFly 9.x and
 point it to the installation directory of the unzipped WildFly.
 
-When running the MetalIsX web applications you need to 
-configure the datasource with jndi-name java:jdbc/monitorDS
-Follow the configuration of the datasource in the 
-section MetalIsX Monitor.
+When running the MetalIsX web applications you need to configure the 
+Monitor datasource and Monitor log file. For instructions see: 
+4 WildFly 9.0.1.Final
 
 1. MetalIsX common
 
@@ -90,7 +89,8 @@ Common projects for domain, gson, rest and web resources.
 
 2. MetalIsX CRUD
 
-Project for a CRUD rest and CRUD web application.
+Simple but effective CRUD web application project using the 
+common rest module.
 
 3. MetalIsX Monitor
 
@@ -128,7 +128,6 @@ read:
 Log information, if available, is also bind to the
 request.
 
-
 3.1 Browsers
 
 The web applications are supported in the browsers Firefox, 
@@ -136,24 +135,24 @@ Chrome and Internet Explorer 8+.
 
 3.2 Application Server
 
-The monitor web application is developed for the WildFly 8.2.0.Final
+The monitor web application is developed for the WildFly 9.0.1.Final
 application server.
 
 The monitor web application uses:
- - Servlet 3.0
+ - Servlet 3.1
  - EJB
  - CDI
 
 The monitor web application should run on other application
 servers but in the pom the artifacts which are provided by
-WildFly 8.2.0.Final as modules are marked as provided. They
+WildFly 9.0.1.Final as modules are marked as provided. They
 might not be available on other application servers.
 
 3.3 Datasource
 
 To use the web application monitor-war and/or servlet filter monitor-request-servlet-filter a 
 datasource has to be configured in the application server. The name of the data 
-source is: jdbc/monitorDataSource.
+source is: jdbc/monitorDS.
 
 3.4 Generate log statements
 
@@ -299,11 +298,11 @@ because a filter can be used to set the username
 and organizatoin in the MonitorContext to personalize
 the request.
 
-4 WildFly 8.2.0.Final
+4 WildFly 9.0.1.Final
 
 4.1 Datasource
 
-Instructions to configure WildFly 8.2.0.Final standalone 
+Instructions to configure WildFly 9.0.1.Final standalone 
 with the required jdbc/monitorDS datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
@@ -328,7 +327,7 @@ with the required jdbc/monitorDS datasource:
 
 4.2 Logger
 
-Instructions to configure WildFly 8.2.0.Final standalone with
+Instructions to configure WildFly 9.0.1.Final standalone with
 a seperated log file for the monitor application:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the logging
@@ -337,7 +336,7 @@ a seperated log file for the monitor application:
 
                 <formatter>
 
-                    <pattern-formatter pattern="%d %-5p [%c] (%t) [SessionId: %X{sessionid}, RequestId: %X{requestid}, ParentRequestId: %X{parentrequestid}, Organisatie: %X{organization}, Gebruikersnaam: %X{username}] (Depth: %X{depth}) %s%E%n"/>
+                    <pattern-formatter pattern="%d %-5p [%c] (%t) %s%E%n"/>
 
                 </formatter>
 
@@ -348,7 +347,8 @@ a seperated log file for the monitor application:
                 <append value="false"/>
 
             </periodic-rotating-file-handler>
-
+   when using the monitor-context-slf4j-mdc filter replace the pattern-formatter with:
+                    <pattern-formatter pattern="%d %-5p [%c] (%t) [SessionId: %X{sessionid}, RequestId: %X{requestid}, ParentRequestId: %X{parentrequestid}, Organisatie: %X{organization}, Gebruikersnaam: %X{username}] (Depth: %X{depth}) %s%E%n"/>
  - add in the subsystem the following logger for logging en processing
    monitor logging:
             <logger category="org.metalisx.monitor" use-parent-handlers="false">
@@ -430,8 +430,70 @@ the directory: /workspace-monitor/site
 
 8 Unit testing
 
-Download the Chrome and Internet Explorer web drivers for running test with Selenium.
-The links to the web drivers can be found on the Selenium download page: http://seleniumhq.org/download/
-The current web driver links:
- - Chrome web driver can be found here: http://code.google.com/p/chromedriver/
- - Internet Explorer can be found here: http://code.google.com/p/selenium/downloads/list
+Arquillian is used for unit testing. 
+
+8.1 Web application
+
+Arquillian uses selenium and webdrivers for testing web applications.
+
+The applications monitor-war is configured for running against browsers
+and a headless browser.
+
+After executing the instruction in the sub paragraphes you can run test
+at the browser in that sub paragraphes or you can run it against all 
+these browsers at once by running:
+  mvn clean install -Pphantomjs,firefox,chrome,internet-explorer
+
+8.1.1 Headless
+
+For testing the web application the headless browser PhantomJS is used. 
+This requires no extra installations
+
+Run: mvn clean install -Pphantomjs
+
+8.1.2 Browsers
+
+For testing against a browser you need to install the browser and 
+possible a webdriver.
+The links to the webdrivers can be found on the Selenium download 
+page: http://seleniumhq.org/download/
+
+8.1.2.1 FireFox
+
+Actions:
+	Install FireFox.
+    It might be possible that you need to install the Selenium IDE in FireFox.
+
+Run: mvn clean install -Pfirefox
+
+8.1.2.2 Chrome
+
+Actions:
+	Install Chrome.
+	Install the chrome webdriver.
+
+The Chrome webdriver can be found here: https://sites.google.com/a/chromium.org/chromedriver/
+Create the selenium-webdriver directory in the root of the drive where the 
+project is located. Place the webdriver in this directory.
+
+Run: mvn clean install -Pchrome
+
+8.1.2.3 Internet Explorer
+
+Actions:
+ Install Internet Explorer.
+ Install the Internet Explorer webdriver.
+
+The home page for the Internet Explorer webdriver is:
+https://code.google.com/p/selenium/wiki/InternetExplorerDriver
+
+The Internet Explorer webdriver can be found here: 
+http://selenium-release.storage.googleapis.com/index.html
+
+To make the webdriver work for your version of Internet Explorer read:
+https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configuration
+
+Create the selenium-webdriver directory in the root of the drive where the 
+project is located. Place the webdriver in this directory.
+
+run: mvn clean install -Pinternet-explorer

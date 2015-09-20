@@ -1,5 +1,8 @@
 package org.metalisx.monitor.context.request;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,8 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -48,7 +49,7 @@ public class MonitorContextRequestUtilsTest {
 			stringBuilder.append(line);
 		}
 		bufferedReader.close();
-		Assert.assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
+		assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
 	}
 
 	/**
@@ -67,19 +68,19 @@ public class MonitorContextRequestUtilsTest {
 				lines.add(line);
 			}
 			bufferedReader.close();
-			Assert.assertEquals(2, lines.size());
+			assertEquals(2, lines.size());
 			int lineIndex = 0;
 			String expectedRegularExpression = ".+ "
 			        + "\\[SessionId: .+, RequestId: .+, ParentRequestId: , Organisatie: , Gebruikersnaam: ] "
 			        + "\\(Depth: 1\\) A message";
-			Assert.assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
+			assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
 			        + "] but was [" + lines.get(lineIndex) + "]",
 			        lines.get(lineIndex).matches(expectedRegularExpression));
 			lineIndex = 1;
 			String expectedProfilingRegularExpression = ".+ "
 			        + "\\[SessionId: .+, RequestId: .+, ParentRequestId: , Organisatie: , Gebruikersnaam: ] "
 			        + "\\(Depth: 1\\) A message, time: .+ms";
-			Assert.assertTrue("Line in the log file is inccorrect, expected to match ["
+			assertTrue("Line in the log file is inccorrect, expected to match ["
 			        + expectedProfilingRegularExpression + "] but was [" + lines.get(lineIndex) + "]",
 			        lines.get(lineIndex).matches(expectedProfilingRegularExpression));
 		}
@@ -99,7 +100,7 @@ public class MonitorContextRequestUtilsTest {
 			stringBuilder.append(line);
 		}
 		bufferedReader.close();
-		Assert.assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
+		assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
 	}
 	
 	private void setParentMonitorContextOnRequest(URLConnection urlConnection) {
@@ -121,19 +122,19 @@ public class MonitorContextRequestUtilsTest {
 				lines.add(line);
 			}
 			bufferedReader.close();
-			Assert.assertEquals(4, lines.size());
+			assertEquals(4, lines.size());
 			int lineIndex = 2;
 			String expectedRegularExpression = ".+ "
 			        + "\\[SessionId: .+, RequestId: .+, ParentRequestId: a-parentrequestid-1, Organisatie: Daily Bugle, Gebruikersnaam: Peter] "
 			        + "\\(Depth: 2\\) A message";
-			Assert.assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
+			assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
 			        + "] but was [" + lines.get(lineIndex) + "]",
 			        lines.get(lineIndex).matches(expectedRegularExpression));
 			lineIndex = 3;
 			String expectedProfilingRegularExpression = ".+ "
 			        + "\\[SessionId: .+, RequestId: .+, ParentRequestId: a-parentrequestid-1, Organisatie: Daily Bugle, Gebruikersnaam: Peter] "
 			        + "\\(Depth: 2\\) A message, time: .+ms";
-			Assert.assertTrue("Line in the log file is inccorrect, expected to match ["
+			assertTrue("Line in the log file is inccorrect, expected to match ["
 			        + expectedProfilingRegularExpression + "] but was [" + lines.get(lineIndex) + "]",
 			        lines.get(lineIndex).matches(expectedProfilingRegularExpression));
 		}

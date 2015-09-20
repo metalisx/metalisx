@@ -7,7 +7,7 @@ import org.metalisx.common.domain.dao.UserEntityGenericDao;
 import org.metalisx.common.domain.model.UserAbstractEntity;
 
 @Stateless
-public class UserService  extends AbstractService {
+public class UserService extends AbstractService {
 
 	@Inject
 	private UserEntityGenericDao userEntityGenericDao;

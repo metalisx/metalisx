@@ -1,5 +1,7 @@
 package org.metalisx.monitor.request.servlet.filter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,8 +11,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -52,7 +52,7 @@ public class RequestFilterTest {
             stringBuilder.append(line);
         }
         bufferedReader.close();
-        Assert.assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
+        assertEquals(TestServlet.RESPONSE_MESSAGE, stringBuilder.toString());
     }
 
     /**
@@ -63,22 +63,22 @@ public class RequestFilterTest {
     @Test
     public void testRequestFilter() throws IOException {
         String queryString = "select o from " + MonitorRequest.class.getSimpleName() + " o " +
-        		" where  url like '%/RequestServletFilterTest/test%'";
+        		" where url like '%/RequestServletFilterTest/test%'";
         TypedQuery<MonitorRequest> typedQuery = entityManager.createQuery(queryString, MonitorRequest.class);
         List<MonitorRequest> monitorRequestList = typedQuery.getResultList();
-        Assert.assertEquals(1, monitorRequestList.size());
+        assertEquals(1, monitorRequestList.size());
         MonitorRequest monitorRequest = monitorRequestList.get(0);
-        Assert.assertEquals(1, monitorRequestList.size());
-        Assert.assertEquals("GET", monitorRequest.getMethod());
-        Assert.assertEquals("http", monitorRequest.getScheme());
-        Assert.assertEquals("127.0.0.1", monitorRequest.getServerName());
-        Assert.assertEquals(8180, monitorRequest.getServerPort());
-        Assert.assertEquals("/RequestServletFilterTest", monitorRequest.getContextPath());
-        Assert.assertEquals("/test", monitorRequest.getServletPath());
-        Assert.assertEquals(null, monitorRequest.getPathInfo());
-        Assert.assertEquals(null, monitorRequest.getQueryString());
-        Assert.assertEquals(null, monitorRequest.getPathTranslated());
-        Assert.assertEquals(200, monitorRequest.getResponse().getStatus());
+        assertEquals(1, monitorRequestList.size());
+        assertEquals("GET", monitorRequest.getMethod());
+        assertEquals("http", monitorRequest.getScheme());
+        assertEquals("127.0.0.1", monitorRequest.getServerName());
+        assertEquals(8080, monitorRequest.getServerPort());
+        assertEquals("/RequestServletFilterTest", monitorRequest.getContextPath());
+        assertEquals("/test", monitorRequest.getServletPath());
+        assertEquals(null, monitorRequest.getPathInfo());
+        assertEquals(null, monitorRequest.getQueryString());
+        assertEquals(null, monitorRequest.getPathTranslated());
+        assertEquals(200, monitorRequest.getResponse().getStatus());
     }
 
 }

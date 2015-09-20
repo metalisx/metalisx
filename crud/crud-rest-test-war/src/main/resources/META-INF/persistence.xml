@@ -6,7 +6,7 @@
 
 	<!-- The datasource is added through dependency injection -->
 	<persistence-unit name="crudPU" transaction-type="JTA">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>jdbc/monitorDS</jta-data-source>
 
 		<class>org.metalisx.entity.domain.model.Test</class>

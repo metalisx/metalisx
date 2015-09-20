@@ -10,31 +10,25 @@
     </engine>
      -->
      
-    <container qualifier="jboss7" default="true">
+    <container qualifier="wildFly9" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-8.2.0.Final</property>
-			<property name="managementPort">10090</property>
+			<property name="jbossHome">target/wildfly-9.0.1.Final</property>
+			<property name="managementPort">9990</property>
 			<!--
 				 For debugging you can use the settings below, 
 				 the suspend must be set on y so you have time to connect. 
 			 -->
 			<!-- 
-            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m
+            <property name="javaVmArguments">-Xmx512m
                 -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y
             </property>
             -->
         </configuration>
     </container>
  
- 	<!-- 
-		The property webdriver.ie.driver is ignored with this the used releases Drone 1.2.0.Alpha2 and
-		Graphene 2.0.0.Alpha4. Check later if it works with the final releases. 
-		For now you can add -Dwebdriver.ie.driver=D:/selenium-webdriver/IEDriverServer.exe to JUnit start 
-		configuration if you want to run it in Eclipse.
- 	 -->
 	<extension qualifier="webdriver">
-		<property name="browserCapabilities">internetExplorer</property>
-		<property name="webdriver.ie.driver">/selenium-webdriver/IEDriverServer.exe</property>
+		<property name="browser">internetExplorer</property>
+		<property name="ieDriverBinary">/selenium-webdriver/IEDriverServer.exe</property>
 		<property name="ignoreProtectedModeSettings">true</property>
 	</extension>
 

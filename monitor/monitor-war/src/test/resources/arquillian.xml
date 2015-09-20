@@ -4,23 +4,22 @@
     xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
     <!-- Uncomment to have test archives exported to the file system for inspection -->
+    <!-- 
     <engine>
         <property name="deploymentExportPath">target/</property>
     </engine>
+     -->
      
-    <container qualifier="wildFly8" default="true">
+    <container qualifier="wildFly9" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-8.2.0.Final</property>
-			<property name="managementPort">10090</property>
-			<!--
-			<property name="serverConfig">standalone.xml</property> 
-			 -->
+			<property name="jbossHome">target/wildfly-9.0.1.Final</property>
+			<property name="managementPort">9990</property>
 			<!--
 				 For debugging you can use the settings below, 
 				 the suspend must be set on y so you have time to connect. 
 			 -->
 			<!-- 
-            <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m
+            <property name="javaVmArguments">-Xmx512m
                 -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y
             </property>
             -->
@@ -28,25 +27,30 @@
     </container>
 
 	<extension qualifier="webdriver">
-		<property name="browserCapabilities">phantomjs</property>
-		<property name="phantomjs.binary.path">/selenium-webdriver/phantomjs.exe</property>
+		<property name="browser">phantomjs</property>
 	</extension>
 
+	<!-- Configurations for testing with an headless browser.-->
 	<!-- 
-	HtmlUnit does not work because of an error with java.lang.NoSuchFieldError: FIREFOX_10
-	Switched to headless PhantomJS, donwside it requires a installation of the Web Driver binary
-	and HtmlUnit does not.
 	<extension qualifier="webdriver">
-		<property name="browserCapabilities">phantomjs</property>
-		<property name="phantomjs.binary.path">/selenium-webdriver/phantomjs.exe</property>
+		<property name="browser">phantomjs</property>
+	</extension>
+	-->
+	
+	<!-- Configurations for testing with an actual browser.-->
+	<!-- 
+	<extension qualifier="webdriver">
+		<property name="browser">chrome</property>
+		<property name="chromeDriverBinary">/selenium-webdriver/chromedriver.exe</property>
 	</extension>
 	<extension qualifier="webdriver">
-		<property name="browserCapabilities">htmlUnit</property>
+		<property name="browserCapabilities">firefox</property>
 	</extension>
 	<extension qualifier="webdriver">
-		<property name="browserCapabilities">internetExplorer</property>
-		<property name="webdriver.ie.driver">/selenium-webdriver/IEDriverServer.exe</property>
+		<property name="browser">internetExplorer</property>
+		<property name="ieDriverBinary">/selenium-webdriver/IEDriverServer.exe</property>
 		<property name="ignoreProtectedModeSettings">true</property>
 	</extension>
 	-->
+
 </arquillian>

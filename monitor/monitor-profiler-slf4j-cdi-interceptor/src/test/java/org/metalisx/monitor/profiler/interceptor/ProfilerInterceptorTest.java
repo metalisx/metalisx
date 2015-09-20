@@ -1,5 +1,8 @@
 package org.metalisx.monitor.profiler.interceptor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -54,13 +55,13 @@ public class ProfilerInterceptorTest {
                 lines.add(line);
             }
             bufferedReader.close();
-            Assert.assertEquals(1, lines.size());
+            assertEquals(1, lines.size());
             String expectedRegularExpression = ".+ "
                     + "\\[SessionId: a-sessionid-1, RequestId: .+, "
                     + "Organisatie: Daily Bugle, Gebruikersnaam: Peter] \\(Depth: 2\\) "
                     + "org.metalisx.monitor.profiler.interceptor.ProfiledTestClass\\$Proxy\\$_\\$\\$_WeldSubclass.run, "
                     + "time: .+ms";
-            Assert.assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
+            assertTrue("Line in the log file is inccorrect, expected to match [" + expectedRegularExpression
                     + "] but was [" + lines.get(0) + "]", lines.get(0).matches(expectedRegularExpression));
         }
     }

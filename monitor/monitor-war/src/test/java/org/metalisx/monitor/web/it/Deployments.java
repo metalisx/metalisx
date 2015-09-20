@@ -47,9 +47,11 @@ public class Deployments {
 	}
 
 	/**
-	 *  The project artifact are added with a number instead of the actual SNAPHOT version.
-	 *  This will result in loading of duplicate classes. To prevent this we first remove
-	 *  the duplicates from the list of files to add to the WebArchive.
+	 *  By using the addAsLibraries method on ShrinkWrap the project artifact are added with a 
+	 *  number instead of the actual SNAPHOT version. This will result in loading of duplicate 
+	 *  classes, which will result in exceptions of duplicate beans. To prevent this we add the
+	 *  project modules to an array list and add this array list with addAsLibraries. This 
+	 *  seems to work.
 	 *  Other options did not work:
 	 *   - import all artifact from the project:
 	 *      return ShrinkWrap.create(MavenImporter.class, "testapplication.war")
@@ -65,7 +67,7 @@ public class Deployments {
         for (File f : file) {
         	System.out.println(f.getAbsolutePath());
         }
-        
+
         File[] commonGson = resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile();
         File[] commonRest = resolverStage.resolve("org.metalisx:common-rest").withTransitivity().asFile();
         File[] monitorContext = resolverStage.resolve("org.metalisx:monitor-context").withTransitivity().asFile();
@@ -91,19 +93,6 @@ public class Deployments {
                         .importFrom(zipFile)
                         .as(WebArchive.class), "/")
                 .addAsLibraries(files)
-//                .addAsLibraries(resolverStage.resolve("org.metalisx:common-domain").withTransitivity().asFile())
-//                .addAsLibraries(resolverStage.resolve("org.metalisx:common-gson").withTransitivity().asFile())
-//                .addAsLibraries(resolverStage.resolve("org.metalisx:common-rest").withTransitivity().asFile())
-//                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-domain").withTransitivity().asFile())
-//                .addAsLibraries(resolverStage.resolve("org.metalisx:monitor-context-slf4j-mdc").withTransitivity().asFile())
-//                .addAsLibraries(
-//                		resolverStage.resolve("org.metalisx:monitor-profiler-slf4j-cdi-interceptor")
-//                                .withTransitivity().asFile())
-//                .addAsLibraries(
-//                		resolverStage.resolve("org.metalisx:monitor-profiler-slf4j-servlet-filter")
-//                                .withTransitivity().asFile())
-//                .addAsLibraries(
-//                		resolverStage.resolve("org.metalisx:monitor-request-servlet-filter").withTransitivity().asFile())
                 .addAsLibraries(resolverStage.resolve("ch.qos.logback:logback-classic").withTransitivity().asFile())
                 .addAsLibraries(resolverStage.resolve("commons-io:commons-io").withTransitivity().asFile())
                 .addAsLibraries(resolverStage.resolve("com.google.code.gson:gson").withTransitivity().asFile())

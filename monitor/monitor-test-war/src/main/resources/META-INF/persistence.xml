@@ -6,7 +6,7 @@
 
 	<!-- The datasource is added through dependency injection -->
 	<persistence-unit name="monitorTestPU" transaction-type="JTA">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>jdbc/monitorDS</jta-data-source>
 
 		<class>org.metalisx.monitor.domain.model.User</class>

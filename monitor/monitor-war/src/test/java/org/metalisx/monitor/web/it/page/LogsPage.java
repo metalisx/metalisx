@@ -1,8 +1,8 @@
 package org.metalisx.monitor.web.it.page;
 
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.net.URL;
 
 import org.metalisx.monitor.web.it.utils.WebDriverUtils;
 import org.openqa.selenium.By;
@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LogsPage extends AbstractPage {
 
-    private static final String PAGE = "page/logs.html";
+    private static final String PAGE = "page/index.html#/logs";
     private static final String ID_MESSAGE = "message";
     private static final String ID_SEARCH = "search";
     private static final String XPATH_NAVBAR = "//div[contains(@class,'navbar')]";
@@ -37,7 +37,7 @@ public class LogsPage extends AbstractPage {
         WebDriverUtils.renderWait(getDriver());
         getWebDriverWait().until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_FIRST_TR_CONTAINING_SEARCH_RESULT)));
         String result = getDriver().findElement(By.xpath(XPATH_FIRST_TR_CONTAINING_SEARCH_RESULT)).getText();
-        Assert.assertEquals("A message", result);
+        assertEquals("A message", result);
     }
 
 }

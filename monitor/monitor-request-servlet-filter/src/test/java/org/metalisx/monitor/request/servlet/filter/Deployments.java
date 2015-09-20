@@ -28,7 +28,7 @@ public class Deployments {
                 .addClasses(RequestFilter.class, RequestFilterContext.class, TeeHttpServletRequestWrapper.class,
                         TeeHttpServletResponseWrapper.class, TeeServletInputStream.class, TeeServletOutputStream.class,
                         HttpStatus.class, HttpUtils.class, PrettyPrintUtils.class, RequestFilterTest.class,
-                        TestServlet.class).addAsManifestResource("test-ds.xml")
+                        TestServlet.class)//.addAsManifestResource("test-ds.xml")
                 .addAsWebInfResource("WEB-INF/test-web.xml", ArchivePaths.create("web.xml"))
                 .addAsWebInfResource("WEB-INF/test-beans.xml", ArchivePaths.create("beans.xml"));
     }
