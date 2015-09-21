@@ -64,9 +64,10 @@ Mars contains m2e.
 
 Open Eclipse
 
-Import the projects as Maven projects by selecting the 
-sub folder of a section. It is not possible to load all 
-projects at once from the pom in this directory.
+Import the previous build projects as Maven projects.
+
+If you only want one section then import the pom of
+it's sub folder.
 
 0.3 WildFly 9.0.1
 
