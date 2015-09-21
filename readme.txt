@@ -69,6 +69,19 @@ Import the previous build projects as Maven projects.
 If you only want one section then import the pom of
 it's sub folder.
 
+0.2.1 Error: Multiple JAX-RS Activators are defined for the project
+
+The JBoss Tools validator for JAX-RS thinks it detected the error: 
+  Multiple JAX-RS Activators are defined for the project.
+This is incorrect because the Applications are defined in different 
+projects. The solution is to set the validator check to Warning by 
+following the next instructions:
+ go to Menu -> Window -> Preferences
+ go to JBoss Tools -> JAX-RS -> JAX-RS Validator
+ Klik on "JAX-RS Activators"
+ go to "Multiple JAX-RS Activators configured"
+ set the listbox value on Warning
+
 0.3 WildFly 9.0.1
 
 Download WildFly 9.0.1 Final and unzip the file.
