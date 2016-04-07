@@ -59,7 +59,7 @@ section first.
 
 0.2 Eclipse
 
-Download and install Eclipse (currently Mars R)
+Download and install Eclipse (currently Mars 2)
 Mars contains m2e.
 
 Open Eclipse
@@ -82,20 +82,20 @@ following the next instructions:
  go to "Multiple JAX-RS Activators configured"
  set the listbox value on Warning
 
-0.3 WildFly 9.0.1
+0.3 WildFly
 
-Download WildFly 9.0.1 Final and unzip the file.
+Download WildFly 10.0.0 Final and unzip the file.
 
 Open Eclipse
 
-Install the JBoss Tools (currently 4.3.0.Beta2) from the Eclipse Market Place
+Install the JBoss Tools (currently 4.3.0.Final) from the Eclipse Market Place
 
-Create a new Serer, with server type WildFly 9.x and
+Create a new Serer, with server type WildFly 10.0 (Experimental) and
 point it to the installation directory of the unzipped WildFly.
 
 When running the MetalIsX web applications you need to configure the 
 Monitor datasource and Monitor log file. For instructions see: 
-4 WildFly 9.0.1.Final
+4 WildFly
 
 1. MetalIsX common
 
@@ -145,11 +145,11 @@ request.
 3.1 Browsers
 
 The web applications are supported in the browsers Firefox, 
-Chrome and Internet Explorer 8+.
+Chrome and Internet Explorer 10+, Edge.
 
 3.2 Application Server
 
-The monitor web application is developed for the WildFly 9.0.1.Final
+The monitor web application is developed for the WildFly 10.0.0.Final
 application server.
 
 The monitor web application uses:
@@ -159,7 +159,7 @@ The monitor web application uses:
 
 The monitor web application should run on other application
 servers but in the pom the artifacts which are provided by
-WildFly 9.0.1.Final as modules are marked as provided. They
+WildFly 10.0.0.Final as modules are marked as provided. They
 might not be available on other application servers.
 
 3.3 Datasource
@@ -312,28 +312,22 @@ because a filter can be used to set the username
 and organizatoin in the MonitorContext to personalize
 the request.
 
-4 WildFly 9.0.1.Final
+4 WildFly
 
 4.1 Datasource
 
-Instructions to configure WildFly 9.0.1.Final standalone 
+Instructions to configure WildFly 10.0.0.Final standalone 
 with the required jdbc/monitorDS datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
  - add in the datasources section the following datasource to create a h2 database:
                 <datasource jndi-name="java:/jdbc/monitorDS" pool-name="monitorDS" enabled="true" use-java-context="true">
-
                     <connection-url>jdbc:h2:file:${jboss.server.data.dir}/h2database/monitor;DB_CLOSE_DELAY=-1</connection-url>
-
                     <driver>h2</driver>
-
                     <security>
-
                         <user-name>sa</user-name>
-
                         <password>sa</password>
                     </security>
-
                 </datasource>
 
  - you can change the datasource setting to your liking, but the 
@@ -341,73 +335,54 @@ with the required jdbc/monitorDS datasource:
 
 4.2 Logger
 
-Instructions to configure WildFly 9.0.1.Final standalone with
+Instructions to configure WildFly 10.0.0.Final standalone with
 a seperated log file for the monitor application:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the logging
  - add in the subsystem the following file handler:
             <periodic-rotating-file-handler name="MONITOR" autoflush="true">
-
                 <formatter>
-
                     <pattern-formatter pattern="%d %-5p [%c] (%t) %s%E%n"/>
-
-                </formatter>
-
-                <file relative-to="jboss.server.log.dir" path="monitor.log"/>
-
-                <suffix value=".yyyy-MM-dd"/>
-
-                <append value="false"/>
-
-            </periodic-rotating-file-handler>
-   when using the monitor-context-slf4j-mdc filter replace the pattern-formatter with:
+                    <!-- when using the monitor-context-slf4j-mdc filter enable the following pattern-formatter
                     <pattern-formatter pattern="%d %-5p [%c] (%t) [SessionId: %X{sessionid}, RequestId: %X{requestid}, ParentRequestId: %X{parentrequestid}, Organisatie: %X{organization}, Gebruikersnaam: %X{username}] (Depth: %X{depth}) %s%E%n"/>
+                    -->
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="monitor.log"/>
+                <suffix value=".yyyy-MM-dd"/>
+                <append value="false"/>
+            </periodic-rotating-file-handler>
+
  - add in the subsystem the following logger for logging en processing
    monitor logging:
             <logger category="org.metalisx.monitor" use-parent-handlers="false">
                 <level name="INFO"/>
-
                 <handlers>
-
                     <handler name="MONITOR"/>
-
                 </handlers>
             </logger>
-
  - add in the subsystem the following logger for logging en processing 
    hibernate logging:
             <logger category="org.hibernate.SQL" use-parent-handlers="false">
-
                 <level name="DEBUG"/>
-
                 <handlers>
-
                     <handler name="MONITOR"/>
-
                 </handlers>
-
             </logger>
-
             <logger category="org.hibernate.type" use-parent-handlers="false">
-
                 <level name="DEBUG"/>
-
                 <handlers>
                     <handler name="MONITOR"/>
-
                 </handlers>
-
             </logger>
 
 5 Eclipse and Checkstyle
 
 Install and configure Checkstyle in Ecipse:
- - go to the Eclipse market place, search for Checkstyle and install it.
+ - go to the Eclipse market place, search for Checkstyle Plug-in and install it.
  - go to Window -> Preferences -> Checkstyle
  - click on 'New' to open the 'Check configuration Properties' window
  - enter the follwing values:
-     type = Project Relative Configuration
+     type = External Configuration File
      name = Monitor
  - click on 'Browse' and select the checkstyle.xml file in this directory
  - click on 'Additional properties' to open the 'Checkstyle configuration file properties' window
@@ -416,9 +391,9 @@ Install and configure Checkstyle in Ecipse:
      name = checkstyle.suppressions.file
      value = ${project_loc}/checkstyle-suppressions.xml
  - click 'Ok'
- - click 'Ok'
  - click 'Ok', 'Monitor' should be visible in the 'Global Check Configuration' list
  - click on 'Monitor' and then click on 'Set as default'
+ - click 'Ok'
  - restart Eclipse
  - now you can validate the project or source by:
     - right click the project or source
