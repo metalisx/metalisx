@@ -122,7 +122,7 @@
 		<!--module name="MagicNumber"> <property name="ignoreAnnotation" value="true" 
 			/> <property name="ignoreHashCodeMethod" value="true" /> </module -->
 		<module name="MissingSwitchDefault" />
-		<module name="RedundantThrows" />
+		<!-- removed with version 6.2 <module name="RedundantThrows" />-->
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
 		<module name="StringLiteralEquality" />
