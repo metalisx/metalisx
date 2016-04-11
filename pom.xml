@@ -21,7 +21,6 @@
 		<maven.version.min>3.0.4</maven.version.min>
 		<version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
 		<version.org.jboss.arquillian.drone>2.0.0.Final</version.org.jboss.arquillian.drone>
-<!--		<version.org.jboss.arquillian.graphene>2.1.0.Beta1</version.org.jboss.arquillian.graphene>-->
 		<version.org.wildfly.arquillian>1.0.1.Final</version.org.wildfly.arquillian>
 		<version.org.wildfly>10.0.0.Final</version.org.wildfly>
 		<maven.compiler.source>${jdk}</maven.compiler.source>
@@ -398,15 +397,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-<!--
-			<dependency>
-				<groupId>org.jboss.arquillian.graphene</groupId>
-				<artifactId>arquillian-graphene</artifactId>
-				<version>${version.org.jboss.arquillian.graphene}</version>
-				<type>pom</type>
-				<scope>test</scope>
-			</dependency>
--->
+			
 			<dependency>
 				<groupId>org.wildfly.arquillian</groupId>
 				<artifactId>wildfly-arquillian-container-managed</artifactId>
