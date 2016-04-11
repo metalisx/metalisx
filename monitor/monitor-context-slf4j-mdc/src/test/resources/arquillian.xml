@@ -10,9 +10,9 @@
     </engine>
      -->
 
-    <container qualifier="wildFly9" default="true">
+    <container qualifier="wildFly" default="true">
         <configuration>
-			<property name="jbossHome">target/wildfly-9.0.1.Final</property>
+			<property name="jbossHome">target/wildfly-10.0.0.Final</property>
 			<property name="managementPort">9990</property>
 			<!--
 				 For debugging you can use the settings below, 

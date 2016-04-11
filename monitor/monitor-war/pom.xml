@@ -40,7 +40,7 @@
 					<forkMode>once</forkMode>
 					<argLine>-Xmx512m</argLine>
 					<systemPropertyVariables>
-						<arquillian.launch>wildFly9</arquillian.launch>
+						<arquillian.launch>wildFly</arquillian.launch>
 					</systemPropertyVariables>
 					<excludes>
 						<exclude>**/ApplicationTest*</exclude>
@@ -297,12 +297,6 @@
 			<type>pom</type>
 		</dependency>
  		
-		<dependency>
-			<groupId>org.jboss.arquillian.graphene</groupId>
-			<artifactId>arquillian-graphene</artifactId>
-			<type>pom</type>
-		</dependency>
-
 		<dependency>
 			<groupId>org.wildfly.arquillian</groupId>
 			<artifactId>wildfly-arquillian-container-managed</artifactId>

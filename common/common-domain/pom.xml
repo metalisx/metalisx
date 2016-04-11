@@ -30,7 +30,7 @@
 					<forkMode>once</forkMode>
 					<argLine>-Xmx512m</argLine>
 					<systemPropertyVariables>
-						<arquillian.launch>wildFly9</arquillian.launch>
+						<arquillian.launch>wildFly</arquillian.launch>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
