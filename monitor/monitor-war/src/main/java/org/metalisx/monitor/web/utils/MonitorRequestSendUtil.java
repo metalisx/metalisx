@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -25,6 +24,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
@@ -53,13 +53,18 @@ public class MonitorRequestSendUtil {
     private MonitorRequestSendUtil() {
     }
 
-    public static HttpResponse send(MonitorRequest monitorRequest) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
+    public static String send(MonitorRequest monitorRequest) {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         BasicHttpContext basicHttpContext = toBasicHttpContext(monitorRequest);
-        HttpResponse response = null;
+        String result = null;
         try {
             HttpRequestBase httpRequestBase = toHttpRequestBase(monitorRequest);
-            response = httpClient.execute(httpRequestBase, basicHttpContext);
+            CloseableHttpResponse response = httpClient.execute(httpRequestBase, basicHttpContext);
+           	try {
+           		result = response.getStatusLine().toString();
+           	} finally {
+           		response.close();
+           	}
         } catch (URISyntaxException e) {
             throw new IllegalStateException(e);
         } catch (UnsupportedEncodingException e) {
@@ -68,8 +73,14 @@ public class MonitorRequestSendUtil {
             throw new IllegalStateException(e);
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        } finally {
+        	try {
+				httpClient.close();
+			} catch (IOException e) {
+	            throw new IllegalStateException(e);
+			}
         }
-        return response;
+        return result;
     }
 
     private static HttpRequestBase toHttpRequestBase(MonitorRequest monitorRequest)

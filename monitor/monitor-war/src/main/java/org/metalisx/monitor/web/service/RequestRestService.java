@@ -82,8 +82,8 @@ public class RequestRestService {
     @Path("/request/resend/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public MessagesDto resend(@PathParam("id") Long id) {
-        HttpResponse httpResponse = MonitorRequestSendUtil.send(monitorRequestService.findById(id));
-        return (new MessagesDto()).addInfo("Request resend status result: " + httpResponse.getStatusLine().toString());
+        String result = MonitorRequestSendUtil.send(monitorRequestService.findById(id));
+        return (new MessagesDto()).addInfo("Request resend status result: " + result);
     }
 
     @GET

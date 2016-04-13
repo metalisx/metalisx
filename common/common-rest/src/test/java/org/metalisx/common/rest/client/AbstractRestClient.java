@@ -5,22 +5,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.metalisx.common.gson.RestGsonConverter;
 import org.metalisx.common.rest.dto.entity.EntitiesDto;
 import org.metalisx.common.rest.dto.entity.EntityDto;
 
 /**
- * Abstract class to initiate a {@link DefaultHttpClient} for simple rest
- * communication.
+ * Abstract class to initiate a HttpClient for simple rest communication.
  * 
  * It retrieves the runtime class from the generic type. The constructor
  * parameter listType is so GSON can create a list of the runtime class. The
@@ -75,29 +75,33 @@ public abstract class AbstractRestClient<T, I> {
 	}
 
 	private String execute(HttpRequestBase httpRequestBase, T entity) throws ClientProtocolException, IOException {
-		DefaultHttpClient httpClient = new DefaultHttpClient();
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		try {
 			httpRequestBase.addHeader("accept", "application/json");
-			HttpResponse response = httpClient.execute(httpRequestBase);
-			if (response == null) {
-				throw new IllegalStateException("The response is null.");
+			CloseableHttpResponse response = httpClient.execute(httpRequestBase);
+			try {
+				if (response == null) {
+					throw new IllegalStateException("The response is null.");
+				}
+				if (response.getStatusLine() == null) {
+					throw new IllegalStateException("Status line in the response is null.");
+				}
+				if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
+					throw new IllegalStateException("Response status is not 200 (OK) but was "
+					        + response.getStatusLine().getStatusCode() + ". " + response.getStatusLine().getReasonPhrase());
+				}
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+				StringBuilder stringBuilder = new StringBuilder();
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					stringBuilder.append(line);
+				}
+				return stringBuilder.toString();
+			} finally {
+				response.close();
 			}
-			if (response.getStatusLine() == null) {
-				throw new IllegalStateException("Status line in the response is null.");
-			}
-			if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
-				throw new IllegalStateException("Response status is not 200 (OK) but was "
-				        + response.getStatusLine().getStatusCode() + ". " + response.getStatusLine().getReasonPhrase());
-			}
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-			StringBuilder stringBuilder = new StringBuilder();
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line);
-			}
-			return stringBuilder.toString();
 		} finally{ 
-			httpClient.getConnectionManager().shutdown();
+			httpClient.close();
 		}
 	}
 	
