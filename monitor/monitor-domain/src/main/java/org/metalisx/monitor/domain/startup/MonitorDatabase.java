@@ -14,17 +14,18 @@ import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
-
 import org.hibernate.exception.SQLGrammarException;
 import org.metalisx.monitor.domain.datasource.MonitorDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * Class for installing the Monitor artifacts in the database.
@@ -52,7 +53,7 @@ public class MonitorDatabase {
 	}
 
 	@PostConstruct
-	public void init() throws SQLException, LiquibaseException {
+	public void init() {
 		install();
 	}
 
@@ -80,19 +81,28 @@ public class MonitorDatabase {
 	 * 
 	 * @throws LiquibaseException
 	 */
-	public void install() throws SQLException, LiquibaseException {
-		Connection connection = dataSource.getConnection();
-		Liquibase liquibase = null;
+	public void install() {
+		Connection connection = null;
 		try {
+			connection = dataSource.getConnection();
+			Liquibase liquibase = null;
 			Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
 			        new JdbcConnection(connection));
 			liquibase = new Liquibase(CHANGELOG, new ClassLoaderResourceAccessor(), database);
 			liquibase.update(CONTEXT_INITIAL_DDL);
 			liquibase.update(CONTEXT_INITIAL_DML);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} catch (LiquibaseException e) {
+			throw new RuntimeException(e);
 		} finally {
 			if (connection != null) {
-				connection.rollback();
-				connection.close();
+				try {
+					connection.rollback();
+					connection.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 	}
