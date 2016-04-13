@@ -477,6 +477,12 @@
 				<artifactId>resteasy-jaxrs</artifactId>
 				<version>3.0.14.Final</version>
 				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging</artifactId>
+					</exclusion>
+				</exclusions>  
 			</dependency>
 
 			<dependency>
@@ -536,17 +542,22 @@
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
-				<version>1.7</version>
+				<version>1.12</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers</artifactId>
-				<version>1.7</version>
+				<version>1.12</version>
 				<exclusions>
+					<!--
+						Exclude otherwise the following error is thrown:
+							WELD-000071: Managed bean with a parameterized bean class 
+							must be @Dependent: class org.apache.cxf.jaxrs.provider.XPathProvider 
+					 -->
 					<exclusion>
-						<artifactId>asm-debug-all</artifactId>
-						<groupId>org.ow2.asm</groupId>
+						<artifactId>cxf-rt-rs-client</artifactId>
+						<groupId>org.apache.cxf</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -567,7 +578,17 @@
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
-				<version>2.0.5</version>
+				<version>3.4.2</version>
+			</dependency>
+
+			<!--
+				Required for Liquibase, otherwise the following error is thrown:
+					 Failed to define class liquibase.serializer.core.yaml.YamlSerializer$LiquibaseRepresenter
+			 -->
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>1.17</version>
 			</dependency>
 
    		</dependencies>
