@@ -9,7 +9,6 @@ import javax.servlet.ServletInputStream;
 
 import org.metalisx.utils.HttpUtils;
 
-
 /**
  * Replaces the Servlet input stream with a version which splits the stream so
  * it can be read twice.
@@ -63,17 +62,17 @@ public class TeeServletInputStream extends ServletInputStream {
 
     @Override
     public boolean isFinished() {
-        throw new RuntimeException("Not yet implemented");
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
     public boolean isReady() {
-        throw new RuntimeException("Not yet implemented");
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
     public void setReadListener(ReadListener readListener) {
-        throw new RuntimeException("Not yet implemented");
+        throw new RuntimeException("Not implemented");
     }
 
 

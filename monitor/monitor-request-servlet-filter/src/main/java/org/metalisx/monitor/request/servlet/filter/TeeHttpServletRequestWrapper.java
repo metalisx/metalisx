@@ -26,7 +26,7 @@ import org.metalisx.utils.HttpUtils;
  * The getParts is a Servlet 3.0 specification implementation. The use of this
  * method will prevent apache commons fileupload to work. And vice versa. Now
  * the getParts is implemented in this filter, this means the multipart
- * functionality will only workt in a Servlet 3.0 environment.
+ * functionality will only work in a Servlet 3.0 environment.
  * 
  * The form parameters are retrieved before coping the request inputstream. This
  * is because the servlet implementation is reading the parameters from the

@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * action on the Servlet response output stream is already reserved by the
  * application server. So if we need to read what is in the output stream, we
  * need a second output stream to mirror the Servlet response output stream.
- * This class gives you this functionality with an implementation of Apache
- * Commons IO TeeOutputStream.
+ * This class gives you this functionality by providing a byte array of the
+ * response output stream.
  * 
  * Because there is no way to get the cookies from the response, this class
  * collects the cookies which are added by the addCookie method and a getCookies
