@@ -1,0 +1,91 @@
+<div class="row" onload="prettyPrint();">
+	<div class="col-sm-12">
+		<h2>Testing the AngularJS block module's ngcAlert</h2>
+	</div>
+</div>
+<div ngc-alert></div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alert</h2>
+		<p>Test if one alert without an id are placed in the HTML element with the ngc-alert and without the ngc-alert-target attribute.
+		Activating the buttons will show an alert for info.</p>
+		<br/>
+ 		<p><a href="#" id="alertButton" class="btn btn-primary" ng-click="getAlert($event)">Test</a></p>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test alerts</h2>
+		<p>Test if alerts without an id are placed in the HTML element with the ngc-alert and without the ngc-alert-target attribute.
+		Activating the buttons will show alerts for success, info and error.</p>
+		<br/>
+ 		<p><a href="#" id="alertsButton" class="btn btn-primary" ng-click="getAlerts($event)">Test</a></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alert with id</h2>
+		<p>Test if one alert is displayed correctly in the HTML element with the ngc-alert and with the ngc-alert-target attribute
+		containing the id of the alert. 
+		Activating the buttons will show an alert for info.</p>
+		<br/>
+ 		<p><a href="#" id="alertButton" class="btn btn-primary" ng-click="getAlertWithId($event)">Test</a></p>
+ 		<br/>
+		<div id="alertWithIdContainer" class="alertContainer" ngc-alert ngc-alert-target-id="alertWithIdContainer"></div>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test alerts with id</h2>
+		<p>Test if alerts are displayed correctly in the HTML element with the ngc-alert and with the ngc-alert-target attribute
+		containing the id of the alert. 
+		Activating the buttons will show alerts for success, info and error.</p>
+		<br/>
+ 		<p><a href="#" id="alertsWithIdButton" class="btn btn-primary" ng-click="getAlertsWithId($event)">Test</a></p>
+ 		<br/>
+		<div id="alertsWithIdContainer" class="alertContainer" ngc-alert ngc-alert-target-id="alertsWithIdContainer"></div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alerts with different ids</h2>
+		<p>Test if alerts are displayed correctly in the HTML element with the ngc-alert and with the ngc-alert-target attribute
+		containing the id of the alert.
+		Activating the buttons will show alerts for info and error in the left container and an alert for success in the right container.</p>
+		<br/>
+ 		<p><a href="#" id="alertsWithDifferntIdsButton" class="btn btn-primary" ng-click="getAlertsWithDifferentIds($event)">Test</a></p>
+		<div class="row">
+			<div class="col-sm-6">
+				<div id="alertsWithIdContainerA" class="alertContainer" ngc-alert ngc-alert-target-id="alertsWithIdContainerA"></div>
+			</div>
+			<div class="col-sm-6">
+				<div id="alertsWithIdContainerB" class="alterContainer" ngc-alert ngc-alert-target-id="alertsWithIdContainerB"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test alerts with and without id</h2>
+		<p>Test if alerts are displayed correctly in the HTML element with the ngc-alert and without the ngc-alert-target attribute
+		and in the HTML element with the ngc-alert and with the ngc-alert-target attribute containing the id of the alert.
+		Activating the buttons will show one alert for info in the top container and one alert for success in the one below.</p>
+		<br/>
+ 		<p><a href="#" id="alertsWithAndWithoutIdButton" class="btn btn-primary" ng-click="getAlertsWithAndWithoutId($event)">Test</a></p>
+		<div id="alertsWithAndWithoutIdContainer" class="alertContainer" ngc-alert ngc-alert-target-id="alertsWithAndWithoutIdContainer"></div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Test alerts with detail</h2>
+		<p>Test if alerts are displayed correctly in the HTML element with the ngc-alert and with the ngc-alert-target attribute
+		containing the id of the alert. 
+		Activating the buttons will show alerts containing detail as plain text and detail as HTML.</p>
+		<br/>
+ 		<p><a href="#" id="alertsWithDetailButton" class="btn btn-primary" ng-click="getAlertsWithDetail($event)">Test</a></p>
+ 		<br/>
+		<div id="alertsWithDetailContainer" class="alertContainer" ngc-alert ngc-alert-target-id="alertsWithDetailContainer"></div>
+	</div>
+	<div class="col-sm-6">
+		<h2>Test alert as string</h2>
+		<p>Test if an alert passed as a string with the event is placed in the HTML element with the ngc-alert and without the ngc-alert-target attribute.
+		Activating the buttons will show an alert for info in the top container. It is shown in the style of info because it is the default level for alerts.<br/>
+		This is for convenience, so you can quickly send alerts with the event without having to create a Javascript object.</p>
+		<br/>
+ 		<p><a href="#" id="alertAsStringButton" class="btn btn-primary" ng-click="getAlertAsString($event)">Test</a></p>
+	</div>
+</div>

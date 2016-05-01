@@ -1,0 +1,60 @@
+<div class="row">
+	<div class="col-sm-12">
+		<h2>Test client certificate</h2>
+		<p>To test if the application stores the client certificates in a request you need to setup</p>
+		<ul>
+			<li>the application server with SSL</li>
+			<li>the client browser with a client certificates</li>
+			<li>run the application server and browser on your localhost, this way you do not have to worry about hostnames</li>
+		</ul>
+		<p>To setup the application server with SSL you can use <a href="../certificate/server.jks">this keystore</a>, the password is changeit and the common name is server.monitor.nl.<br></br>
+		To setup the browser you can use <a href="../certificate/client.p12">this client certificate</a>, the password is changeit and the common name is server.monitor.nl.<br></br>
+		The keystore(containing the server certificate which is a self signed certificate) and the client certificate(signed with the server certificate) are for test purpuse only and are generated with OpenSSL and the java keytool.</p>
+		<br/>
+		<p>After configuration you can test if the client certificate is stored by executing the following actions:</p>
+		<ul>
+			<li>go to the secured index page, for example: https://localhost:8443/monitor</li>
+			<li>go to the requests page</li>
+			<li>click on an entry</li>
+			<li>click on the 'Request' node</li>
+			<li>click on the 'Certificates' node</li>
+			<li>the client certificate should be listed</li>
+		</ul>
+		<p>Instructions on how to enable SSL in JBoss 7.1.1.Final</p>
+		<ul>
+			<li>copy <a href="../certificate/server.jks">server.jks</a> to the {JBoss home}/standalone/configuration directory.</li>
+			<li>open the file {JBoss home}/standalone/configuration/standalone.xml</li>
+			<li>add the following code snippet below the connector for http<br/>
+				<pre>
+					<code ngc-prettyprint>
+&lt;connector name="https" protocol="HTTP/1.1" socket-binding="https" scheme="https" secure="true"&gt;
+    &lt;ssl name="https" password="changeit" certificate-key-file="${jboss.server.config.dir}/server.jks" protocol="TLSv1" verify-client="true" ca-certificate-file="${jboss.server.config.dir}/server.jks"/&gt;
+&lt;/connector&gt;
+					</code>
+				</pre>				
+			</li>
+		</ul>
+		<br/>
+		<p>Instructions on how to install the client certificate in Chrome</p>
+		<ul>
+			<li>download the <a href="../certificate/client.p12">client certificate</a></li>
+			<li>open Chrome</li>
+			<li>open 'Settings'</li>
+			<li>click on 'Show advanced settings</li>
+			<li>click on 'Manage certificates...'</li>
+			<li>click on the tab 'Personal'</li>
+			<li>click on 'Import'</li>
+			<li>click on 'Next'</li>
+			<li>click on 'Browse'</li>
+			<li>select the certificate type '.p12'</li>
+			<li>navigate to the downloaded client certificate and double click the file</li>
+			<li>click 'Next'</li>
+			<li>enter password: changeit</li>
+			<li>click 'Next'</li>
+			<li>make sure the 'Personal' certificate store is selected and click 'Next'</li>
+			<li>click 'Finish'</li>
+			<li>You will get a message that the import was succesfull and the certificate should be visible on the tab 'Personal'</li>
+		</ul>
+	</div>
+</div>
+		

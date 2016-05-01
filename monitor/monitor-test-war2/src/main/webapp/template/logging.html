@@ -1,0 +1,50 @@
+<div class="row">
+	<div class="col-sm-6" ng-controller="HierarchyLoggingController">
+		<h2>Test hierarchy in logging</h2>
+		<p>Activating the button will create logging statements in the applications log file 
+		with different depths to illustrate a hierarchy. The logging statements can be found in the 
+		requests page, use the text 'testLoggingHierarchy' in the Url field. Before pressing 
+		the button the listener on the local log file needs to be started, this will load 
+		the log statements and bind them to the request.</p>
+		<br>
+ 		<p><a href="#" id="hierarchyLoggingButton" class="btn btn-primary" ng-click="run($event)">Test</a></p>
+		<div id="resultContainer" class="messagesContainer"></div>
+	</div>
+	<div class="col-sm-6" ng-controller="DomainServiceLoggingController" ngc-enter="#domainServiceLoggingAddButton">
+		<h2>Test logging</h2>
+		<p>To test if the application stores EJB profiler logging and Hibernate sql statement logging.
+		The logging statements can be found in the 
+		requests page, use the text 'testDomainServiceLogging' in the Url field. Before pressing 
+		the button the listener on the local log file needs to be started, this will load 
+		the log statements and bind them to the request. To see hibernate log statements containing
+		query and bind parameters the application server needs to be configured to log 
+		org.hibernate.SQL with level DEBUG and org.hibernate.type.descriptor.sql.BasicBinder 
+		with level TRACE.</p>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Who are you?</label>
+				<div class="col-sm-8">
+					<input id="name" class="form-control" type="text"  name="name" ng-model="model.name" ngc-focus/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for="name">Date</label>
+				<div class="col-sm-8">
+					<input id="date" class="form-control" type="text" name="date" ng-model="model.date"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+					<a href="#" id="domainServiceLoggingAddButton" class="btn btn-primary" ng-click="add($event)">Persist</a>
+				</div>
+	 		</div>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-8">
+			 		<h4>Table content</h4>
+					<a href="#" id="domainServiceLoggingCleanButton" class="btn btn-primary" ng-click="clean($event)">Clean</a>
+			 		<div id="domainServiceLoggingData"/>
+			 	</div>
+			 </div>
+		</div>
+	</div>
+</div>
