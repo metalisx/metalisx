@@ -9,12 +9,11 @@
     "declaration": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "verbose": true
+    "outDir": "src/main/webapp/dist/app",
+    "rootDir": "src/main/webapp/app"
   },
   "exclude": [
     "node_modules",
-    "typings/browser",
-    "typings/browser.d.ts",
     "typings/main",
     "typings/main.d.ts",
     "src/main/webapp/lib",

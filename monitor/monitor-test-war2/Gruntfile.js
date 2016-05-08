@@ -85,7 +85,7 @@ module.exports = function(grunt) {
 	  },
       default: {
 		src: ["src/main/webapp/app/**/*.ts"],
-		dest: "src/main/webapp/dist",
+		dest: "src/main/webapp/dist/app",
 	    tsconfig: 'tsconfig.json'
       }
 	},
