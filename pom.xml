@@ -255,8 +255,21 @@
 											<goal>unpack</goal>
 										</goals>
 									</pluginExecutionFilter>
-									<action>
+									<action> 
 										<execute />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>exec-maven-plugin</artifactId>
+										<versionRange>[${exec-maven-plugin.version,)</versionRange>
+										<goals>
+											<goal>exec</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute></execute>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
