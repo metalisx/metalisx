@@ -59,8 +59,7 @@ section first.
 
 0.2 Eclipse
 
-Download and install Eclipse (currently Mars 2)
-Mars contains m2e.
+Download and install Eclipse (currently Neon M6)
 
 Open Eclipse
 
