@@ -12,6 +12,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.metalisx.common.cdi.extension.LogExtension;
 import org.metalisx.common.cdi.interceptor.Log;
 import org.metalisx.common.cdi.interceptor.LogInterceptor;
 
@@ -27,7 +28,9 @@ public class UserServiceTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar").addClasses(
-        		// Interceptor
+        		// Extension
+        		LogExtension.class,
+	        	// Interceptor
                 Log.class,
                 LogInterceptor.class,
                 // Services
@@ -35,7 +38,8 @@ public class UserServiceTest {
                 UserService.class,
 		        // Teset
 		        UserServiceTest.class)
-                .addAsManifestResource("META-INF/test-beans.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("META-INF/test-beans.xml", ArchivePaths.create("beans.xml"))
+                .addAsManifestResource("META-INF/services/javax.enterprise.inject.spi.Extension", ArchivePaths.create("services/javax.enterprise.inject.spi.Extension"));
     }
 
     @Test
