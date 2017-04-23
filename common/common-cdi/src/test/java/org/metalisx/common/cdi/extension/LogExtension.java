@@ -13,6 +13,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import org.metalisx.common.cdi.interceptor.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,16 @@ public class LogExtension implements Extension {
 		if (isPartOfRootPackage(annotatedType.getJavaClass())) {
 			if (isEjbAnnotation(annotatedType)) {
 				LOGGER.info("Adding Log annotation to " + annotatedType.getJavaClass().getName());
+				Annotation logAnnotation = new Annotation() {
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return Log.class;
+					}
+				};
+				AnnotatedTypeWrapper<T> wrapper = new AnnotatedTypeWrapper<T>(annotatedType,
+						annotatedType.getAnnotations());
+				wrapper.addAnnotation(logAnnotation);
+				processAnnotatedType.setAnnotatedType(wrapper);	
 			}
 		}
 	}

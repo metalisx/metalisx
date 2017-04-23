@@ -12,6 +12,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.metalisx.common.cdi.extension.AnnotatedTypeWrapper;
 import org.metalisx.common.cdi.extension.LogExtension;
 import org.metalisx.common.cdi.interceptor.Log;
 import org.metalisx.common.cdi.interceptor.LogInterceptor;
@@ -29,6 +30,7 @@ public class UserServiceTest {
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar").addClasses(
         		// Extension
+        		AnnotatedTypeWrapper.class,	
         		LogExtension.class,
 	        	// Interceptor
                 Log.class,

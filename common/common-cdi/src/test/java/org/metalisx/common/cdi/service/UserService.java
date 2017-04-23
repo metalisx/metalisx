@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 
 import org.metalisx.common.cdi.interceptor.Log;
 
-@Log("logname")
+//@Log("logname")
 @Stateless
 public class UserService extends AbstractUserService {
 
