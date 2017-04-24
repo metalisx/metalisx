@@ -11,26 +11,24 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 /**
- * Wrapper for adding annotations to an AnnotatedType in an CDI Extension.
+ * Wrapper for adding an annotation to an AnnotatedType in an CDI Extension.
  * Because the annotations list in the wrapped AnnotationType is immutable, a
  * new annotations list is created in this class.
  * 
  * @author Stefan Oude Nijhuis
  *
  * @param <T> The type
+ * 
  */
 public class AnnotatedTypeWrapper<T> implements AnnotatedType<T> {
 
 	private final AnnotatedType<T> wrappedAnnotatedType;
 	private final Set<Annotation> annotations;
 
-	public AnnotatedTypeWrapper(AnnotatedType<T> wrappedAnnotatedType, Set<Annotation> annotations) {
+	public AnnotatedTypeWrapper(AnnotatedType<T> wrappedAnnotatedType, Annotation annotation) {
 		this.wrappedAnnotatedType = wrappedAnnotatedType;
-		this.annotations = new HashSet<>(annotations);
-	}
-
-	public void addAnnotation(Annotation annotation) {
-		annotations.add(annotation);
+		this.annotations = new HashSet<>(wrappedAnnotatedType.getAnnotations());
+		this.annotations.add(annotation);
 	}
 
 	@Override
