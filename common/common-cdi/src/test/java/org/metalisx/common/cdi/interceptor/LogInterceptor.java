@@ -3,14 +3,12 @@ package org.metalisx.common.cdi.interceptor;
 import java.lang.reflect.Method;
 
 import javax.ejb.EJBContext;
-import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 
 import org.eclipse.sisu.Priority;
-import org.metalisx.common.cdi.extension.LogExtension;
 import org.metalisx.common.cdi.utils.CdiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +19,6 @@ import org.slf4j.LoggerFactory;
 public class LogInterceptor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogInterceptor.class);
-
-	@Inject
-	private LogExtension logExtension;
 
 	@AroundInvoke
 	public Object logInvocation(InvocationContext ctx) throws Exception {

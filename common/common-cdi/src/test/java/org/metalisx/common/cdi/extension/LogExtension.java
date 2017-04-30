@@ -67,37 +67,6 @@ public class LogExtension implements Extension {
 
 	void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
 		LOGGER.info("Done scanning process for classes");
-//		Set<Bean<?>> beans = beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {
-//			private static final long serialVersionUID = 1L;
-//		});
-//		for (Bean<?> bean : beans) {
-//			if (isPartOfRootPackage(bean.getBeanClass())) {
-//				if (bean.getBeanClass().equals(UserService.class)) {
-//					// There is no option to add an annotation to the
-//					// annotations list of the bean. Altering the list with
-//					// reflection is not clean and is for now not an option.
-//					// Annotation logAnnotation = new LogAnnotationLiteral();
-//					// Annotation[] annotations = bean.getBeanClass().getAnnotations();
-//					System.out.println("Bean " + bean.getBeanClass().getName());
-//				}
-//			}
-//		}
-	}
-
-	/**
-	 * This method is only here to show that the Log annotation is added to the
-	 * AnnotatedType and that the value of the annotation is the value as
-	 * specified in the LogAnnotationLiteral.
-	 */
-	public <T> void processInjectionTarget(final @Observes ProcessInjectionTarget<T> processInjectionTarget) {
-		AnnotatedType<T> annotatedType = processInjectionTarget.getAnnotatedType();
-		if (annotatedType.isAnnotationPresent(Log.class)) {
-			System.out.println("Injection target : log annotation detected on "
-					+ processInjectionTarget.getAnnotatedType().getJavaClass());
-			for (Annotation annotation : processInjectionTarget.getAnnotatedType().getAnnotations()) {
-				System.out.println("Injection target annotation " + annotation.toString());
-			}
-		}
 	}
 
 	public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType) {
@@ -108,11 +77,6 @@ public class LogExtension implements Extension {
 				Annotation logAnnotation = new LogAnnotationLiteral();
 				AnnotatedTypeWrapper<T> wrapper = new AnnotatedTypeWrapper<T>(annotatedType, logAnnotation);
 				processAnnotatedType.setAnnotatedType(wrapper);
-				// Following code is only here to illustrate the Log annotation
-				// is added to the AnnotatedType.
-				for (Annotation annotation : processAnnotatedType.getAnnotatedType().getAnnotations()) {
-					System.out.println("After annotation " + annotation.toString());
-				}
 			}
 		}
 	}
