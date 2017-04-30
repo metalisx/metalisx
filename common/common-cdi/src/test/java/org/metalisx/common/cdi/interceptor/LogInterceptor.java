@@ -1,22 +1,29 @@
 package org.metalisx.common.cdi.interceptor;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import javax.ejb.EJBContext;
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 
+import org.eclipse.sisu.Priority;
+import org.metalisx.common.cdi.extension.LogExtension;
+import org.metalisx.common.cdi.utils.CdiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Log
 @Interceptor
+@Priority(2000)
 public class LogInterceptor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogInterceptor.class);
+
+	@Inject
+	private LogExtension logExtension;
 
 	@AroundInvoke
 	public Object logInvocation(InvocationContext ctx) throws Exception {
@@ -69,18 +76,44 @@ public class LogInterceptor {
 		}
 	}
 
+	private String getContextInfo(InvocationContext ctx) {
+		return "[class = " + ctx.getTarget().getClass().getName() + ", method = " + ctx.getMethod().getName() + "]";
+	}
+
+	/**
+	 * This will return null because the Log annotation is not found when the
+	 * extension adds it during runtime.
+	 * 
+	 * If we need a value it cannot be done with an annotation. The value needs
+	 * to be retrieved through other means. For instance by injecting a bean
+	 * providing the value which normally would be set as attribute on the
+	 * annotation. Hopefully there will be a solution to this problem in a new
+	 * release.
+	 */
 	private String getValue(InvocationContext ctx) {
+		CdiUtils.log(ctx, LOGGER);
 		String value = null;
-		Method method = ctx.getMethod();
-		// Check method annotations
-		if (method.isAnnotationPresent(Log.class)) {
-			value = method.getAnnotation(Log.class).value();
-		}
-		// Check target class annotations
-		if (value == null) {
-			if (ctx.getTarget().getClass().isAnnotationPresent(Log.class)) {
-				value = ctx.getTarget().getClass().getAnnotation(Log.class).value();
+		// Find the annotation on the target class down the super classes to the
+		// Object class
+		Class<?> clazz = ctx.getTarget().getClass();
+		while (clazz != Object.class) {
+			if (clazz.isAnnotationPresent(Log.class)) {
+				value = clazz.getAnnotation(Log.class).value();
+				break;
 			}
+			clazz = clazz.getSuperclass();
+		}
+		// Find the annotation on the method.
+		if (value == null) {
+			Method method = ctx.getMethod();
+			if (method.isAnnotationPresent(Log.class)) {
+				value = method.getAnnotation(Log.class).value();
+			}
+		}
+		if (value == null) {
+			String message = "Could not retrieve application code from annotation. " + getContextInfo(ctx);
+			LOGGER.error(message);
+			// throw new InformoreRuntimeException(message);
 		}
 		return value;
 	}
