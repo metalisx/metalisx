@@ -98,7 +98,7 @@ public class JobManagerTest {
 		assertNotNull("Injection failed for JobManager", jobManager);
 		jobManager.reset();
 
-		int numberOfJobs = 1000;
+		int numberOfJobs = 100;
 
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
