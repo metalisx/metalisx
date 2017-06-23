@@ -77,24 +77,18 @@ public class JobManagerTest {
 	 * finished. However if the delay is set to 6 seconds then WebLogic is also
 	 * running in parallel, what happens here, strategy?
 	 */
-	// @Test
+	@Test
 	public void testJobManager() {
 		assertNotNull("Injection failed for JobManager", jobManager);
 		jobManager.reset();
 
-		int numberOfJobs = 4;
-
+		int numberOfJobs = 1;
 		LOGGER.info("Queueing long running job");
-		jobManager.enqueue("Wayne " + 1, 2000);
+		jobManager.enqueue("Wayne " + numberOfJobs, 2000);
 
-		LOGGER.info("Queueing long running job");
-		jobManager.enqueue("Wayne " + 2, 2000);
-
-		LOGGER.info("Queueing long running job");
-		jobManager.enqueue("Wayne " + 3, 2000);
-
+		numberOfJobs = numberOfJobs + 1;
 		LOGGER.info("Queueing immediate running job");
-		jobManager.enqueue("Kent " + 4, 0);
+		jobManager.enqueue("Kent " + numberOfJobs, 0);
 
 		assertAllJobsAreFinished(numberOfJobs);
 	}
