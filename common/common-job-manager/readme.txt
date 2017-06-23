@@ -1,0 +1,1 @@
+This module is only for testing a CDI application, it is not relevant to the project.
