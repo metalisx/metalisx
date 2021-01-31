@@ -95,29 +95,27 @@ following the next instructions:
 
 0.3 WildFly
 
-Download WildFly 10.0.0 Final and unzip the file.
-
-Open Eclipse
-
-Install the JBoss Tools (currently 4.3.0.Final) from the Eclipse Market Place
-
-Create a new Serer, with server type WildFly 10.0 (Experimental) and
-point it to the installation directory of the unzipped WildFly.
+Setting up WildFly:
+ - download WildFly 10.0.0 Final and unzip the file.
+ - open Eclipse
+ - install the JBoss Tools (currently 4.3.0.Final) from the Eclipse Market Place
+ - create a new Serer, with server type WildFly 10.0 (Experimental) and
+   point it to the installation directory of the unzipped WildFly.
 
 When running the MetalIsX web applications you need to configure the 
 Monitor datasource and Monitor log file. For instructions see: 
 4 WildFly
 
-1. MetalIsX common
+1 MetalIsX common
 
 Common projects for domain, gson, rest and web resources.
 
-2. MetalIsX CRUD
+2 MetalIsX CRUD
 
 Simple but effective CRUD web application project using the 
 common rest module.
 
-3. MetalIsX Monitor
+3 MetalIsX Monitor
 
 Project for:
  - displaying profiling log information
@@ -226,7 +224,7 @@ The best way to use the disable and enable markers is by placing them in the
 log file by the same method, this will prevent every log statements between
 those commands to be processed by the log listener.
 
-3.5. Profiler slf4j CDI Interceptor
+3.5 Profiler slf4j CDI Interceptor
 
 The profiler interceptor logs duration of method calls, which
 can be read by the web application.
