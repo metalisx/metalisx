@@ -84,11 +84,11 @@ The JBoss Tools validator for JAX-RS thinks it detected the error:
 This is incorrect because the Applications are defined in different 
 projects. The solution is to set the validator check to Warning by 
 following the next instructions:
- go to Menu -> Window -> Preferences
- go to JBoss Tools -> JAX-RS -> JAX-RS Validator
- Klik on "JAX-RS Activators"
- go to "Multiple JAX-RS Activators configured"
- set the listbox value on Warning
+ - go to Menu -> Window -> Preferences
+ - go to JBoss Tools -> JAX-RS -> JAX-RS Validator
+ - Klik on "JAX-RS Activators"
+ - go to "Multiple JAX-RS Activators configured"
+ - set the listbox value on Warning
 
 0.3 WildFly
 
@@ -174,7 +174,10 @@ might not be available on other application servers.
 
 To use the web application monitor-war and/or servlet filter monitor-request-servlet-filter a 
 datasource has to be configured in the application server. The name of the data 
-source is: jdbc/monitorDS.
+source is: 
+```
+jdbc/monitorDS.
+```
 
 3.4 Generate log statements
 
@@ -241,6 +244,7 @@ EJB interceptor:
 3.5.1 CDI interceptor
 
 Add the ProfilerInterceptor in the beans.xml:
+```
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://java.sun.com/xml/ns/javaee" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -249,6 +253,7 @@ Add the ProfilerInterceptor in the beans.xml:
 		<class>org.metalisx.monitor.domain.interceptor.ProfilerInterceptor</class>
 	</interceptors>
 </beans>
+```
 
 Annotated your class with the Profiler annotation.
 Example class:
@@ -262,20 +267,25 @@ public abstract class AbstractService {
 	..
 }
 ```
+
 3.5.2 Interceptors annotation
 
 Add the ProfilerInterceptor to the EJB with the Interceptors annotation:
+```
 @Interceptors({ProfilerInterceptor.class})
+```
 
 3.5.3 Default interceptor
 
 Add the ProfilerInterceptor in the META-INF/ejb-jar.xml:
+```
 <assembly-descriptor>
     <interceptor-binding>
         <ejb-name>*</ejb-name>
         <interceptor-class>org.metalisx.monitor.domain.interceptor.ProfilerInterceptor</interceptor-class>
     </interceptor-binding>
 </assembly-descriptor>
+```
 
 3.6 Profiler slf4j servlet filter
 
@@ -309,12 +319,14 @@ but the order in which they start is not determined.
 
 To make sure the request filter is started before the
 profiler filter you need to add the following to your 
-web.xml.
+web.xml:
+```
 	<absolute-ordering>
 		<others/>
 		<name>monitorRequestServletFilter</name>
 		<name>monitorProfilerServletFilter</name>
 	</absolute-ordering>
+```
 
 The 'others' is specified before the request filter
 because a filter can be used to set the username
@@ -330,6 +342,7 @@ with the required jdbc/monitorDS datasource:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the datasources
  - add in the datasources section the following datasource to create a h2 database:
+                ```
                 <datasource jndi-name="java:/jdbc/monitorDS" pool-name="monitorDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:file:${jboss.server.data.dir}/h2database/monitor;DB_CLOSE_DELAY=-1</connection-url>
                     <driver>h2</driver>
@@ -338,7 +351,7 @@ with the required jdbc/monitorDS datasource:
                         <password>sa</password>
                     </security>
                 </datasource>
-
+                ```
  - you can change the datasource setting to your liking, but the 
    jndi-name should remain the same
 
@@ -349,6 +362,7 @@ a seperated log file for the monitor application:
  - open the file <jboss home>/standalone/configuration/standalone.xml
  - find the subsystem with the logging
  - add in the subsystem the following file handler:
+            ```
             <periodic-rotating-file-handler name="MONITOR" autoflush="true">
                 <formatter>
                     <pattern-formatter pattern="%d %-5p [%c] (%t) %s%E%n"/>
@@ -360,17 +374,21 @@ a seperated log file for the monitor application:
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="false"/>
             </periodic-rotating-file-handler>
+            ```
 
  - add in the subsystem the following logger for logging en processing
    monitor logging:
+            ```
             <logger category="org.metalisx.monitor" use-parent-handlers="false">
                 <level name="INFO"/>
                 <handlers>
                     <handler name="MONITOR"/>
                 </handlers>
             </logger>
+            ```
  - add in the subsystem the following logger for logging en processing 
    hibernate logging:
+            ```
             <logger category="org.hibernate.SQL" use-parent-handlers="false">
                 <level name="DEBUG"/>
                 <handlers>
@@ -383,6 +401,7 @@ a seperated log file for the monitor application:
                     <handler name="MONITOR"/>
                 </handlers>
             </logger>
+            ```
 
 5 Eclipse and Checkstyle
 
@@ -413,16 +432,22 @@ Install and configure Checkstyle in Ecipse:
 
 Checkstyle and PMD are configured to report on the code quality.
 To run Checkstyle and PMD run:
+```
  mvn -P quality verify
+```
 
 7 Site
 
 To create the site on the modules run:
+```
  mvn -P quality site
+```
 This will also run Checkstyle and PMD.
 
 To deploy the site run:
+```
  mvn -P quality site:deploy
+```
 This will copy all site information from the target direcotories to
 the directory: /workspace-monitor/site
 
@@ -440,14 +465,19 @@ and a headless browser.
 After executing the instruction in the sub paragraphes you can run test
 at the browser in that sub paragraphes or you can run it against all 
 these browsers at once by running:
-  mvn clean install -Pphantomjs,firefox,chrome,internet-explorer
+```
+ mvn clean install -Pphantomjs,firefox,chrome,internet-explorer
+```
 
 8.1.1 Headless
 
 For testing the web application the headless browser PhantomJS is used. 
-This requires no extra installations
+This requires no extra installations.
 
-Run: mvn clean install -Pphantomjs
+Run: 
+```
+ mvn clean install -Pphantomjs
+```
 
 8.1.2 Browsers
 
@@ -459,28 +489,34 @@ page: http://seleniumhq.org/download/
 8.1.2.1 FireFox
 
 Actions:
-	Install FireFox.
-    It might be possible that you need to install the Selenium IDE in FireFox.
+ - Install FireFox.
+ - It might be possible that you need to install the Selenium IDE in FireFox.
 
-Run: mvn clean install -Pfirefox
+Run: 
+```
+ mvn clean install -Pfirefox
+```
 
 8.1.2.2 Chrome
 
 Actions:
-	Install Chrome.
-	Install the chrome webdriver.
+ - Install Chrome.
+ - Install the chrome webdriver.
 
 The Chrome webdriver can be found here: https://sites.google.com/a/chromium.org/chromedriver/
 Create the selenium-webdriver directory in the root of the drive where the 
 project is located. Place the webdriver in this directory.
 
-Run: mvn clean install -Pchrome
+Run: 
+```
+ mvn clean install -Pchrome
+```
 
 8.1.2.3 Internet Explorer
 
 Actions:
- Install Internet Explorer.
- Install the Internet Explorer webdriver.
+ - Install Internet Explorer.
+ - Install the Internet Explorer webdriver.
 
 The home page for the Internet Explorer webdriver is:
 https://code.google.com/p/selenium/wiki/InternetExplorerDriver
@@ -494,4 +530,7 @@ https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configur
 Create the selenium-webdriver directory in the root of the drive where the 
 project is located. Place the webdriver in this directory.
 
-run: mvn clean install -Pinternet-explorer
+run:
+```
+ mvn clean install -Pinternet-explorer
+```
