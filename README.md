@@ -11,7 +11,7 @@ This is a working experiment using an AngularJS front end to show messages and a
 
 The projects are created to:
  - create reusable projects for JPA and REST
- - create a reusable structure for REST applications
+ - create a reusable structure for REST applications. 
    A CRUD and a request and logging monitor application 
    are used as use case.
  - test frameworks, java and javascript/css frameworks
