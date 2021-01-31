@@ -2,11 +2,12 @@ metalisx
 
 ===
 
-Project has not been updated in a while. You should not use AngularJS anymore, use Angular.
+Project has not been updated in a while. 
+You should not use AngularJS anymore, use Angular. Java libraries and 
 
 ===
 
-This is a project using an AngularJS front end to show messages and a java backend to log messages.
+This is a working experiment using an AngularJS front end to show messages and a java backend to log messages.
 
 The projects are created to:
  - create reusable projects for JPA and REST
@@ -251,6 +252,7 @@ Add the ProfilerInterceptor in the beans.xml:
 
 Annotated your class with the Profiler annotation.
 Example class:
+```
 package org.metalisx.my.package
 
 import org.metalisx.monitor.domain.interceptor.Profile;
@@ -259,7 +261,7 @@ import org.metalisx.monitor.domain.interceptor.Profile;
 public abstract class AbstractService {
 	..
 }
-
+```
 3.5.2 Interceptors annotation
 
 Add the ProfilerInterceptor to the EJB with the Interceptors annotation:
