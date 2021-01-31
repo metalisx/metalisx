@@ -3,7 +3,7 @@ metalisx
 ===
 
 Project has not been updated in a while. 
-You should not use AngularJS anymore, use Angular. Java libraries and 
+You should not use AngularJS anymore, use Angular.
 
 ===
 
@@ -26,25 +26,25 @@ possible to build a group of projects.
 
 The following Java frameworks are used in the java 
 backend:
-     - JPA (Hibernate)
-     - REST (JBoss RESTEasy with Gson)
-     - JBoss Hibernate
-     - Apache HttpComponents
-     - Tika
-     - Tagsoup
-     - Liquibase
-     - JUnit
-     - JBoss Arquillian
+ - JPA (Hibernate)
+ - REST (JBoss RESTEasy with Gson)
+ - JBoss Hibernate
+ - Apache HttpComponents
+ - Tika
+ - Tagsoup
+ - Liquibase
+ - JUnit
+ - JBoss Arquillian
 
 The following Javascript and CSS frameworks are used
 in the front end:
-     - Twitter Bootstrap
-     - jQuery 
-     - AngularJS
-     - DataTables
-     - Dynatree
-     - Flot
-     - google-code-prettify
+ - Twitter Bootstrap
+ - jQuery 
+ - AngularJS
+ - DataTables
+ - Dynatree
+ - Flot
+ - google-code-prettify
 
 0 Setup
 
@@ -59,7 +59,9 @@ Install Maven (currently Maven 3.0.5).
 
 To build all projects run the following command from this
 directory:
+```
  mvn clean install -DskipTests
+```
  
 If you only want one section to build, run the command 
 from it's sub folder in this directory. But to build the 
@@ -68,11 +70,10 @@ section first.
 
 0.2 Eclipse
 
-Download and install Eclipse (currently Neon M6)
-
-Open Eclipse
-
-Import the previous build projects as Maven projects.
+Use with Eclipse:
+ - download and install Eclipse (currently Neon M6)
+ - open Eclipse
+ - import the previous build projects as Maven projects.
 
 If you only want one section then import the pom of
 it's sub folder.
@@ -80,7 +81,9 @@ it's sub folder.
 0.2.1 Error: Multiple JAX-RS Activators are defined for the project
 
 The JBoss Tools validator for JAX-RS thinks it detected the error: 
-  Multiple JAX-RS Activators are defined for the project.
+```
+ Multiple JAX-RS Activators are defined for the project.
+```
 This is incorrect because the Applications are defined in different 
 projects. The solution is to set the validator check to Warning by 
 following the next instructions:
