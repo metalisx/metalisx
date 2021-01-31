@@ -1,4 +1,4 @@
-metalisx
+# metalisx
 
 ===
 
@@ -46,14 +46,14 @@ in the front end:
  - Flot
  - google-code-prettify
 
-0 Setup
+## 0 Setup
 
 Quick setup instructions for:
  - Maven and building the projects with Maven
  - Eclipse and loading the projects in Eclipse
  - JBoss server in Eclipse.
 
-0.1 Maven
+### 0.1 Maven
 
 Install Maven (currently Maven 3.0.5).
 
@@ -68,7 +68,7 @@ from it's sub folder in this directory. But to build the
 section CRUD or Monitor, you need to build the common 
 section first.
 
-0.2 Eclipse
+### 0.2 Eclipse
 
 Use with Eclipse:
  - download and install Eclipse (currently Neon M6)
@@ -78,7 +78,7 @@ Use with Eclipse:
 If you only want one section then import the pom of
 it's sub folder.
 
-0.2.1 Error: Multiple JAX-RS Activators are defined for the project
+#### 0.2.1 Error: Multiple JAX-RS Activators are defined for the project
 
 The JBoss Tools validator for JAX-RS thinks it detected the error: 
 ```
@@ -93,7 +93,7 @@ following the next instructions:
  - go to "Multiple JAX-RS Activators configured"
  - set the listbox value on Warning
 
-0.3 WildFly
+### 0.3 WildFly
 
 Setting up WildFly:
  - download WildFly 10.0.0 Final and unzip the file.
@@ -106,16 +106,16 @@ When running the MetalIsX web applications you need to configure the
 Monitor datasource and Monitor log file. For instructions see: 
 4 WildFly
 
-1 MetalIsX common
+## 1 MetalIsX common
 
 Common projects for domain, gson, rest and web resources.
 
-2 MetalIsX CRUD
+## 2 MetalIsX CRUD
 
 Simple but effective CRUD web application project using the 
 common rest module.
 
-3 MetalIsX Monitor
+## 3 MetalIsX Monitor
 
 Project for:
  - displaying profiling log information
@@ -151,12 +151,12 @@ read:
 Log information, if available, is also bind to the
 request.
 
-3.1 Browsers
+### 3.1 Browsers
 
 The web applications are supported in the browsers Firefox, 
 Chrome and Internet Explorer 10+, Edge.
 
-3.2 Application Server
+### 3.2 Application Server
 
 The monitor web application is developed for the WildFly 10.0.0.Final
 application server.
@@ -171,7 +171,7 @@ servers but in the pom the artifacts which are provided by
 WildFly 10.0.0.Final as modules are marked as provided. They
 might not be available on other application servers.
 
-3.3 Datasource
+### 3.3 Datasource
 
 To use the web application monitor-war and/or servlet filter monitor-request-servlet-filter a 
 datasource has to be configured in the application server. The name of the data 
@@ -180,15 +180,15 @@ source is:
 jdbc/monitorDS.
 ```
 
-3.4 Generate log statements
+### 3.4 Generate log statements
 
-3.4.1 Monitor context
+#### 3.4.1 Monitor context
 
 To generate log statements for the monitor application to read, you
 add the following artifact to your project:
  - monitor-context
 
-3.4.2 Monitor context using slf4j MDC
+#### 3.4.2 Monitor context using slf4j MDC
 
 If you need the application to read the log statements generated
 by an artifact which you do not control, you add the following 
@@ -203,7 +203,7 @@ are bind to the request responsible for the logging. This will
 make it easy to see what a request of a specific organization 
 and user executes.
 
-3.4.3 Disable log listener
+#### 3.4.3 Disable log listener
 
 It is possible to prevent the log listener from reading log
 statements per thread. This is done by adding marker log statements.
@@ -224,7 +224,7 @@ The best way to use the disable and enable markers is by placing them in the
 log file by the same method, this will prevent every log statements between
 those commands to be processed by the log listener.
 
-3.5 Profiler slf4j CDI Interceptor
+### 3.5 Profiler slf4j CDI Interceptor
 
 The profiler interceptor logs duration of method calls, which
 can be read by the web application.
@@ -242,7 +242,7 @@ EJB interceptor:
    class to your class
  - with adding the interceptor class as a default interceptor in the ejb-jar.xml
 
-3.5.1 CDI interceptor
+#### 3.5.1 CDI interceptor
 
 Add the ProfilerInterceptor in the beans.xml:
 ```
@@ -269,14 +269,14 @@ public abstract class AbstractService {
 }
 ```
 
-3.5.2 Interceptors annotation
+#### 3.5.2 Interceptors annotation
 
 Add the ProfilerInterceptor to the EJB with the Interceptors annotation:
 ```
 @Interceptors({ProfilerInterceptor.class})
 ```
 
-3.5.3 Default interceptor
+#### 3.5.3 Default interceptor
 
 Add the ProfilerInterceptor in the META-INF/ejb-jar.xml:
 ```
@@ -288,7 +288,7 @@ Add the ProfilerInterceptor in the META-INF/ejb-jar.xml:
 </assembly-descriptor>
 ```
 
-3.6 Profiler slf4j servlet filter
+### 3.6 Profiler slf4j servlet filter
 
 The profiler filter logs duration of the servlet call, which
 can be read by the web application.
@@ -299,7 +299,7 @@ monitor-profiler-slf4j-servlet-filter artifact to your project.
 The web fragment included in the artifact will be used by
 a Servlet 3.0 application server to start the servlet filter.
 
-3.7 Request servlet filter
+### 3.7 Request servlet filter
 
 The request servlet filter stores the information of the request and
 response into the datasource as mentioned in the datasource
@@ -312,7 +312,7 @@ monitor-request-servlet-filter artifact to your project.
 The web fragment included in the artifact will be used by
 a Servlet 3.0 application server to start the servlet filter.
 
-3.8 Profiler filter and request filter
+### 3.8 Profiler filter and request filter
 
 The web fragments of both artifacts will be used by a 
 Servlet 3.0 application server to start both servlet filters
@@ -334,9 +334,9 @@ because a filter can be used to set the username
 and organizatoin in the MonitorContext to personalize
 the request.
 
-4 WildFly
+## 4 WildFly
 
-4.1 Datasource
+### 4.1 Datasource
 
 Instructions to configure WildFly 10.0.0.Final standalone 
 with the required jdbc/monitorDS datasource:
@@ -356,7 +356,7 @@ with the required jdbc/monitorDS datasource:
  - you can change the datasource setting to your liking, but the 
    jndi-name should remain the same
 
-4.2 Logger
+### 4.2 Logger
 
 Instructions to configure WildFly 10.0.0.Final standalone with
 a seperated log file for the monitor application:
@@ -404,7 +404,7 @@ a seperated log file for the monitor application:
             </logger>
             ```
 
-5 Eclipse and Checkstyle
+## 5 Eclipse and Checkstyle
 
 Install and configure Checkstyle in Ecipse:
  - go to the Eclipse market place, search for Checkstyle Plug-in and install it.
@@ -429,7 +429,7 @@ Install and configure Checkstyle in Ecipse:
     - click on Checkstyle
     - click on Check code with Checkstyle
  
-6 Code quality
+## 6 Code quality
 
 Checkstyle and PMD are configured to report on the code quality.
 To run Checkstyle and PMD run:
@@ -437,7 +437,7 @@ To run Checkstyle and PMD run:
  mvn -P quality verify
 ```
 
-7 Site
+## 7 Site
 
 To create the site on the modules run:
 ```
@@ -452,11 +452,11 @@ To deploy the site run:
 This will copy all site information from the target direcotories to
 the directory: /workspace-monitor/site
 
-8 Unit testing
+## 8 Unit testing
 
 Arquillian is used for unit testing. 
 
-8.1 Web application
+### 8.1 Web application
 
 Arquillian uses selenium and webdrivers for testing web applications.
 
@@ -470,7 +470,7 @@ these browsers at once by running:
  mvn clean install -Pphantomjs,firefox,chrome,internet-explorer
 ```
 
-8.1.1 Headless
+#### 8.1.1 Headless
 
 For testing the web application the headless browser PhantomJS is used. 
 This requires no extra installations.
@@ -480,14 +480,14 @@ Run:
  mvn clean install -Pphantomjs
 ```
 
-8.1.2 Browsers
+#### 8.1.2 Browsers
 
 For testing against a browser you need to install the browser and 
 possible a webdriver.
 The links to the webdrivers can be found on the Selenium download 
 page: http://seleniumhq.org/download/
 
-8.1.2.1 FireFox
+##### 8.1.2.1 FireFox
 
 Actions:
  - Install FireFox.
@@ -498,7 +498,7 @@ Run:
  mvn clean install -Pfirefox
 ```
 
-8.1.2.2 Chrome
+##### 8.1.2.2 Chrome
 
 Actions:
  - Install Chrome.
@@ -513,7 +513,7 @@ Run:
  mvn clean install -Pchrome
 ```
 
-8.1.2.3 Internet Explorer
+##### 8.1.2.3 Internet Explorer
 
 Actions:
  - Install Internet Explorer.
