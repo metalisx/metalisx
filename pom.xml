@@ -543,7 +543,7 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.5</version>
+				<version>4.5.13</version>
 				<!-- 
 					Provided scope removed because the httpcomponents are not loaded 
 					from the Wildfly 10.0.0.Final modules.
